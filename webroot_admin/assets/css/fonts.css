@@ -1,0 +1,7 @@
+@font-face {
+	font-family: "Electrofied";
+	src: url(/assets/fonts/electrbi.eot ); /* IE */
+	src: local("Electrofied"), url(/assets/fonts/electrbi.ttf )format("truetype"); /* non-IE */
+}
+
+

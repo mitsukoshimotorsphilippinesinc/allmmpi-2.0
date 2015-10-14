@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Text Thumbnails Slider</title>
+
+<link rel="stylesheet" type="text/css" href="css/base/advanced-slider-base.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="css/text-thumbnail-pointer/text-thumbnail-pointer.css" media="screen"/>
+
+<link rel="stylesheet" type="text/css" href="../presentation-assets/presentation.css" media="screen"/>
+<!--[if IE 7]><link rel="stylesheet" type="text/css" href="../presentation-assets/presentation-ie7.css" media="screen"/><![endif]-->
+
+<!--[if IE]><script type="text/javascript" src="js/excanvas.compiled.js"></script><![endif]-->
+<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="js/jquery.touchSwipe.min.js"></script>
+<script type="text/javascript" src="js/jquery.advancedSlider.min.js"></script>
+
+
+<script type="text/javascript">	
+
+	jQuery(document).ready(function($){
+		$('#text-thumbnails-slider').advancedSlider({width: 956,
+													 height: 600,
+													 skin: 'text-thumbnail-pointer',
+													 shadow: false,
+													 effectType: 'swipe',
+													 overrideTransition: true,
+													 slideButtons: false,
+													 thumbnailType: 'scroller',
+													 thumbnailWidth: 190,
+													 thumbnailHeight: 80,
+													 thumbnailArrows: false,
+													 keyboardNavigation: true
+													 });
+	});	
+
+</script>
+
+</head>
+
+
+<body>
+
+	<div class="advanced-slider" id="text-thumbnails-slider">
+		<ul class="slides">
+
+			<li class="slide">
+				<img class="image" src="../presentation-assets/images/slides/image1.jpg" alt=""/>
+
+				<div class="thumbnail">
+					<span class="pointer"></span>
+					<div class="thumbnail-text">
+						<h3 class="thumbnail-title">Red bicycle</h3>
+						<p class="thumbnail-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
+					</div>
+    			</div>
+			</li>
+			
+
+			<li class="slide">
+				<img class="image" src="../presentation-assets/images/slides/image2.jpg" alt=""/>
+
+				<div class="thumbnail">
+					<span class="pointer"></span>
+					<div class="thumbnail-text">
+						<h3 class="thumbnail-title">Blue bicycle</h3>
+						<p class="thumbnail-description">sed do eiusmod tempor incididunt ut labore et dolore</p>
+					</div>
+    			</div>
+			</li>
+			
+
+			<li class="slide">
+				<img class="image" src="../presentation-assets/images/slides/image3.jpg" alt=""/>
+
+				<div class="thumbnail">
+					<span class="pointer"></span>
+					<div class="thumbnail-text">
+						<h3 class="thumbnail-title">Very old bicycle</h3>
+						<p class="thumbnail-description">magna aliqua. Ut enim ad minim veniam, quis nostrud</p>
+					</div>
+    			</div>
+			</li>
+			
+
+			<li class="slide">
+				<img class="image" src="../presentation-assets/images/slides/image4.jpg" alt=""/>
+
+				<div class="thumbnail">
+					<span class="pointer"></span>
+					<div class="thumbnail-text">
+						<h3 class="thumbnail-title">Bicycle and flowers</h3>
+						<p class="thumbnail-description">exercitation ullamco laboris nisi ut aliquip ex ea</p>
+					</div>
+    			</div>
+			</li>
+			
+
+			<li class="slide">
+				<img class="image" src="../presentation-assets/images/slides/image5.jpg" alt=""/>
+
+				<div class="thumbnail">
+					<span class="pointer"></span>
+					<div class="thumbnail-text">
+						<h3 class="thumbnail-title">Chained bicycle</h3>
+						<p class="thumbnail-description">commodo consequat. Duis aute irure dolor...</p>
+					</div>
+    			</div>
+			</li>
+
+		</ul>
+	</div>
+
+
+	
+	<div id="example-navigation-container">
+		<div id="example-navigation">
+			<ul id="list">
+				<li><a href="../responsive/responsive.html">Responsive</a></li>
+				<li class="active"><a href="../text-thumbnails/text-thumbnails.html">Text Thumbnails</a></li>
+				<li><a href="../video/video.html">Video</a></li>
+				<li><a href="../minimal/minimal.html">Minimal Fullscreen</a></li>				
+				<li><a href="../lightbox/lightbox.html">Lightbox</a></li>
+				<li><a href="../lazy-loading/lazy-loading.html">Lazy Loading</a></li>
+				<li><a href="../mixed/mixed.html">Mixed</a></li>
+			</ul>
+			
+			<div id="description">
+				<p id="features-header">Highlighted Features:</p>
+				<ul>
+					<li><strong>Text Thumbnails.</strong> The thumbnails can hold text, and any other HTML content, not only images. The style of the thumbnails can be customized with CSS</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

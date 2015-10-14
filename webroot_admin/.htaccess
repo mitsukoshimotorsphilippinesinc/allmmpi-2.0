@@ -1,0 +1,64 @@
+# Multiple Environment config
+# Set this to development, staging or production
+SetEnv BEYOND_ENV development
+
+# Make sure directory listing is disabled
+Options +FollowSymLinks -Indexes
+
+AddDefaultCharset utf-8
+#ExpiresActive On
+FileETag none
+# Keep people out of codeigniter directory and Git/Mercurial data
+RedirectMatch 403 ^/(\.git|\.hg).*$
+
+<FilesMatch "\.(ttf|otf|eot|woff|font.css)$">
+  <IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+  </IfModule>
+</FilesMatch>
+
+
+<filesMatch "\.(jpg|jpeg|png|gif|swf|js|css|pdf|ico)$">
+        Header set Cache-Control "max-age=604800, public, no-transform"
+</filesMatch>
+
+#AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css application/x-javascript application/javascript application/json
+
+<IfModule mod_expires.c>
+#   ExpiresActive On
+    ExpiresDefault "access plus 10 days"
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType text/plain "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType application/x-javascript "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 week"
+    ExpiresByType application/x-icon "access plus 1 year"
+</IfModule>
+
+
+# webfont mime types
+AddType application/vnd.ms-fontobject  eot
+AddType font/truetype                  ttf
+AddType font/opentype                  otf
+AddType application/x-font-woff        woff
+AddType font/opentype                  svg
+
+# webfonts and svg:
+<IfModule mod_deflate.c>
+  <FilesMatch "\.(ttf|otf|eot|svg|css|js)$" >
+    SetOutputFilter DEFLATE
+  </FilesMatch>
+</IfModule>
+
+RewriteEngine on
+
+RedirectMatch 404 ^/(application\/cache|application|system|main|member|ordering|\.git|\.hg).*$
+
+RewriteCond $1 !^(index\.php|assets|robots\.txt|favicon\.ico)
+RewriteCond  %{REQUEST_FILENAME}    !-f
+RewriteCond  %{REQUEST_FILENAME}    !-d
+
+RewriteRule ^(.*)$ index.php/$1 [L]
+

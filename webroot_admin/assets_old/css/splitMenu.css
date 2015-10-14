@@ -1,0 +1,238 @@
+/*
+ * @author			Designcise
+ * @created			04-October-2011
+ * @revised			N/A
+ * @description		"Split Menu" allows you to create a menu with two options; a direct link and
+ * 					a dropdown list.
+ * 
+ * @license			This CSS file is a commercial file, available for purchase at 
+ *					http://codecanyon.net/user/designcise. Any illegal copying, distribution, 
+ * 					packaging or re-production of this CSS file for commercial or personal use
+ * 					is strictly prohibited and will be considered theft.
+ *
+ * @copyright		The author is the first owner of copyright and reserves all rights to
+ *					all written work contained in this file. Distribution, re-production
+ *					or commercial use of the written work in this file, without the author's 
+ * 					signed permission, prior consent or a valid license, is strictly prohibited.
+ *					The author is protected by the "Copyright, Designs and Patents Act 1988" of 
+ *					the United Kingdom. Any infringement of the copyright, in or outside of the
+ *					United Kingdom, may result in a lawsuit.
+ */
+
+
+/* RESET ANCHOR ELEMENT STYLING
+-------------------------------------------------------------------*/
+	.splitMenu a, .splitMenu a:hover {text-decoration: none; border-bottom: 0;}
+
+
+/* SPLIT MENU CONTAINER
+-------------------------------------------------------------------*/
+	.splitMenu {display: inline-block; position: relative; top: 0; left: 0; z-index: 1000;}
+	.splitMenu a, .splitMenu a > img {vertical-align: middle; border: 0;}
+	
+	.splitMenu > :first-child:hover, .splitMenu > :first-child {
+		border-top-width: 1px; 
+		border-top-style: solid; 
+		
+		border-bottom-width: 1px; 
+		border-bottom-style: solid; 
+		
+		border-left-width: 1px; 
+		border-left-style: solid; 
+		
+		-moz-border-radius-topLeft: 5px; 
+		-webkit-border-top-left-radius: 5px;
+		border-top-left-radius: 5px; 
+		
+		-moz-border-radius-bottomLeft: 5px; 
+		-webkit-border-bottom-left-radius: 5px;
+		border-bottom-left-radius: 5px;
+	}
+	.splitMenu > :first-child:hover + *, .splitMenu > :first-child + * {
+		border-top-width: 1px; 
+		border-top-style: solid; 
+		
+		border-right-width: 1px; 
+		border-right-style: solid; 
+		
+		border-bottom-width: 1px; 
+		border-bottom-style: solid; 
+		
+		border-left-width: 1px; 
+		border-left-style: solid; 
+		
+		-moz-border-radius-topRight: 5px; 
+		-webkit-border-top-right-radius: 5px;
+		border-top-right-radius: 5px; 
+		
+		-moz-border-radius-bottomRight: 5px; 
+		-webkit-border-bottom-right-radius: 5px;
+		border-bottom-right-radius: 5px;
+	}
+	
+	
+		/* MAIN LINK
+		-------------------------------------------------------------------*/
+			.splitMenu > a.mainLink {
+				float: left; 
+				display: inline-block; 
+				
+				width: 190px; 
+				height: 38px; 
+				
+				padding: 10px 10px 0 10px;
+				
+				font-size: 20px; 
+				font-weight: bold; 
+				color: #3e3e3e; 
+				text-shadow: 0px 1px 1px #fff;
+				text-align: left;
+				
+				border-top-color: #a5a5a5; 
+				border-bottom-color: #a5a5a5; 
+				border-left-color: #a5a5a5; 
+				border-right-color: #a5a5a5; 
+				
+				background-color: #e5e5e5;
+				background-image: -webkit-linear-gradient(#e5e5e5, #d2d2d2);
+				background-image: -moz-linear-gradient(#e5e5e5, #d2d2d2);
+				background-image: -o-linear-gradient(#e5e5e5, #d2d2d2);
+				background-image: linear-gradient(#e5e5e5, #d2d2d2);
+				
+				-moz-box-shadow: inset 0 1px 0 0 #fff, inset 0 -2px 0 0 #666, inset 0 -3px 0 0 #dfdfdf;
+				-webkit-box-shadow: inset 0 1px 0 0 #fff, inset 0 -2px 0 0 #666, inset 0 -3px 0 0 #dfdfdf;
+				-o-box-shadow: inset 0 1px 0 0 #fff, inset 0 -2px 0 0 #666, inset 0 -3px 0 0 #dfdfdf;
+				box-shadow: inset 0 1px 0 0 #fff, inset 0 -2px 0 0 #666, inset 0 -3px 0 0 #dfdfdf;
+				
+				position: relative; 
+				top: 0; 
+				left: 0; 
+				z-index: 1003;
+			}
+			
+			.splitMenu > a.mainLink > img {margin-right: 5px; vertical-align: middle;}
+			
+			/* MAIN LINK (HOVER AND ACTIVE STATES)
+			-------------------------------------------------------------------*/
+				.splitMenu > a.mainLink:hover {background-color: #e2e2e2; background-image: none;}
+				.splitMenu > a.mainLink:active {
+					background-color: #cfcfcf;
+					background-image: -webkit-linear-gradient(#d2d2d2, #e5e5e5);
+					background-image: -moz-linear-gradient(#d2d2d2, #e5e5e5);
+					background-image: -o-linear-gradient(#d2d2d2, #e5e5e5);
+					background-image: linear-gradient(#d2d2d2, #e5e5e5);
+				}
+			
+		
+		/* TOGGLE BUTTON
+		-------------------------------------------------------------------*/
+			.splitMenu > .toggle {
+				float: left; 
+				display: block; 
+				
+				width: 22px; 
+				height: 34px; 
+				
+				padding-top: 14px; 
+				
+				color: white;
+				text-align: center;
+				
+				border-top-color: #666; 
+				border-right-color: #666; 
+				border-bottom-color: #a5a5a5; 
+				border-left-color: #666;
+				
+				background: #a5a5a5 url(/assets/img/splitMenu/btnToggle.png) no-repeat center center;
+				background: url(/assets/img/splitMenu/btnToggle.png) no-repeat center center, -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #bbb), color-stop(100%, #999));
+				background: url(/assets/img/splitMenu/btnToggle.png) no-repeat center center, -webkit-linear-gradient(#bbb, #999);
+				background: url(/assets/img/splitMenu/btnToggle.png) no-repeat center center, -moz-linear-gradient(#bbb, #999);
+				background: url(/assets/img/splitMenu/btnToggle.png) no-repeat center center, -o-linear-gradient(#bbb, #999);
+				background: url(/assets/img/splitMenu/btnToggle.png) no-repeat center center, linear-gradient(#bbb, #999);
+				
+				-moz-box-shadow: inset 0 1px 0 0 #eee, inset 0 -2px 0 0 #666, inset 0 -3px 0 0 #bbb;
+				-webkit-box-shadow: inset 0 1px 0 0 #eee, inset 0 -2px 0 0 #666, inset 0 -3px 0 0 #bbb;
+				-o-box-shadow: inset 0 1px 0 0 #eee, inset 0 -2px 0 0 #666, inset 0 -3px 0 0 #bbb;
+				box-shadow: inset 0 1px 0 0 #eee, inset 0 -2px 0 0 #666, inset 0 -3px 0 0 #bbb;
+					
+				position: relative; 
+				top: 0; 
+				left: 0; 
+				z-index: 1002;
+			}
+			
+			.splitMenu > .toggle + a.mainLink {border-left-color: #666 !important;}
+			
+			/* MAIN LINK (HOVER STATE)
+			-------------------------------------------------------------------*/
+				.splitMenu > .toggle:hover {
+					border-color: #4f4f4f !important;
+					border-bottom-color: transparent;
+					-moz-border-radius-bottomRight: 0; 
+					-webkit-border-bottom-right-radius: 0;
+					border-bottom-right-radius: 0;
+					
+					background: #4f4f4f url(/assets/img/splitMenu/btnToggle.png) no-repeat center center;
+					
+					-moz-box-shadow: none;
+					-webkit-box-shadow: none;
+					-o-box-shadow: none;
+					box-shadow: none;
+				}
+			
+			
+			/* DROPDOWN LIST
+			-------------------------------------------------------------------*/
+				.splitMenu > .toggle > ul.dropdown {
+					list-style: none;
+					display: none; 
+					clear: left; 
+					
+					width: 233px; 
+					
+					margin: -5px 0 0; 
+					padding: 6px 0 0; 
+					
+					text-align: left;
+					
+					border-right: 1px solid #666; 
+					border-bottom: 1px solid #666; 
+					border-left: 1px solid #666; 
+					
+					-moz-border-radius-bottomRight: 0; 
+					-webkit-border-bottom-right-radius: 0;
+					border-bottom-right-radius: 5px; 
+					
+					-moz-border-radius-bottomLeft: 0; 
+					-webkit-border-bottom-left-radius: 0;
+					border-bottom-left-radius: 5px; 
+					
+					background-color: #4f4f4f; 
+					
+					position: absolute; 
+					top: 100%; 
+					left: -1px; 
+				}
+				.splitMenu > a.mainLink + .toggle > ul.dropdown {right: -1px; left: auto !important;}
+				
+				.splitMenu > .toggle:hover > ul.dropdown {display: block;}
+				
+				/* DROPDOWN OPTIONS CONTAINER
+				-------------------------------------------------------------------*/				
+					.splitMenu > .toggle > ul.dropdown > li > a {display: block; padding: 10px; font-size: 14px; font-weight: bold; color: #fff; text-shadow: 0px -1px 0 #000; overflow: hidden;}
+					
+					.splitMenu > .toggle > ul.dropdown > li > a:hover {color: #fff; text-shadow: 0px -1px 0 rgba(0, 0, 0, 1); background-color: #333;}
+					.splitMenu > .toggle > ul.dropdown > li > a:active {
+						background-color: #333;
+						
+						-moz-box-shadow: inset 0 5px 5px -2px rgba(38,38,38, 0.5);
+						-webkit-box-shadow: inset 0 5px 5px -2px rgba(38,38,38, 0.5);
+						-o-box-shadow: inset 0 5px 5px -2px rgba(38,38,38, 0.5);
+						box-shadow: inset 0 5px 5px -2px rgba(38,38,38, 0.5);
+					}
+					
+					
+					/* DROPDOWN OPTIONS ELEMENTS
+					-------------------------------------------------------------------*/
+						.splitMenu > .toggle > ul.dropdown > li > a > img {vertical-align: baseline;}
+						.splitMenu > .toggle > ul.dropdown > li > a > img.right {float: right; margin-right: -10px;}

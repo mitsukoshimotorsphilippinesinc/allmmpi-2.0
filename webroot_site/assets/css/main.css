@@ -1,0 +1,470 @@
+body {
+	padding-top: 0;
+	color: #373737;
+	background-color: #ffffff;
+}
+
+/* float clearing for IE6 */
+* html .clearfix{
+  height: 1%;
+  overflow: visible;
+}
+
+/* float clearing for IE7 */
+*+html .clearfix{
+  min-height: 1%;
+}
+
+/* float clearing for everyone else */
+.clearfix:after{
+  clear: both;
+  content: ".";
+  display: block;
+  height: 0;
+  visibility: hidden;
+  font-size: 0;
+}
+
+.container {
+	width: 940px;
+}
+
+/* supporting docs pages */
+.subhead {
+  padding-bottom: 0;
+  margin-bottom: 9px;
+}
+.subhead h1 {
+	font-size: 54px;
+	line-height: 54px;
+	margin-bottom: 10px;
+}
+
+/* Special grid styles
+-------------------------------------------------- */
+.show-grid {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+.show-grid [class*="span"] {
+  background-color: #eee;
+  text-align: center;
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
+  min-height: 30px;
+  line-height: 30px;
+}
+.show-grid:hover [class*="span"] {
+  background: #ddd;
+}
+.show-grid .show-grid {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.show-grid .show-grid [class*="span"] {
+  background-color: #ccc;
+}
+
+.input-prepend .add-on.small {
+	width:75px; text-align:right;
+}
+
+.input-prepend .add-on.medium {
+	width:150px; text-align:right;
+}
+
+.input-prepend .add-on.large {
+	width:200px; text-align:right;
+}
+
+/* Web Controls styles
+-------------------------------------------------- */
+/* Date class */
+.wc-date .wc-date-month {
+	width: 120px;
+}
+
+.wc-date .wc-date-day {
+	width: 60px;
+}
+
+.wc-date .wc-date-year {
+	width: 76px;
+}
+
+/* Web Header Underline
+*/
+h1.underlined, h2.underlined, 
+h3.underlined, h4.underlined {
+margin-top: 10px;
+margin-bottom: 10px;
+padding-bottom: 15px;
+background-image: url('/assets/img/indent.gif');
+background-repeat: repeat-x;
+background-position: bottom;
+}
+
+/* Custom checkbox and radio button style */
+input[type="checkbox"], input[type="radio"] {
+	/*position: absolute;*/
+	clip: rect(0,0,0,0);
+	clip: rect(0 0 0 0);
+	
+	font: -webkit-small-control;
+	color: initial;
+	letter-spacing: normal;
+	word-spacing: normal;
+	line-height: normal;
+	text-transform: none;
+	text-indent: 0px;
+	text-shadow: none;
+	display: inline-block;
+	text-align: -webkit-auto;
+	
+	-webkit-appearance: textfield;
+	padding: 1px;
+	background-color: white;
+	border: 2px inset;
+	-webkit-border-image: initial;
+	-moz-border-image: initial;
+	border-image: initial;
+
+	-webkit-rtl-ordering: logical;
+	-webkit-user-select: text;
+	-moz-user-select: text;
+	user-select: text;
+
+	cursor: auto;
+	
+	margin: 3px 0.5ex;
+	padding: initial;
+	background-color: initial;
+	border: initial;
+
+	
+}
+
+input[type="checkbox"] + label::before, input[type="radio"] + label::before {
+	content: url('/assets/img/unchecked.png');
+	position: relative;
+	top: 2px;
+	margin-right: 5px;
+}
+
+input[type="checkbox"]:checked + label::before, input[type="radio"]:checked + label::before {
+	content: url('/assets/img/checked_light.png');
+}
+
+/*
+ * jQueryTools Date Input CSS style
+ */
+/* For the details, see:
+   http://flowplayer.org/tools/dateinput/index.html#skinning */
+
+/* the input field */
+.date {
+    border:1px solid #ccc;
+    font-size:18px;
+    padding:4px;
+    text-align:center;
+    width:194px;
+
+    -moz-box-shadow:0 0 10px #eee inset;
+    -webkit-box-shadow:0 0 10px #eee inset;
+}
+
+/* calendar root element */
+#calroot {
+    /* place on top of other elements. set a higher value if nessessary */
+    z-index:10000;
+
+    margin-top:-1px;
+    width:198px;
+    padding:2px;
+    background-color:#fff;
+    font-size:11px;
+    border:1px solid #ccc;
+
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+
+    -moz-box-shadow: 0 0 15px #666;
+    -webkit-box-shadow: 0 0 15px #666;
+}
+
+/* head. contains title, prev/next month controls and possible month/year selectors */
+#calhead {
+    padding:2px 0;
+    height:22px;
+}
+
+#caltitle {
+    font-size:14px;
+    color:#0150D1;
+    float:left;
+    text-align:center;
+    width:155px;
+    line-height:20px;
+    text-shadow:0 1px 0 #ddd;
+}
+
+#calnext, #calprev {
+    display:block;
+    width:20px;
+    height:20px;
+    background:transparent url(/assets/img/cal_prev.gif) no-repeat scroll center center;
+    float:left;
+    cursor:pointer;
+}
+
+#calnext {
+    background-image:url(/assets/img/cal_next.gif);
+    float:right;
+}
+
+#calprev.caldisabled, #calnext.caldisabled {
+    visibility:hidden;
+}
+
+/* year/month selector */
+#caltitle select {
+    font-size:10px;
+	width: auto;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+/* names of the days */
+#caldays {
+    height:14px;
+    border-bottom:1px solid #ddd;
+}
+
+#caldays span {
+    display:block;
+    float:left;
+    width:18px;
+    text-align:center;
+}
+
+/* container for weeks */
+#calweeks {
+    background-color:#fff;
+    margin-top:4px;
+}
+
+/* single week */
+.calweek {
+    clear:left;
+    height:16px;
+}
+
+/* single day */
+.calweek a {
+    display:block;
+    float:left;
+    width:27px;
+    height:20px;
+    text-decoration:none;
+    font-size:11px;
+    margin-left:1px;
+    text-align:center;
+    line-height:20px;
+    color:#666;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+}
+
+/* different states */
+.calweek a:hover, .calfocus {
+    background-color:#ddd;
+}
+
+/* sunday */
+a.calsun {
+    color:red;
+}
+
+/* offmonth day */
+a.caloff {
+    color:#ccc;
+}
+
+a.caloff:hover {
+    background-color:rgb(245, 245, 250);
+}
+
+
+/* unselecteble day */
+a.caldisabled {
+    background-color:#efefef !important;
+    color:#ccc	!important;
+    cursor:default;
+}
+
+/* current day */
+#calcurrent {
+    background-color:#498CE2;
+    color:#fff;
+}
+
+/* today */
+#caltoday {
+    background-color:#333;
+    color:#fff;
+}
+
+
+/* Loading Overlay
+----------------------------------------------------------------------------------------------------*/
+
+#loading_overlay{
+	display:none;
+	position: fixed;
+	top:0;
+	left: 0;
+	width:100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.5);
+	z-index: 9999;
+}
+#loading_overlay .loading_message{
+	background: #fff;
+	padding:0;
+	line-height: 25px;
+	height: 25px;
+	border: 1px solid #fff;
+	position: absolute;
+	top:0px;
+	left: 50%;
+	width: 75px;
+	margin-left: -37px;
+	text-align: center;
+	color: #333;
+	font-weight: bold;
+}
+
+#loading_overlay .loading_message {
+  height: 60px;
+  width: 300px;
+  top: 50%;
+  left: 50%;
+  margin-top: -40px;
+  margin-left: -150px;
+  text-align: left;
+}
+#loading_overlay .loading_message p {
+  height: 50px;
+  margin-top:10px;
+  margin-left: 60px;
+  line-height: 18px;
+}
+
+
+/*----- Loading Overlay -------*/
+
+
+
+.section-header {
+    background-color: #D2DBCE;
+    border-color: black;
+    border-radius: 4px 4px 4px 4px;
+    color:#558033;
+    font-size: 18px;
+	font-weight: bold;
+	min-height:27px;
+    line-height: 27px;
+    margin-bottom: 18px;
+    padding: 8px 35px 8px 14px;
+}
+
+.center {
+	text-align: center;
+}
+
+.section-header-main {
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    border-radius: 4px 4px 4px 4px;
+    color:#3a87ad;
+    font-size: 18px;
+	font-weight: bold;
+	min-height:27px;
+    line-height: 27px;
+    margin-bottom: 18px;
+    padding: 8px 35px 8px 14px;
+	text-align: left;
+}
+
+.section-container {
+	margin-bottom:10px;
+}
+
+/* jquery highlight */
+.highlight { background-color: yellow }
+
+/* css for timepicker */
+.ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
+.ui-timepicker-div dl { text-align: left; }
+.ui-timepicker-div dl dt { height: 25px; margin-bottom: -25px; }
+.ui-timepicker-div dl dd { margin: 0 10px 10px 65px; }
+.ui-timepicker-div td { font-size: 90%; }
+.ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
+
+.ui-timepicker-rtl{ direction: rtl; }
+.ui-timepicker-rtl dl { text-align: right; }
+
+.ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
+
+/* jQuery Countdown styles 1.6.0. */
+.hasCountdown {
+	
+}
+.countdown_rtl {
+	direction: rtl;
+}
+.countdown_holding span {
+	color: #888;
+}
+.countdown_row {
+	clear: both;
+	width: 100%;
+	padding: 0px 2px;
+	text-align: center;
+}
+.countdown_show1 .countdown_section {
+	width: 98%;
+}
+.countdown_show2 .countdown_section {
+	width: 48%;
+}
+.countdown_show3 .countdown_section {
+	width: 32.5%;
+}
+.countdown_show4 .countdown_section {
+	width: 24.5%;
+}
+.countdown_show5 .countdown_section {
+	width: 19.5%;
+}
+.countdown_show6 .countdown_section {
+	width: 16.25%;
+}
+.countdown_show7 .countdown_section {
+	width: 14%;
+}
+.countdown_section {
+	display: block;
+	float: left;
+	font-size: 75%;
+	text-align: center;
+}
+.countdown_amount {
+	font-size: 200%;
+}
+.countdown_descr {
+	display: block;
+	width: 100%;
+}
+

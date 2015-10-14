@@ -1,0 +1,44 @@
+/*  custom CSS for the slider */
+.text-thumbnail-pointer .slide {
+	background: #fff url('/assets/img/logo_watermark.png') no-repeat 15% 50%;
+}
+
+.text-thumbnail-pointer .thumbnail-scroller.horizontal .thumbnail.over .pointer, .text-thumbnail-pointer .thumbnail-scroller.horizontal .thumbnail.select .pointer {
+	border-bottom: 5px solid #558033 ;
+}
+
+.advanced-slider .feature-img {
+	overflow: hidden;
+}
+
+.advanced-slider .feature-img.product {
+	text-align: center;
+	line-height: 200px;
+}
+
+.advanced-slider .content-box {
+	line-height: 1.4;
+	background: url('/assets/img/bg_trans_white.png');
+	padding: 15px;
+}
+
+.advanced-slider .title {
+	font-size: 24px;
+	color: #558033;
+}
+
+.advanced-slider .btn {
+	padding: 4px 10px 4px;
+	margin-top: 15px;
+}
+
+.advanced-slider .thumbnail {
+	border: 0 !important;
+}
+
+.text-thumbnail-pointer .thumbnail-title {
+	font-style: normal;
+	font-size: 16px;
+	color: #558033;
+	line-height: 1.2;
+}

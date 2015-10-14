@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Responsive Slider</title>
+
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+<link rel="stylesheet" type="text/css" href="css/base/advanced-slider-base.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="css/glossy-square/gray/glossy-square-gray.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="css/responsive-slider.css" media="screen"/>
+
+<link rel="stylesheet" type="text/css" href="../presentation-assets/presentation.css" media="screen"/>
+<!--[if IE 7]><link rel="stylesheet" type="text/css" href="../presentation-assets/presentation-ie7.css" media="screen"/><![endif]-->
+
+<!--[if IE]><script type="text/javascript" src="js/excanvas.compiled.js"></script><![endif]-->
+<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="js/jquery.touchSwipe.min.js"></script>
+<script type="text/javascript" src="js/jquery.advancedSlider.min.js"></script>
+
+
+<script type="text/javascript">
+
+	jQuery(document).ready(function($){
+		$('#responsive-slider').advancedSlider({width: 940,
+												height: 650,
+												responsive: true,
+												skin: 'glossy-square-gray',
+												shadow: false,
+												effectType: 'swipe',
+												slideshow: true,
+												pauseSlideshowOnHover: true,
+												swipeThreshold: 30,
+												slideButtons: false,
+												thumbnailType: 'scroller',
+												thumbnailWidth: 140,
+												thumbnailHeight: 80,
+												thumbnailButtons: true,
+												thumbnailSwipe: true,
+												thumbnailScrollerResponsive: true,
+												minimumVisibleThumbnails: 2,
+												maximumVisibleThumbnails: 4,
+												keyboardNavigation: true,
+												xmlSource: 'slider.xml'
+		});
+	});
+
+</script>
+
+</head>
+
+
+<body>
+
+	<div class="advanced-slider" id="responsive-slider"></div>
+
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Lazy Loading Slider</title>
+
+<link rel="stylesheet" type="text/css" href="css/base/advanced-slider-base.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="css/text-thumbnail/text-thumbnail.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="css/scrollbar/scrollbar-7-light/scrollbar-7-light.css" media="screen"/>
+
+<link rel="stylesheet" type="text/css" href="../presentation-assets/presentation.css" media="screen"/>
+<!--[if IE 7]><link rel="stylesheet" type="text/css" href="../presentation-assets/presentation-ie7.css" media="screen"/><![endif]-->
+
+<!--[if IE]><script type="text/javascript" src="js/excanvas.compiled.js"></script><![endif]-->
+<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="js/jquery.touchSwipe.min.js"></script>
+<script type="text/javascript" src="js/jquery.advancedSlider.min.js"></script>
+
+
+<script type="text/javascript">	
+
+	jQuery(document).ready(function($){
+		$('#lazy-loading-slider').advancedSlider({width: 960,
+												  height: 400,
+												  skin: 'text-thumbnail',
+												  shadow: false,
+												  effectType: 'fade',
+												  overrideTransition: true,
+												  slideButtons: false,
+												  thumbnailType: 'scroller',
+												  thumbnailWidth: 180,
+												  thumbnailHeight: 64,
+												  thumbnailOrientation: 'vertical',
+												  thumbnailArrows: false,
+												  thumbnailSwipe: true,
+												  thumbnailMouseScroll: true,
+												  thumbnailScrollbar: true,
+										   		  scrollbarSkin: 'scrollbar-7-light',
+												  keyboardNavigation: true
+												  });
+	});	
+	
+</script>
+
+</head>
+
+
+<body>
+
+	<div class="advanced-slider" id="lazy-loading-slider">
+		<ul class="slides">
+
+			<li class="slide" data-image="../presentation-assets/images/slides/image1.jpg">
+				<div class="thumbnail">
+					<h3 class="title">Red bicycle</h3>
+					<p class="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
+    			</div>
+			</li>
+			
+
+			<li class="slide" data-image="../presentation-assets/images/slides/image2.jpg">
+				<div class="thumbnail">
+					<h3 class="title">Blue bicycle</h3>
+					<p class="description">sed do eiusmod tempor incididunt ut labore et dolore</p>
+    			</div>
+			</li>
+			
+
+			<li class="slide" data-image="../presentation-assets/images/slides/image3.jpg">
+				<div class="thumbnail">
+					<h3 class="title">Very old bicycle</h3>
+					<p class="description">magna aliqua. Ut enim ad minim veniam, quis nostrud</p>
+    			</div>
+			</li>
+			
+
+			<li class="slide" data-image="../presentation-assets/images/slides/image4.jpg">
+				<div class="thumbnail">
+					<h3 class="title">Bicycle and flowers</h3>
+					<p class="description">exercitation ullamco laboris nisi ut aliquip ex ea</p>
+    			</div>
+			</li>
+			
+
+			<li class="slide" data-image="../presentation-assets/images/slides/image5.jpg">
+				<div class="thumbnail">
+					<h3 class="title">Chained bicycle</h3>
+					<p class="description">commodo consequat. Duis aute irure dolor</p>
+    			</div>
+			</li>
+			
+
+			<li class="slide" data-image="../presentation-assets/images/slides/image6.jpg">
+				<div class="thumbnail">
+					<h3 class="title">Vintage bicycle</h3>
+					<p class="description">in reprehenderit in voluptate velit esse cillum</p>
+    			</div>
+			</li>
+			
+
+			<li class="slide" data-image="../presentation-assets/images/slides/image7.jpg">
+				<div class="thumbnail">
+					<h3 class="title">White bicycle</h3>
+					<p class="description">dolore eu fugiat nulla pariatur. Excepteur sint occaecat</p>
+    			</div>
+			</li>
+			
+			<li class="slide" data-image="../presentation-assets/images/slides/image8.jpg">
+				<div class="thumbnail">
+					<h3 class="title">Bike against wall</h3>
+					<p class="description">cupidatat non proident, sunt in culpa qui officia</p>
+    			</div>
+			</li>
+			
+
+			<li class="slide" data-image="../presentation-assets/images/slides/image9.jpg">
+				<div class="thumbnail">
+					<h3 class="title">Green bicycle</h3>
+					<p class="description">deserunt mollit anim id est laborum</p>
+    			</div>
+			</li>
+			
+
+			<li class="slide" data-image="../presentation-assets/images/slides/image10.jpg">
+				<div class="thumbnail">
+					<h3 class="title">Bikes for rent</h3>
+					<p class="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
+    			</div>
+			</li>
+
+		</ul>
+	</div>
+
+
+	
+	<div id="example-navigation-container">
+		<div id="example-navigation">
+			<ul id="list">
+				<li><a href="../responsive/responsive.html">Responsive</a></li>
+				<li><a href="../text-thumbnails/text-thumbnails.html">Text Thumbnails</a></li>
+				<li><a href="../video/video.html">Video</a></li>
+				<li><a href="../minimal/minimal.html">Minimal Fullscreen</a></li>				
+				<li><a href="../lightbox/lightbox.html">Lightbox</a></li>
+				<li class="active"><a href="../lazy-loading/lazy-loading.html">Lazy Loading</a></li>
+				<li><a href="../mixed/mixed.html">Mixed</a></li>
+			</ul>
+			
+			<div id="description">
+				<p id="features-header">Highlighted Features:</p>
+				<ul>
+					<li><strong>Lazy Image Loading.</strong> The images will not load when the page is opened but only when you navigate to the slide. Also, you can choose to preload the nearby images. </li>
+					<li><strong>Draggable Text Thumbnails.</strong> The thumbnails consist of text and can be swiped using touch gestures or mouse drag.</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,149 @@
+<slider>
+	<slide>
+		<image alt="image alt">../presentation-assets/images/slides/image1.jpg</image>
+		<thumbnail alt="Slide 1" title="tooltip content">../presentation-assets/images/thumbnails/image1.jpg</thumbnail>
+
+		<layer style="black" horizontal="40" vertical="40">
+			Need a slider that is...
+		</layer>
+
+		<layer style="white" horizontal="40" vertical="80" transition="left" delay="400" duration="300">
+			responsive
+		</layer>
+
+		<layer style="black" horizontal="138" vertical="80" transition="left" delay="600" duration="300">
+			touch-screen ready
+		</layer>
+
+		<layer style="white" horizontal="300" vertical="80" transition="left" delay="800" duration="300">
+			and fully customizable ?
+		</layer>
+
+		<layer style="black" horizontal="40" vertical="122" transition="up" offset="20" delay="1200">
+			Advanced Slider includes all that, and even more...
+		</layer>
+	</slide>
+
+	
+	<slide class="slide rounded-caption">
+		<image alt="image alt">../presentation-assets/images/slides/image2.jpg</image>
+		<thumbnail alt="Slide 1" title="tooltip content">../presentation-assets/images/thumbnails/image2.jpg</thumbnail>
+
+		<layer style="black static" width="280" horizontal="center" vertical="30%">
+			Layers can be static or animated...
+		</layer>
+
+		<layer style="white" width="280" horizontal="center" vertical="40%">
+			...and you can easily customize their size, position, animation and style
+		</layer>
+	</slide>
+
+	
+	<slide>
+		<image alt="image alt">../presentation-assets/images/slides/image3.jpg</image>
+		<thumbnail alt="Slide 1" title="tooltip content">../presentation-assets/images/thumbnails/image3.jpg</thumbnail>
+
+		<layer style="white" position="bottomLeft" horizontal="30" vertical="70" width="320" transition="down">
+			Layers can contain anything from simple text to complex HTML content like videos
+		</layer>
+
+		<layer style="white" position="bottomLeft" horizontal="30" vertical="30" transition="left" delay="500">
+			<a href="../mixed/mixed.html"><![CDATA[Mixed content example &rarr;]]></a>
+		</layer>
+	</slide>
+	
+
+	<slide>
+		<image alt="image alt">../presentation-assets/images/slides/image4.jpg</image>
+		<thumbnail alt="Slide 1" title="tooltip content">../presentation-assets/images/thumbnails/image4.jpg</thumbnail>
+
+		<layer style="black" position="topRight" horizontal="100" vertical="30" transition="up">
+			One of the most important features is Video handling
+		</layer>
+
+		<layer style="black" position="topRight" horizontal="100" vertical="70" transition="up" delay="150">
+			<a href="../video/video.html"><![CDATA[Video example &rarr;]]></a>
+		</layer>
+
+		<layer style="white" position="topRight" horizontal="100" vertical="110" width="320" transition="up" delay="300">
+			The slider has built-in support for Vimeo, YouTube, HTML5 video and Video JS. Also, Vimeo and YouTube videos can be loaded by default or can be lazy loaded.
+		</layer>
+	</slide>
+
+	
+	<slide>
+		<image alt="image alt">../presentation-assets/images/slides/image5.jpg</image>
+		<thumbnail alt="Slide 1" title="tooltip content">../presentation-assets/images/thumbnails/image5.jpg</thumbnail>
+
+		<layer style="black" position="bottomRight" horizontal="30" vertical="30">
+			<![CDATA[Navigate to the <a href="#" onClick="jQuery('.advanced-slider').advancedSlider().previousSlide(); return false;">previous</a>
+			or <a href="#" onClick="jQuery('.advanced-slider').advancedSlider().nextSlide(); return false;">next</a> slide.]]>
+		</layer>
+	</slide>
+	
+
+	<slide>
+		<image alt="image alt">../presentation-assets/images/slides/image6.jpg</image>
+		<thumbnail alt="Slide 1" title="tooltip content">../presentation-assets/images/thumbnails/image6.jpg</thumbnail>
+
+		<layer style="static white" horizontal="10%" vertical="center" width="320">
+			<![CDATA[Not only slides can contain HTML content, but also the thumbnails. Please check these <a href="../text-thumbnails/text-thumbnails.html">two</a> <a href="../lazy-loading/lazy-loading.html">examples</a>.]]>
+		</layer>
+	</slide>
+	
+
+	<slide>
+		<image alt="image alt">../presentation-assets/images/slides/image7.jpg</image>
+		<thumbnail alt="Slide 1" title="tooltip content">../presentation-assets/images/thumbnails/image7.jpg</thumbnail>
+	</slide>
+	
+
+	<slide>
+		<image alt="image alt">../presentation-assets/images/slides/image8.jpg</image>
+		<thumbnail alt="Slide 1" title="tooltip content">../presentation-assets/images/thumbnails/image8.jpg</thumbnail>
+
+		<layer style="black" position="bottomRight" horizontal="300" vertical="120" transition="down">
+			Other features include...
+		</layer>
+
+		<layer style="white" position="bottomRight" horizontal="358" vertical="80" delay="300">
+			lightbox support
+		</layer>
+
+		<layer style="black" position="bottomRight" horizontal="190" vertical="80" delay="600">
+			keyboard navigation
+		</layer>
+
+		<layer style="white" position="bottomRight" horizontal="45" vertical="80" delay="900">
+			per slide settings
+		</layer>
+
+		<layer style="black" position="bottomRight" horizontal="384" vertical="40" delay="1200">
+			various skins
+		</layer>
+
+		<layer style="white" position="bottomRight" horizontal="230" vertical="40" delay="1400">
+			fullscreen support
+		</layer>
+
+		<layer style="black" position="bottomRight" horizontal="126" vertical="40" delay="1600">
+			and more...
+		</layer>
+	</slide>
+	
+
+	<slide>
+		<image alt="image alt">../presentation-assets/images/slides/image9.jpg</image>
+		<thumbnail alt="Slide 1" title="tooltip content">../presentation-assets/images/thumbnails/image9.jpg</thumbnail>
+
+		<layer style="static black" horizontal="50" vertical="50" width="320">
+			Please check the other examples to see some of the slider's features in action. 
+		</layer>
+	</slide>
+
+
+	<slide>
+		<image alt="image alt">../presentation-assets/images/slides/image10.jpg</image>
+		<thumbnail alt="Slide 1" title="tooltip content">../presentation-assets/images/thumbnails/image10.jpg</thumbnail>
+	</slide>
+</slider>

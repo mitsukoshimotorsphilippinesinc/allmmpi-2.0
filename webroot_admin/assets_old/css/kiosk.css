@@ -1,0 +1,14 @@
+body{
+	font-family: "Helvetica Neue", "Helvetica" , "Arial" , "Sans Serif", Georgia, Serif;
+	background: url(../img/header_bg.png) repeat-x 0 0 #fcf9f2;
+	font-size: 14px;
+}
+
+.search-query > a i {
+background: url(../img/search_bg.png) no-repeat;
+display: inline-block;
+text-indent: -9999px;
+height: 14px;
+width: 14px;
+margin-top: 10px;
+margin-right: 5px;

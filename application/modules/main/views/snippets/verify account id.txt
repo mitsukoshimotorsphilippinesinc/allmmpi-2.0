@@ -1,0 +1,55 @@
+$("#verify_accountid").live("click",function() {
+	var acctid = $("#account_id").val();
+
+	alert(acctid);
+	
+	b.request({
+        url: '/ordering/verify_accountid',
+        data: {
+			"acctid":acctid
+		},
+		on_success: function(data, status) {
+				if (data.status == 1) {
+					var acctid_verify_modal = b.modal.new({										
+						title: 'Verification Result',
+				        width: '400px',
+				        html:  "<div><p>"+data.html+"</p></div>",
+						buttons: {
+				            'Activate' : function() {																
+				                // set as the active account_id
+								data = data.details.split("|");		
+								var _account_id = data[0];
+								var _member_name = data[1];
+								var _member_email = data[2];
+										
+								$("#active_account_id").html(_account_id);
+								$("#active_member_name").html(_member_name);
+								$("#active_member_email").html(_member_email);
+								$("#active_account_id_container").show();
+								acctid_verify_modal.hide();
+				            }						
+				        }		        
+					})
+					acctid_verify_modal.show();
+				} else {
+					// create modal for errors
+					var acctid_verify_modal = b.modal.new({										
+						title: 'Verification Result',
+				        width: '400px',
+				        html:  "<div><p>"+data.html+"</p></div>"				        
+					})
+					acctid_verify_modal.show();
+				}
+			
+			
+			
+			
+			
+			
+	    }
+	
+	});		
+
+	return;
+
+});

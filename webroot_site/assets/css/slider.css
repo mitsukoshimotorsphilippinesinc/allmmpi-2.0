@@ -1,0 +1,5 @@
+.slider-horizontal {width:900px; margin:25px auto; height:240px;}
+.slider-horizontal .item {height:200px; width:200px; margin:20px 10px 0;}
+
+.slider-vertical {width:364px; margin:25px 0; float:left; height:300px;}
+.slider-vertical .item {height:80px; width:324px; margin:10px 0 10px 20px;}

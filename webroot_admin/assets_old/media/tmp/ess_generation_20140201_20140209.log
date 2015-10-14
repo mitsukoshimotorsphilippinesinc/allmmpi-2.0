@@ -1,0 +1,482 @@
+processing 89 series..
+done..
+processing 88 series..
+done..
+processing 75 series..
+done..
+generate query\ngenerating report file
+stdClass Object
+(
+    [member_id] => 10053
+    [name] => Marc T. Boo
+    [node] => 1222222211111111
+    [series_89] => 4
+    [series_88] => 0
+    [series_75] => 0
+)
+stdClass Object
+(
+    [member_id] => 18331
+    [name] => Magdalena De Jesus
+    [node] => 1111111111111211122122221111111122212222212121211112212
+    [series_89] => 0
+    [series_88] => 0
+    [series_75] => 0
+)
+stdClass Object
+(
+    [member_id] => 38553
+    [name] => Andres Mondreza Jr.
+    [node] => 122222221111111122222222222
+    [series_89] => 0
+    [series_88] => 0
+    [series_75] => 0
+)
+stdClass Object
+(
+    [member_id] => 31008
+    [name] => Roger Laguna
+    [node] => 1222222211111111222222
+    [series_89] => 4
+    [series_88] => 0
+    [series_75] => 0
+)
+stdClass Object
+(
+    [member_id] => 40720
+    [name] => Peng Ocampo
+    [node] => 12222222111111112222222221
+    [series_89] => 4
+    [series_88] => 0
+    [series_75] => 0
+)
+file generated..
+generating email
+
+<div style="border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;">
+
+<h4>A PHP Error was encountered</h4>
+
+<p>Severity: Warning</p>
+<p>Message:  Cannot modify header information - headers already sent by (output started at /var/www/dev/application/modules/jobs/controllers/encoding.php:55)</p>
+<p>Filename: core/MY_Controller.php</p>
+<p>Line Number: 43</p>
+
+
+	<p>Backtrace: </p>
+	
+		
+	
+		
+	
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/core/MY_Controller.php<br />
+			Line: 43<br />
+			Function: header			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/modules/jobs/controllers/notifications.php<br />
+			Line: 8<br />
+			Function: __construct			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/libraries/MX/Modules.php<br />
+			Line: 105<br />
+			Function: __construct			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/libraries/MX/Modules.php<br />
+			Line: 65<br />
+			Function: load			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/modules/jobs/controllers/encoding.php<br />
+			Line: 243<br />
+			Function: run			</p>
+		
+	
+		
+	
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/webroot_admin/jobs.php<br />
+			Line: 308<br />
+			Function: require_once			</p>
+		
+	</p>
+
+
+</div>
+<div style="border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;">
+
+<h4>A PHP Error was encountered</h4>
+
+<p>Severity: Warning</p>
+<p>Message:  Cannot modify header information - headers already sent by (output started at /var/www/dev/application/modules/jobs/controllers/encoding.php:55)</p>
+<p>Filename: core/MY_Controller.php</p>
+<p>Line Number: 44</p>
+
+
+	<p>Backtrace: </p>
+	
+		
+	
+		
+	
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/core/MY_Controller.php<br />
+			Line: 44<br />
+			Function: header			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/modules/jobs/controllers/notifications.php<br />
+			Line: 8<br />
+			Function: __construct			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/libraries/MX/Modules.php<br />
+			Line: 105<br />
+			Function: __construct			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/libraries/MX/Modules.php<br />
+			Line: 65<br />
+			Function: load			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/modules/jobs/controllers/encoding.php<br />
+			Line: 243<br />
+			Function: run			</p>
+		
+	
+		
+	
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/webroot_admin/jobs.php<br />
+			Line: 308<br />
+			Function: require_once			</p>
+		
+	</p>
+
+
+</div>
+<div style="border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;">
+
+<h4>A PHP Error was encountered</h4>
+
+<p>Severity: Warning</p>
+<p>Message:  Cannot modify header information - headers already sent by (output started at /var/www/dev/application/modules/jobs/controllers/encoding.php:55)</p>
+<p>Filename: core/MY_Controller.php</p>
+<p>Line Number: 47</p>
+
+
+	<p>Backtrace: </p>
+	
+		
+	
+		
+	
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/core/MY_Controller.php<br />
+			Line: 47<br />
+			Function: header			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/modules/jobs/controllers/notifications.php<br />
+			Line: 8<br />
+			Function: __construct			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/libraries/MX/Modules.php<br />
+			Line: 105<br />
+			Function: __construct			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/libraries/MX/Modules.php<br />
+			Line: 65<br />
+			Function: load			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/modules/jobs/controllers/encoding.php<br />
+			Line: 243<br />
+			Function: run			</p>
+		
+	
+		
+	
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/webroot_admin/jobs.php<br />
+			Line: 308<br />
+			Function: require_once			</p>
+		
+	</p>
+
+
+</div>
+<div style="border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;">
+
+<h4>A PHP Error was encountered</h4>
+
+<p>Severity: Warning</p>
+<p>Message:  Cannot modify header information - headers already sent by (output started at /var/www/dev/application/modules/jobs/controllers/encoding.php:55)</p>
+<p>Filename: core/MY_Controller.php</p>
+<p>Line Number: 48</p>
+
+
+	<p>Backtrace: </p>
+	
+		
+	
+		
+	
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/core/MY_Controller.php<br />
+			Line: 48<br />
+			Function: header			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/modules/jobs/controllers/notifications.php<br />
+			Line: 8<br />
+			Function: __construct			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/libraries/MX/Modules.php<br />
+			Line: 105<br />
+			Function: __construct			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/libraries/MX/Modules.php<br />
+			Line: 65<br />
+			Function: load			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/modules/jobs/controllers/encoding.php<br />
+			Line: 243<br />
+			Function: run			</p>
+		
+	
+		
+	
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/webroot_admin/jobs.php<br />
+			Line: 308<br />
+			Function: require_once			</p>
+		
+	</p>
+
+
+</div>
+<div style="border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;">
+
+<h4>A PHP Error was encountered</h4>
+
+<p>Severity: Warning</p>
+<p>Message:  Cannot modify header information - headers already sent by (output started at /var/www/dev/application/modules/jobs/controllers/encoding.php:55)</p>
+<p>Filename: core/MY_Controller.php</p>
+<p>Line Number: 49</p>
+
+
+	<p>Backtrace: </p>
+	
+		
+	
+		
+	
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/core/MY_Controller.php<br />
+			Line: 49<br />
+			Function: header			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/modules/jobs/controllers/notifications.php<br />
+			Line: 8<br />
+			Function: __construct			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/libraries/MX/Modules.php<br />
+			Line: 105<br />
+			Function: __construct			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/libraries/MX/Modules.php<br />
+			Line: 65<br />
+			Function: load			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/modules/jobs/controllers/encoding.php<br />
+			Line: 243<br />
+			Function: run			</p>
+		
+	
+		
+	
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/webroot_admin/jobs.php<br />
+			Line: 308<br />
+			Function: require_once			</p>
+		
+	</p>
+
+
+</div>
+<div style="border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;">
+
+<h4>A PHP Error was encountered</h4>
+
+<p>Severity: Warning</p>
+<p>Message:  Cannot modify header information - headers already sent by (output started at /var/www/dev/application/modules/jobs/controllers/encoding.php:55)</p>
+<p>Filename: core/MY_Controller.php</p>
+<p>Line Number: 50</p>
+
+
+	<p>Backtrace: </p>
+	
+		
+	
+		
+	
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/core/MY_Controller.php<br />
+			Line: 50<br />
+			Function: header			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/modules/jobs/controllers/notifications.php<br />
+			Line: 8<br />
+			Function: __construct			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/libraries/MX/Modules.php<br />
+			Line: 105<br />
+			Function: __construct			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/libraries/MX/Modules.php<br />
+			Line: 65<br />
+			Function: load			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/modules/jobs/controllers/encoding.php<br />
+			Line: 243<br />
+			Function: run			</p>
+		
+	
+		
+	
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/webroot_admin/jobs.php<br />
+			Line: 308<br />
+			Function: require_once			</p>
+		
+	</p>
+
+
+</div>
+<div style="border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;">
+
+<h4>A PHP Error was encountered</h4>
+
+<p>Severity: Warning</p>
+<p>Message:  Cannot modify header information - headers already sent by (output started at /var/www/dev/application/modules/jobs/controllers/encoding.php:55)</p>
+<p>Filename: core/MY_Controller.php</p>
+<p>Line Number: 51</p>
+
+
+	<p>Backtrace: </p>
+	
+		
+	
+		
+	
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/core/MY_Controller.php<br />
+			Line: 51<br />
+			Function: header			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/modules/jobs/controllers/notifications.php<br />
+			Line: 8<br />
+			Function: __construct			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/libraries/MX/Modules.php<br />
+			Line: 105<br />
+			Function: __construct			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/libraries/MX/Modules.php<br />
+			Line: 65<br />
+			Function: load			</p>
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/application/modules/jobs/controllers/encoding.php<br />
+			Line: 243<br />
+			Function: run			</p>
+		
+	
+		
+	
+		
+	
+					<p style="margin-left:10px">
+			File: /var/www/dev/webroot_admin/jobs.php<br />
+			Line: 308<br />
+			Function: require_once			</p>
+		
+	</p>
+
+
+</div>

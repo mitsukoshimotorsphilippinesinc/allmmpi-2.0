@@ -1,0 +1,63 @@
+.voucher-area{
+    background: url(../img/voucher_bg.png) repeat-y;
+    min-height: 500px;
+    padding: 16px 32px;
+    color: #000;
+}
+.voucher-area ul{
+    list-style: none;
+    margin-bottom: 32px;
+}
+.voucher-area ul li{
+    float: left;
+    margin-right: 25%;
+}
+.voucher-area ul li:last-child{
+    margin-right: 0;
+}
+.voucher-area ul li img{
+    width: 50%;
+}
+.voucher-area ul li h4{
+    margin-top: 20px;
+}
+.voucher-area ul li h4 span{
+    color: #c30000;
+    font-weight: normal;
+}
+.voucher-area div h4{
+    display: inline-block;
+    margin-bottom: 32px;
+}
+.voucher-area .table thead{
+    border: 1px solid #2b2b2b;
+    border-left: none;
+}
+.voucher-area .table tbody td, .voucher-area .table th{
+    border-right: 1px solid #2b2b2b;
+    border-top: none;
+}
+.voucher-area .table th{
+    text-align: center;
+}
+.voucher-area .table tbody td center{
+    margin: 6px 0 16px;
+}
+.voucher-area .table tbody td:last-child, .voucher-area .table tbody td+td+td{
+    text-align: right;
+    padding-right: 16px;
+}
+.voucher-area .table tfoot td{
+    border: 1px solid #2b2b2b;
+    border-left: none;
+}
+.voucher-area h3{
+    text-align: center;
+    margin-bottom: 16px;
+}
+.voucher-area ol{
+    list-style: none;
+}
+.voucher-area ol li{
+    margin-bottom: 16px;
+}
