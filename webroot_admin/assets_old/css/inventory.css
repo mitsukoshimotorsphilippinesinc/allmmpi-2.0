@@ -1,9 +1,0 @@
-#item-list {
-	height: 150px;
-	padding-right: 10px;
-	overflow: hidden;
-	overflow-y: scroll;
-}
-table.item-list {
-	margin-bottom: 0;
-}
