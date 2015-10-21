@@ -41,7 +41,7 @@
 					echo "<h2 style='float:left;'>{$a->title}</h2><div style='clear:both;'></div><span style='float:left;margin-top:-15px;'><i>{$proper_date}</i></span><div style='clear:both;'></div><br/>";
 					echo $a->body;
 					if ($ctr < $total - 1) { 
-						echo "<hr/>";
+						echo "<div style='width: 100%; height: 3px; background: #F87431; overflow: hidden;'></div>";
 					}
 					$ctr++;
 				}

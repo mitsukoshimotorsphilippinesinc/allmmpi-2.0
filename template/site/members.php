@@ -108,10 +108,10 @@
 				<ul id='user-nav-box' class="nav nav-pills">
 					
 					<li class='<?= isset($this->uri->uri_string) ? ($this->uri->uri_string == 'employee' ? 'active' : '') : '';  ?>'><a href="/employee" >Dashboard</a></li>
-					<li class='<?= isset($this->uri->uri_string) ? ($this->uri->uri_string == 'profile' ? 'active' : '') : '';  ?> dropdown'>
+					<li class='<?= isset($this->uri->uri_string) ? ($this->uri->uri_string == 'employee/profile' ? 'active' : '') : '';  ?> dropdown'>
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Profile <i class="icon-play-down" style="padding-right: 3px;"></i></a>
 						<ul class="dropdown-menu" role="menu">
-							<li role="menuitem"><a href="/members/profile">My Profile</a></li>							
+							<li role="menuitem"><a href="/employee/profile">My Profile</a></li>							
 						</ul>
 					<li class='<?= isset($this->uri->uri_string) ? ($this->uri->uri_string == 'employee/announcement' ? 'active' : '') : '';  ?>'><a href="/employee/announcement" >Announcements</a></li>	
 					</li>

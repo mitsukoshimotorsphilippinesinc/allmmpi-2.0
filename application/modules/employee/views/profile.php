@@ -1,6 +1,6 @@
 <?php
 
-	$upload_url = $this->config->item("media_url") . "/members";
+	$upload_url = $this->config->item("media_url") . "/employees";
 	$_upload_url = urlencode($upload_url);
 
 	// date
@@ -35,25 +35,18 @@
 		$years[$i] = $i;
 		
 	
-	$image_filename = "male.jpg";
-	if (empty($member->image_filename) || ($member->image_filename == NULL) || (trim($member->image_filename) == "")) {
+	$image_filename = "ni_male.png";
+	if (empty($this->employee->image_filename) || ($this->employee->image_filename == NULL) || (trim($this->employee->image_filename) == "")) {
 		// check gender of member
-		if (trim($member->sex) == "F") {
-			$image_filename = "female.jpg";
+		if (trim($this->employee->gender) == "FEMALE") {
+			$image_filename = "ni_female.png";
 		} else {
-			$image_filename = "male.jpg";
+			$image_filename = "ni_male.png";
 		}
 	} else {
-		$image_filename = $member->image_filename;
+		$image_filename = $this->employee->image_filename;
 	}
 		
-	$group_select_tags = "<select id='group_name' class='profile_others' disabled='disabled' name='group_name'>";
-	foreach($groups as $g)
-	{
-		$group_select_tags .= "<option value='{$g->group_name}'>{$g->group_name}</option>";
-	}
-	$group_select_tags .= "<option class='add_new_group'>Others...</option>";
-	$group_select_tags .= "</select>";	
 ?>
 
 <div class="page-header">
@@ -63,21 +56,21 @@
 	<div class="tabbable">
 		<ul class="nav nav-tabs">
             <li class="active" data="personal"><a href="#personal" data-toggle="tab">Personal Information</a></li>
-			<li data="contact"><a href="#contact" data-toggle="tab">Contact Information</a></li>
-			<li data="account"><a href="#account" data-toggle="tab">Account Information</a></li>
+			<li data="employment"><a href="#employment" data-toggle="tab">Employment Information</a></li>
+			<li data="contact"><a href="#contact" data-toggle="tab">Contact Information</a></li>			
 			<li data="change_password"><a href="#change_password" data-toggle="tab">Change Password</a></li>
         </ul>
 		<div class="tab-content">
 			<div class="tab-pane active" id="personal">
 				<div class="span2">
-					<img id="member_image" style="width:150px; height:150px;" alt="" src="/assets/media/members/<?=$image_filename;?>">
+					<img id="member_image" style="width:150px; height:150px;border:1px dashed gray;" alt="" src="<?= $this->config->item('admin_base_url') . '/assets/media/employees/'. $image_filename ?>">
 					<center><button class="btn btn-primary btn-upload-photo hide" style="margin: 5px auto;">Upload</button></center>
 				</div>
 	  			<div class="span10" style='position: relative;'>
 					<div style='position: absolute; top: 5px; right:10px;'>
 						<small id='profile_processing' style='margin-right:10px; display:none;'><img src='/assets/img/loading2.gif' alt='' /></small>
 						<button id='btn_edit_profile' class='btn btn-primary btn_profile_edit'>Edit</button>
-						<button id='btn_save_profile' class='btn btn-success btn_profile_save' style='display:none;'>Save</button>
+						<button id='btn_save_profile' class='btn btn-warning btn_profile_save' style='display:none;'>Save</button>
 						<button id='btn_cancel_profile' class='btn btn-danger btn_profile_save' style='display:none;'>Cancel</button>
 					</div>
 					
@@ -87,7 +80,7 @@
 							<div class="control-group">
 								<label class="control-label" for="fname">First Name</label>
 								<div class="controls">
-									<input class='input-xlarge' title='First Name' type='text' id='fname' name='fname' value='<?=$member->first_name?>' data-orig-value='<?=$member->first_name?>' readonly/>
+									<input class='input-xlarge' title='First Name' type='text' id='fname' name='fname' value='<?=$personal_information->first_name?>' data-orig-value='<?=$personal_information->first_name?>' readonly/>
 									<span class="help-block"></span>
 								</div>
 							</div>
@@ -95,7 +88,7 @@
 							<div class="control-group">
 								<label class="control-label" for="mname">Middle Name</label>
 								<div class="controls">
-									<input class='input-xlarge' title='Middle Name' type='text' id='mname' name='mname' value='<?=$member->middle_name?>' data-orig-value='<?=$member->middle_name?>' readonly/>
+									<input class='input-xlarge' title='Middle Name' type='text' id='mname' name='mname' value='<?=$personal_information->middle_name?>' data-orig-value='<?=$personal_information->middle_name?>' readonly/>
 									<span class="help-block"></span>
 								</div>
 							</div>
@@ -103,7 +96,15 @@
 							<div class="control-group">
 								<label class="control-label" for="lname">Last Name</label>
 								<div class="controls">
-									<input class='input-xlarge' title='Middle Name' type='text' id='lname' name='lname' value='<?=$member->last_name?>' data-orig-value='<?=$member->last_name?>' readonly/>
+									<input class='input-xlarge' title='Middle Name' type='text' id='lname' name='lname' value='<?=$personal_information->last_name?>' data-orig-value='<?=$personal_information->last_name?>' readonly/>
+									<span class="help-block"></span>
+								</div>
+							</div>
+
+							<div class="control-group">
+								<label class="control-label" for="lname">Suffix Name</label>
+								<div class="controls">
+									<input class='input-xlarge' title='Suffix Name' type='text' id='sname' name='sname' value='<?=$personal_information->suffix_name?>' data-orig-value='<?=$personal_information->suffix_name?>' readonly/>
 									<span class="help-block"></span>
 								</div>
 							</div>
@@ -112,9 +113,9 @@
 								<label>Birthday</label>
 								<div id="birth_date_container" class="controls form-inline wc-date">
 									<?php
-									$birth_year = date('Y',strtotime($member->birthdate));
-									$birth_month = date('m',strtotime($member->birthdate));
-									$birth_day = date('d',strtotime($member->birthdate));
+									$birth_year = date('Y',strtotime($personal_information->birthdate));
+									$birth_month = date('m',strtotime($personal_information->birthdate));
+									$birth_day = date('d',strtotime($personal_information->birthdate));
 									?>
 									<?= form_dropdown('birth_month', $months, $birth_month, 'id="birth_month" class="wc-date-month profile_info" disabled') ?>
 									<?= form_dropdown('birth_day', $days, $birth_day, 'id="birth_day" class="wc-date-day profile_info" disabled') ?>
@@ -130,7 +131,7 @@
 							<div class="control-group">
 								<label class="control-label" for="gender">Gender</label>
 								<div class="controls">
-									<?= form_dropdown('gender', array("M" => "Male", "F" => "Female"), $member->sex,'id="gender" class="input-small profile_info" data-orig-value="'.$member->sex.'" disabled');?>
+									<?= form_dropdown('gender', array("MALE" => "Male", "FEMALE" => "Female"), $personal_information->gender,'id="gender" class="input-small profile_info" data-orig-value="'.$personal_information->gender.'" disabled');?>
 									<span class="help-block"></span>
 								</div>
 							</div>
@@ -140,7 +141,7 @@
 								<div class="controls">
 									<?php
 									$marital_status = array("S" => "Single", "M" => "Married");
-									echo form_dropdown('marital_status', $marital_status, $member->marital_status,'id="marital_status" class="input-small profile_info" data-orig-value="'.$member->marital_status.'" disabled');
+									echo form_dropdown('marital_status', $marital_status, $personal_information->marital_status,'id="marital_status" class="input-small profile_info" data-orig-value="'.$personal_information->marital_status.'" disabled');
 									?>
 									<span class="help-block"></span>
 								</div>
@@ -149,7 +150,7 @@
 							<div class="control-group">
 								<label class="control-label" for="nationality">Nationality</label>
 								<div class="controls">
-									<input class='input-medium profile_info' title='Nationality' type='text' id='nationality' name='nationality' value='<?=trim($member->nationality)?>'  data-orig-value='<?=trim($member->nationality)?>' readonly/>
+									<input class='input-medium profile_info' title='Nationality' type='text' id='nationality' name='nationality' value='<?=trim($personal_information->nationality)?>'  data-orig-value='<?=trim($personal_information->nationality)?>' readonly/>
 									<span class="help-block"></span>
 								</div>
 							</div>
@@ -157,7 +158,7 @@
 							<div class="control-group">
 								<label class="control-label" for="tin">T.I.N</label>
 								<div class="controls">
-									<input class='input-large profile_info' title='T.I.N.' type='text' id='tin' name='tin' value='<?=trim($member->tin)?>' data-orig-value='<?=trim($member->tin)?>' readonly/>
+									<input class='input-large profile_info' title='T.I.N.' type='text' id='tin' name='tin' value='<?=trim($personal_information->tin)?>' data-orig-value='<?=trim($personal_information->tin)?>' readonly/>
 									<span class="help-block"></span>
 								</div>
 							</div>
@@ -167,21 +168,179 @@
 
 				</div>
 			</div>
+
+			<div class="tab-pane" id="employment">
+				
+				<div class="span10" style='position: relative;'>
+
+					<div class='row' >	
+						<div class='span5'>
+							
+							<div class="control-group">
+								<label class="control-label" for="fname">ID Number</label>
+								<div class="controls">
+									<input class='input-xlarge' title='Id Number' type='text' id='id_number' name='id_number' value='<?=$employment_information->id_number?>' data-orig-value='<?=$employment_information->id_number?>' readonly/>
+									<span class="help-block"></span>
+								</div>
+							</div>
+							
+							<div class="control-group">
+								<label class="control-label" for="mname">Company Email Address</label>
+								<div class="controls">
+									<input class='input-xlarge' title='Company Email Address' type='text' id='company_email_address' name='company_email_address' value='<?=$employment_information->company_email_address?>' data-orig-value='<?=$employment_information->company_email_address?>' readonly/>
+									<span class="help-block"></span>
+								</div>
+							</div>
+							
+							<div class="control-group">
+								<label class="control-label" for="lname">Company Name</label>
+								<?php
+									$company_name = "";
+									$company_details = $this->human_relations_model->get_company_by_id($employment_information->company_id);
+									if (empty($company_details))
+										$company_name = "N/A";
+									else
+										$company_name = $company_details->company_name;									
+								?>
+								<div class="controls">
+									<input class='input-xlarge' title='Company Name' type='text' id='company_name' name='company_name' value='<?=$company_name?>' data-orig-value='<?=$company_name?>' readonly/>
+									<span class="help-block"></span>
+								</div>
+							</div>
+
+							<div class="control-group">
+								<label class="control-label" for="lname">Department Name</label>
+								<?php
+									$department_name = "";
+									$department_details = $this->human_relations_model->get_department_by_id($employment_information->department_id);
+									if (empty($department_details))
+										$department_name = "N/A";
+									else
+										$department_name = $department_details->department_name;									
+								?>
+								<div class="controls">
+									<input class='input-xlarge' title='Department Name' type='text' id='department_name' name='department_name' value='<?=$department_name?>' data-orig-value='<?=$department_name?>' readonly/>
+									<span class="help-block"></span>
+								</div>
+							</div>
+
+							<div class="control-group">
+								<label class="control-label" for="lname">Branch Name</label>
+								<?php
+									$branch_name = "";
+									$branch_details = $this->human_relations_model->get_branch_by_id($employment_information->branch_id);
+									if (empty($branch_details))
+										$branch_name = "N/A";
+									else
+										$branch_name = $branch_details->branch_name;									
+								?>
+								<div class="controls">
+									<input class='input-xlarge' title='Branch Name' type='text' id='branch_name' name='branch_name' value='<?=$branch_name?>' data-orig-value='<?=$branch_name?>' readonly/>
+									<span class="help-block"></span>
+								</div>
+							</div>
+							
+
+
+							<div class="control-group">
+								<label>Date Started</label>
+								<div id="birth_date_container" class="controls form-inline wc-date">
+									<?php
+									$birth_year = date('Y',strtotime($personal_information->birthdate));
+									$birth_month = date('m',strtotime($personal_information->birthdate));
+									$birth_day = date('d',strtotime($personal_information->birthdate));
+									?>
+									<?= form_dropdown('birth_month', $months, $birth_month, 'id="birth_month" class="wc-date-month profile_info" disabled') ?>
+									<?= form_dropdown('birth_day', $days, $birth_day, 'id="birth_day" class="wc-date-day profile_info" disabled') ?>
+									<?= form_dropdown('birth_year', $years, $birth_year, 'id="birth_year" class="wc-date-year profile_info" disabled') ?>
+									<input type="hidden" id="birthdate" name="birthdate" value="<?= set_value('birthdate'); ?>" readonl/>
+								</div>
+							</div>
+						</div>
+						
+						
+						<div class='span5'>
+							
+							<div class="control-group">
+								<label class="control-label" for="fname">Job Grade Level</label>
+								<?php
+									$job_grade_level_name = "";
+									$job_grade_level_details = $this->human_relations_model->get_job_grade_level_by_id($employment_information->job_grade_level_id);
+									if (empty($job_grade_level_details))
+										$job_grade_level_name = "N/A";
+									else
+										$job_grade_level_name = $job_grade_level_details->grade_level_name;									
+								?>
+								<div class="controls">
+									<input class='input-xlarge' title='Job Grade Level' type='text' id='job_grade_level' name='job_grade_level' value='<?=$job_grade_level_name?>' data-orig-value='<?=$job_grade_level_name?>' readonly/>
+									<span class="help-block"></span>
+								</div>
+							</div>
+
+							<div class="control-group">
+								<label class="control-label" for="fname">Position</label>
+								<?php
+									$position_name = "";
+									$position_details = $this->human_relations_model->get_position_by_id($employment_information->position_id);
+									if (empty($position_details))
+										$position_name = "N/A";
+									else
+										$position_name = $position_details->position_name;									
+								?>
+								<div class="controls">
+									<input class='input-xlarge' title='Position' type='text' id='position' name='position' value='<?=$position_name?>' data-orig-value='<?=$position_name?>' readonly/>
+									<span class="help-block"></span>
+								</div>
+							</div>
+
+							<div class="control-group">
+								<label class="control-label" for="fname">Employment Status</label>
+								<div class="controls">
+									<input class='input-xlarge' title='Employment Status' type='text' id='employment_status' name='employment_status' value='<?=$employment_information->employment_status_id?>' data-orig-value='<?=$employment_information->employment_status_id?>' readonly/>
+									<span class="help-block"></span>
+								</div>
+							</div>
+
+							<div class="control-group">
+								<label class="control-label" for="fname">Paycode</label>
+								<div class="controls">
+									<input class='input-xlarge' title='Paycode' type='text' id='paycode' name='paycode' value='<?=$employment_information->paycode?>' data-orig-value='<?=$employment_information->paycode?>' readonly/>
+									<span class="help-block"></span>
+								</div>
+							</div>
+
+							<div class="control-group">
+								<label class="control-label" for="fname">ATM Number</label>
+								<div class="controls">
+									<input class='input-xlarge' title='ATM' type='text' id='atm_number' name='atm_number' value='<?=$employment_information->atm?>' data-orig-value='<?=$employment_information->atm?>' readonly/>
+									<span class="help-block"></span>
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+				</div>
+
+
+
+
+			</div>
 			
 			<div class="tab-pane" id="contact">
 				<div class='span12'>
 					<div class='row'>
 						<div class='span6'>
 							<div class='control-group'>
-								<label class="control-label" for="email">Email</label>
+								<label class="control-label" for="email">Personal Email Address</label>
 								<div class="controls">
 									
 									<div class="input-append">
-										<input type='email' id='email' name='email' class='span4' value='<?=$member->email?>' readonly/>
-										<?php if ($member->is_email_verified == 0) : ?>
+										<input type='email' id='email' name='email' class='span4' value='<?= $personal_information->personal_email_address ?>' readonly/>
+										<?php if ($personal_information->is_personal_email_verified == 0) : ?>
 										<button id="edit_email" class="btn btn-primary" data-type='email'  type="button">Edit</button>
-										<?php if (!empty($member->email)) : ?>
-										<button class="btn btn-success verify_email_mobile_number" data-type='email' type="button">Verify</button>
+										<?php if (!empty($personal_information->personal_email_address)) : ?>
+										<button class="btn btn-warning verify_email_mobile_number" data-type='email' type="button">Verify</button>
 										<?php
 												endif;
 											else :
@@ -201,11 +360,11 @@
 								<div class='controls'>
 									
 									<div class="input-append">
-										<input type='text' id='mobile_number' name='mobile_number' class='span4' value='<?=$member->mobile_number?>' readonly/>
-										<?php if ($member->is_mobile_verified == 0) : ?>
+										<input type='text' id='mobile_number' name='mobile_number' class='span4' value='<?=$personal_information->mobile_number?>' readonly/>
+										<?php if ($personal_information->is_mobile_number_verified == 0) : ?>
 										<button id="edit_mobile" class="btn btn-primary" data-type='mobile_number' type="button">Edit</button>
-										<?php if (!empty($member->mobile_number)) : ?>
-										<button class="btn btn-success verify_email_mobile_number" data-type='mobile_number' type="button">Verify</button>
+										<?php if (!empty($personal_information->mobile_number)) : ?>
+										<button class="btn btn-warning verify_email_mobile_number" data-type='mobile_number' type="button">Verify</button>
 										<?php
 												endif;
 											else :
@@ -223,7 +382,7 @@
 						<h4 class='pull-left' style='margin:0;'>Address <small id='address_processing' style='display:none;'><img src='/assets/img/loading2.gif' alt='' /></small></h4>
 						<div class='pull-right'>
 							<button id='btn_edit_address' class='btn btn-small btn-primary btn_address_edit'>Edit</button>
-							<button id='btn_save_address' class='btn btn-small btn-success btn_address_save' style='display:none;'>Save</button>
+							<button id='btn_save_address' class='btn btn-small btn-warning btn_address_save' style='display:none;'>Save</button>
 							<button id='btn_cancel_address' class='btn btn-small btn-danger btn_address_save' style='display:none;'>Cancel</button>
 						</div>
 					</div>
@@ -232,35 +391,35 @@
 							<div class="control-group span8">
 								<label class="control-label" for="home_address_street">Street</label>
 								<div class="controls">
-									<input class='input-block-level profile_address'  type='text' id='home_address_street' name='home_address_street' value='<?= $member->home_address_street?>' data-orig-value='<?= $member->home_address_street?>' readonly/>
+									<input class='input-block-level profile_address'  type='text' id='home_address_street' name='home_address_street' value='<?= $personal_information->address_street?>' data-orig-value='<?= $member->home_address_street?>' readonly/>
 								</div>
 							</div>
 
 							<div class="control-group span4">
 								<label class="control-label" for="home_address_city">City/Municipality</label>
 								<div class="controls">
-									<input class="input-block-level profile_address" type='text' id='home_address_city' name='home_address_city' value='<?= $member->home_address_city?>' data-orig-value='<?= $member->home_address_city?>' readonly/>
+									<input class="input-block-level profile_address" type='text' id='home_address_city' name='home_address_city' value='<?= $personal_information->address_city?>' data-orig-value='<?= $personal_information->address_city?>' readonly/>
 								</div>
 							</div>
 
 							<div class="control-group span4">
 								<label class="control-label" for="home_address_province">State/Province</label>
 								<div class="controls">
-									<input class="input-block-level profile_address" type='text' id='home_address_province' name='home_address_province' value='<?= $member->home_address_province?>' data-orig-value='<?= $member->home_address_province?>' readonly/>
+									<input class="input-block-level profile_address" type='text' id='home_address_province' name='home_address_province' value='<?= $personal_information->address_province?>' data-orig-value='<?= $personal_information->address_province?>' readonly/>
 								</div>
 							</div>
 
 							<div class="control-group span4">
 								<label class="control-label" for="home_address_country">Country</label>
 								<div class="controls">
-									<input class="input-block-level profile_address" type='text' id='home_address_country' name='home_address_country'  value='<?= $member->home_address_country?>' data-orig-value='<?= $member->home_address_country?>' readonly/>
+									<input class="input-block-level profile_address" type='text' id='home_address_country' name='home_address_country'  value='<?= $personal_information->address_country?>' data-orig-value='<?= $personal_information->address_country?>' readonly/>
 								</div>
 							</div>
 
 							<div class="control-group span4">
 								<label class="control-label" for="home_zip_postalcode">Zip/Postal Code</label>
 								<div class="controls">
-									<input class="input-block-level profile_address" type='text' id='home_zip_postalcode' name='home_zip_postalcode' value='<?=$member->home_address_zip_code?>' data-orig-value='<?=$member->home_address_zip_code?>'  readonly/>
+									<input class="input-block-level profile_address" type='text' id='home_zip_postalcode' name='home_zip_postalcode' value='<?=$personal_information->address_zip_code?>' data-orig-value='<?=$personal_information->address_zip_code?>'  readonly/>
 								</div>
 							</div>
 
@@ -269,114 +428,6 @@
 
 			</div>
 			
-			<div class="tab-pane" id="account">
-				<div class='span12'>
-					<div class='row'>
-						<div class='span5'>
-							<div class='control-group'>
-								<label class="control-label" for="rfid">RFID</label>
-								<div class="controls">
-									
-									<div class="input-append">
-										<input type='text' id='rfid' name='rfid' class='span3' value='<?=$member->rf_id?>' readonly/>
-										<?php if ($member->is_rf_id_verified == 0) : ?>
-										<button id="edit_rf_id" class="btn btn-primary" data-type='rfid'  type="button">Edit</button>
-										<?php if (!empty($member->rf_id)) :?>
-										<button class="btn btn-success verify_email_mobile_number" data-type='rfid'  type="button">Verify</button>
-										<?php
-												endif;
-											else :
-										?>
-										<span class="add-on"><i class='icon-ok'></i> Verified</span>
-										<?php
-											endif;
-										?>
-									</div>
-	
-								</div>
-							</div>
-						</div>
-						
-						<div class='span5'>
-							<div class='control-group'>
-								<label class="control-label" for="rf_id">Metrobank Paycard</label>
-								<div class="controls">
-									
-									<div class="input-append">
-										<input type='text' id='paycard' name='paycard' class='span3 numeric-entry' maxlength='19' value='<?=($member->is_paycard_corpo == 1) ? "CORPO" : $member->metrobank_paycard_number?>' readonly/>
-										<?php if ($member->is_paycard_verified == 0) : ?>
-										<button id="edit_paycard" class="btn btn-primary" data-type='paycard' type="button">Edit</button>
-										<?php if (!empty($member->metrobank_paycard_number) || $member->is_paycard_corpo == 1) :?>
-										<button class="btn btn-success verify_email_mobile_number" data-type='paycard' type="button">Verify</button>
-										<?php
-												endif;
-											else :
-										?>
-										<span class="add-on"><i class='icon-ok'></i> Verified</span>
-										<?php
-											endif;
-										?>
-									</div>
-	
-								</div>
-							</div>
-						</div>
-					
-						<div class='span2'>
-							<div class='control-group'>
-								<label class="control-label" for="auto_payout">Transfer commissions to my paycard?</label>
-								<div class="controls">
-									<div class="input-append">
-										<?= form_dropdown("auto_payout",array("1" => "Yes", "0" => "No"),$member->is_auto_payout,"id='auto_payout' class='span2' data-orig='{$member->is_auto_payout}'"); ?>
-									</div>
-
-								</div>
-							</div>
-						</div>
-					</div>
-				
-					<div class='well well-small clearfix' style='margin-bottom:10px; margin-top:10px;'>
-						<h4 class='pull-left' style='margin:0;'>Beneficiaries &amp; Group <small id='others_processing' style='display:none;'><img src='/assets/img/loading2.gif' alt='' /></small></h4>
-						<div class='pull-right'>
-							<button id='btn_edit_others' class='btn btn-small btn-primary btn_others_edit'>Edit</button>
-							<button id='btn_save_others' class='btn btn-small btn-success btn_others_save' style='display:none;'>Save</button>
-							<button id='btn_cancel_others' class='btn btn-small btn-danger btn_others_save' style='display:none;'>Cancel</button>
-						</div>
-					</div>
-					<div class='row'>
-
-							<div class="control-group span6">
-								<label class="control-label" for="beneficiary1">Beneficiary 1</label>
-								<div class="controls">
-									<input class='input-block-level profile_others'  type='text' id='beneficiary1' name='beneficiary1' value='<?= $member->beneficiary1?>' data-orig-value='<?= $member->beneficiary1?>' readonly/>
-								</div>
-							</div>
-
-							<div class="control-group span6">
-								<label class="control-label" for="beneficiary2">Beneficiary 2</label>
-								<div class="controls">
-									<input class='input-block-level profile_others'  type='text' id='beneficiary2' name='beneficiary2' value='<?= $member->beneficiary2?>' data-orig-value='<?= $member->beneficiary2?>' readonly/>
-								</div>
-							</div>
-
-							<div class="control-group span4">
-								<label class="control-label" for="group_name">Group Name</label>
-								<div class="controls">
-									<?= $group_select_tags ?>
-									<input class="input-block-level profile_others" type='hidden' id='group_name_input' name='group_name_input' value='<?= $member->group_name?>' data-orig-value='<?= $member->group_name?>' readonly/>
-								</div>
-							</div>
-
-
-					</div>
-					
-				</div>
-				
-				
-				
-			
-            </div>
-
 			<div id="change_password" class="tab-pane">
 				<div class='span12'>
 					<div class='control-group'>
@@ -402,7 +453,7 @@
                     </div>
 					
 					<div class='control-group'>
-						<button id="submit_password" class='btn btn-success'>Submit</button>
+						<button id="submit_password" class='btn btn-warning'>Submit</button>
 					</div>
 
 				</div>
@@ -415,19 +466,16 @@
 <script type="text/javascript">
 
 $(document).on('ready', function(){
-	var member_group_name = '<?= $member->group_name ?>';
-	$("#group_name option[value='"+member_group_name+"']").attr("selected","selected") ;
+	
 })
 
 $(function() {
 
-	var _upload_photo_filename = "";
+	//var _upload_photo_filename = "";
 	
-	var _is_email_verified = <?= $member->is_email_verified == 1 ? 1 : 0 ?>;
-	var _is_mobile_number_verified = <?= $member->is_email_verified == 1 ? 1 : 0 ?>;
-    var _is_rf_id_verified = <?= $member->is_rf_id_verified == 1 ? 1 : 0 ?>;
-    var _is_paycard_verified = <?= $member->is_paycard_verified == 1 ? 1 : 0 ?>;
-	var _member_id = <?= $member->member_id?>;
+	//var _is_email_verified = <?= $member->is_email_verified == 1 ? 1 : 0 ?>;
+	//var _is_mobile_number_verified = <?= $member->is_email_verified == 1 ? 1 : 0 ?>;
+	//var _member_id = <?= $member->member_id?>;
 	
 	// ------- edit / save / handlers for header buttons
 	

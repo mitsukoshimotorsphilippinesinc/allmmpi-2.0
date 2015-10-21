@@ -14,7 +14,7 @@
 				echo $a->body;
 		?>						
 				<br/>
-				<div class="announcement-comments">
+				<div class='announcement-comments-<?= $a->announcement_id ?>' >
 					<div>	
 					<?php
 						// get announcement messages
@@ -23,25 +23,30 @@
 
 						if (count($announcement_message_details) > 0) {
 							foreach ($announcement_message_details as $amd) {
-								if ($amd->from_id_number == 'n/a') 
+								if ($amd->from_id_number == 'n/a') {
 									echo "<div class='alert alert-success' style='border:1px solid;'><strong>ADMIN: </strong>{$amd->message}</div>";
-								else	
-									echo "<div class='alert alert' style='border:1px solid;'><strong>ME: </strong>{$amd->message}</div>";
+								} else {
+
+									if ($amd->is_removed == 0) {
+										echo "<div class='alert alert' style='border:1px solid;'><strong>ME: </strong>{$amd->message}</div>";
+									} else {
+										echo "<div class='alert alert' style='border:1px solid;'><strong>ME: </strong><i style='color:#ff1100;'>Your message was removed by Admin.</i></div>";
+									}	
+								}
 							}
 						}
 					?>	
-					</div>				
-				
-					<div class="new-comment">
-						<label style="color:gray;"><i>Post a comment</i></label>
-						<div class="clearfix">
-							<textarea class="span12">
-							</textarea>	
-						</div>
-						<a class="btn btn-small btn-primary" title="Post" href="">Post</a>
-					</div>	
+					</div>					
 				</div>
-				<hr/>					
+				<div class="">
+					<label style="color:gray;"><i>Post a comment</i></label>
+					<div class="clearfix">
+						<textarea class="span12 new-comment-<?= $a->announcement_id ?>"></textarea>	
+					</div>
+					<a class="btn btn-small btn-primary button-post" title="Post" href="" data="<?= $a->announcement_id ?>">Post</a>
+				</div>
+				<br/>
+				<div style="width: 100%; height: 3px; background: #F87431; overflow: hidden;"></div>
 			
 			<?php	
 			}			
@@ -72,7 +77,7 @@
 	});			
 	
 
-	$(function() {
+	/*$(function() {
 		
 		$("#from_date").datepicker({
             //'timeFormat': 'hh:mm tt',
@@ -104,6 +109,58 @@
 			$('#frm_filter').submit();
 		});
 			
-	});
+	});*/	
+
+	$(".button-post").live('click', function(e){
+		var _announcement_id = $(this).attr("data");	
+		var _comment = $(".new-comment-" + _announcement_id).val();
+
+		//alert(_comment);
+		b.request({
+			url : '/employee/announcement/display_comments',
+			data : {				
+				"_announcement_id" : _announcement_id,
+				"_comment" : _comment,
+			},
+			on_success : function(data) {
+				
+				if (data.status == "1")	{
+					
+					// show add form modal					
+					proceedApproveRequestModal = b.modal.new({
+						title: "Add Comment :: Successful",
+						width:450,
+						disableClose: true,
+						html: "You have successfully added a new comment. Thank you!",
+						buttons: {
+							'Ok' : function() {
+								proceedApproveRequestModal.hide();
+								$(".announcement-comments-" + _announcement_id).html(data.data.html);
+								$(".new-comment-" + _announcement_id).val("");
+							}
+						}
+					});
+					proceedApproveRequestModal.show();
+
+					
+				} else {
+					// show add form modal
+					approveRequestModal.hide();					
+					errorApproveRequestModal = b.modal.new({
+						title: "Add Comment :: Error",
+						width:450,	
+						html: "Oopps! There is something wrong. Please try again or contact IT Department.",
+					});
+					errorApproveRequestModal.show();	
+
+				}
+			}
+
+		})
+		return false;
+
+
+	})
+
 //]]>
 </script>

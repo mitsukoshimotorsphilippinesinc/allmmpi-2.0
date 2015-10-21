@@ -8,7 +8,7 @@ class Tracking_model extends Base_model
         $this->_TABLES = array(            
 			'admin_logs'=>'tr_admin_logs',
 			'inventory_logs'=>'tr_inventory_logs',
-			'member_logs'=>'tr_member_logs',
+			'member_voucher_transfer_logsogs'=>'tr_member_logs',
             'credit_logs' => 'tr_member_funds_credit_logs',
             'debit_logs' => 'tr_member_funds_debit_logs',
             'acct_credit_logs' => 'tr_member_acct_credit_logs',

@@ -67,7 +67,7 @@
 					
 					<?php
 					if ($c->is_removed == 0)
-						echo "<a class='btn btn-small btn-danger remove-admin' data='<?= $c->announcement_message_id ?>' data-idnum='<?= $c->from_id_number ?>' title='Delete Comment'><i class='icon-remove icon-white'></i></a>";					
+						echo "<a class='btn btn-small btn-danger remove-admin' data='{$c->announcement_message_id}' data-idnum='<?= $c->from_id_number ?>' title='Delete Comment'><i class='icon-remove icon-white'></i></a>";					
 					?>
 				</td>
 			</tr>

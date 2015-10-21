@@ -21,6 +21,7 @@ class Human_relations_model extends Base_Model
 			'company' => 'rf_company',
 			'department' => 'rf_department',
 			'branch' => 'rf_branch',
+			'job_grade_level' => 'rf_job_grade_level',
 		);
 
 	}
@@ -359,6 +360,42 @@ class Human_relations_model extends Base_Model
 	function get_branch_by_id($branch_id) 
 	{
 		$result = $this->get_branch(array('branch_id' => $branch_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+	// ==============================================================
+	
+	// ==============================================================
+	// rf_job_grade_level	
+	function get_job_grade_level($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('job_grade_level', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;	
+	}
+
+	function insert_job_grade_level($data) 
+	{
+		return $this->insert('job_grade_level', $data);
+	}
+
+	function update_job_grade_level($data, $where) 
+	{
+		return $this->update('job_grade_level', $data, $where);
+	}
+
+	function delete_job_grade_level($where) 
+	{
+		return $this->delete('job_grade_level', $where);
+	}
+
+	function get_job_grade_level_by_id($job_grade_level_id) 
+	{
+		$result = $this->get_job_grade_level(array('job_grade_level_id' => $job_grade_level_id));
 		$row = NULL;
 		if (count($result) > 0) {
 			$row = $result[0];

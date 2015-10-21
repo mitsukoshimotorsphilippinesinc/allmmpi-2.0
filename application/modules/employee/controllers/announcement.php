@@ -65,5 +65,29 @@ class Announcement extends Site_Controller
 		$this->template->view('announcement/dashboard');
 	}
 
+
+	public function display_comments()
+	{
+		$announcement_id = $this->input->post("_announcement_id");
+		$comment = $this->input->post("_comment");
+
+		// insert to am_announcement_message
+		$data = array(
+				"announcement_id" => $announcement_id,
+				"from_id_number" => $this->employee->id_number,
+				"message" => trim($comment)
+			);
+
+		$this->asset_model->insert_announcement_message($data);
+
+
+		$data = array(
+			"announcement_id" => $announcement_id
+		);
+
+		$html = $this->load->view('announcement/display_comments', $data, TRUE);
+
+		$this->return_json("1", "Ok.", array("html" => $html));
+	}
 	
 }

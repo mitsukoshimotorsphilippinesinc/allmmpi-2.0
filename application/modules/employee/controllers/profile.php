@@ -7,7 +7,7 @@ class Profile extends Site_Controller
 	{
   		parent::__construct();
 		$this->load->library('Email');
-		$this->load->model('tracking_model');
+		$this->load->model('human_relations_model');
 	}
 	
 	private $_months = array(
@@ -28,18 +28,13 @@ class Profile extends Site_Controller
 	
 	public function index() 
 	{
-		$member_id = $this->member->member_id;
 	
-		$member = $this->members_model->get_member_by_id($member_id);
-		$user_account = $this->members_model->get_member_user_account_by_member_id($member_id);
-		$accounts = $this->members_model->get_member_accounts("member_id = ".$member_id);
-		$groups = $this->members_model->get_member_groups("", "", "group_name ASC");
-		
-		$this->template->member = $member;
-		$this->template->user_account = $user_account;
-		$this->template->accounts = $accounts;
+		$personal_information = $this->human_relations_model->get_personal_information_by_id($this->employee->personal_information_id);
+		$employment_information = $this->human_relations_model->get_employment_information_by_id($this->employee->id_number);		
+
+		$this->template->personal_information = $personal_information;
+		$this->template->employment_information = $employment_information;
 		$this->template->current_page = 'profile';
-		$this->template->groups = $groups;
 		$this->template->view('profile');
     }
 	
