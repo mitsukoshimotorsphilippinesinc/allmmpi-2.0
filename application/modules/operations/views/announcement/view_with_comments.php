@@ -63,11 +63,11 @@
 				<td><?= ($c->is_removed) ? 'Yes' : 'No'; ?></td>
 				<td>
 
-					<a class='btn btn-small btn-success reply-admin' data='<?= $c->announcement_message_id ?>' data-idnum='<?= $c->from_id_number ?>' title="Reply as Admin"><i class="icon-pencil icon-white"></i></a>
+					<a class='btn btn-small btn-success reply-admin' data='<?= $c->announcement_message_id ?>' data-idnum='<?= $c->from_id_number ?>' data-announcement-id='<?= $announcement->announcement_id ?>' title="Reply as Admin"><i class="icon-pencil icon-white"></i></a>
 					
 					<?php
 					if ($c->is_removed == 0)
-						echo "<a class='btn btn-small btn-danger remove-admin' data='{$c->announcement_message_id}' data-idnum='<?= $c->from_id_number ?>' title='Delete Comment'><i class='icon-remove icon-white'></i></a>";					
+						echo "<a class='btn btn-small btn-danger remove-admin' data='{$c->announcement_message_id}' data-idnum='<?= $c->from_id_number ?>' data-announcement-id='{$announcement->announcement_id}' title='Delete Comment'><i class='icon-remove icon-white'></i></a>";					
 					?>
 				</td>
 			</tr>
@@ -88,6 +88,7 @@
 
 	$(".reply-admin").click(function(){
 		var _announcement_message_id = $(this).attr('data');
+		var _announcement_id = $(this).attr('data-announcement-id');
 
 		b.request({
 			url : '/operations/announcement/reply_comment',
@@ -118,6 +119,7 @@
 										url : '/operations/announcement/reply_comment_proceed',
 										data : {
 											'announcement_message_id' : _announcement_message_id,
+											'announcement_id' : _announcement_id,
 											'admin_message' : _admin_message,
 											},										
 										on_success : function(data) {
@@ -132,7 +134,7 @@
 													buttons: {																
 														'Ok' : function() {
 															proceedRemoveModal.hide();
-															redirect('/operations/announcement/comments');
+															redirect('/operations/announcement/view_with_comments/' + _announcement_id);
 														}
 													}
 												});

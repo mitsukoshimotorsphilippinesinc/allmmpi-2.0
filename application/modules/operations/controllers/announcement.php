@@ -345,15 +345,17 @@ class Announcement extends Admin_Controller
 
 	public function reply_comment_proceed()
 	{
-		$announcement_message_id = $this->input->post("announcement_message_id");
-		$admin_message = $this->input->post("admin_message");		
+		$announcement_message_id = abs($this->input->post("announcement_message_id"));
+		$admin_message = trim($this->input->post("admin_message"));
+		$announcement_id = abs($this->input->post("announcement_id"));
 
 		$announcement_message_details = $this->asset_model->get_announcement_message_by_id($announcement_message_id);
 
 		$data = array(
 				"from_id_number" => 'n/a',
 				"to_id_number" =>  $announcement_message_details->from_id_number,
-				"message" => $admin_message,				
+				"message" => $admin_message,
+				"announcement_id" => $announcement_id
 			);
 
 		$this->asset_model->insert_announcement_message($data);
