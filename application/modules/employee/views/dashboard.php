@@ -11,7 +11,7 @@
 </style>
 
 <div class="page-header">
-  <center><h2 style="color:gray;">Latest Announcements <small></small></h2></center>
+  <center><h2 style="color:#ffffff;border:1px solid;background:rgba(0, 0, 0, 0) linear-gradient(90deg, #0088CC 10%, #1828AA 90%) repeat scroll 0 0">Dashboard</h2></center>
 </div>
 	<div>		
 		<div class="tab-pane active" id="announcements">
@@ -36,7 +36,7 @@
 				$ctr = 0;
 				foreach($announcements as $a) {
 				
-					$proper_date = date("jS F Y", strtotime($a->insert_timestamp));
+					$proper_date = date("jS F Y h:i:s a", strtotime($a->insert_timestamp));
 					
 					echo "<h2 style='float:left;'>{$a->title}</h2><div style='clear:both;'></div><span style='float:left;margin-top:-15px;'><i>{$proper_date}</i></span><div style='clear:both;'></div><br/>";
 					echo $a->body;

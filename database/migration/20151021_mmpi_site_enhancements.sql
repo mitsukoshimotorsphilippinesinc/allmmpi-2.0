@@ -3,3 +3,44 @@ ALTER TABLE human_relations.pm_employment_information ADD COLUMN `is_personal_em
 
 -- add is_mobile_number_verified
 ALTER TABLE human_relations.pm_employment_information ADD COLUMN `is_mobile_number_verified` tinyint(2) NOT NULL DEFAULT 0 AFTER `mobile_number`;
+
+-- create view sa_user_information_view
+DROP VIEW IF EXISTS `sa_user_information_view`;
+CREATE VIEW `sa_user_information_view` AS 
+SELECT
+	a.`user_id`,
+	a.`employment_information_id`,
+	a.`id_number`,
+	c.`last_name`,
+	c.`first_name`,
+	c.`middle_name`,
+	c.`personal_email_address`,
+	b.`company_email_address`,
+	a.`username`,
+	a.`password`,
+	a.`designation`,
+	a.`role_id`,
+	a.`default_page`,
+	a.`is_active`,
+	a.`last_login`,
+	a.`login_hash`,
+	a.`e_login_hash`
+FROM 
+	`mmpi`.`sa_user` a
+LEFT JOIN
+	`human_relations`.`pm_employment_information` b
+ON 
+	a.`employment_information_id` = b.`employment_information_id`
+LEFT JOIN
+	`human_relations`.`pm_personal_information` c
+ON 
+	b.`personal_information_id` = c.`personal_information_id`;
+
+-- update company_email_address
+UPDATE pm_employment_information a, pm_personal_information b 
+SET company_email_address = concat(lower(b.first_name), '.' , lower(b.last_name), '@mitsukoshimotors.com') 
+WHERE a.personal_information_id = b.personal_information_id;
+
+-- replace ñ to n
+UPDATE pm_employment_information SET company_email_address = REPLACE(company_email_address,'ñ','n');
+

@@ -29,6 +29,7 @@
 	<?php echo js('libs/uploadrr.js'); ?>
 	<?php echo js('apps/core.js'); ?>
 	<?php echo js('apps/site.js'); ?>
+	<?php echo js('libs/pdf.js'); ?>
 	<?php if($this->member->member_id>0) : ?>
 		<script type="text/javascript" >
 			vitalc.member.member_id = <?=$this->member->member_id;?>;
@@ -103,7 +104,17 @@
 		
 			<div class='content-area member-area clearfix'>
 				
-				<div class="alert alert-danger"><strong>ADVISORY:</strong><br/>This is message 2</div>
+				<?php
+					$this->load->model('asset_model');
+					// get all alert messages
+					$where = "is_visible = 1 AND ((now() BETWEEN start_timestamp AND end_timestamp) OR (start_timestamp = '0000-00-00 00:00:00' AND end_timestamp = '0000-00-00 00:00:00'))";
+					$active_alert_message_details = $this->asset_model->get_alert_message($where, NULL, 'insert_timestamp DESC');
+
+					foreach($active_alert_message_details as $aamd) {
+						echo "<div class='alert alert-danger'><strong>{$aamd->title}</strong><br/>{$aamd->content}</div>";
+					}
+				?>
+				
 				
 				<ul id='user-nav-box' class="nav nav-pills">
 					
@@ -113,12 +124,16 @@
 						<ul class="dropdown-menu" role="menu">
 							<li role="menuitem"><a href="/employee/profile">My Profile</a></li>							
 						</ul>
+					</li>	
 					<li class='<?= isset($this->uri->uri_string) ? ($this->uri->uri_string == 'employee/announcement' ? 'active' : '') : '';  ?>'><a href="/employee/announcement" >Announcements</a></li>	
-					</li>
+					<li class='<?= isset($this->uri->uri_string) ? ($this->uri->segment(2) == 's4s' ? 'active' : '') : '';  ?>'><a href="/employee/s4s" >S4S</a></li>	
+					
 					
 					<?php					
 					
-					//var_dump($this->uri->uri_string);
+
+
+					//var_dump($this->uri->segment(2));
 
 					$class_value = "";
 					//if ($this->member->is_active == 1) {

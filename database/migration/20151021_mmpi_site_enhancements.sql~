@@ -1,0 +1,39 @@
+-- add is_email_verified
+ALTER TABLE human_relations.pm_employment_information ADD COLUMN `is_personal_email_verified` tinyint(2) NOT NULL DEFAULT 0 AFTER `personal_email_address`;
+
+-- add is_mobile_number_verified
+ALTER TABLE human_relations.pm_employment_information ADD COLUMN `is_mobile_number_verified` tinyint(2) NOT NULL DEFAULT 0 AFTER `mobile_number`;
+
+
+DROP VIEW IF EXISTS `sa_user_information_view`;
+CREATE VIEW `sa_user_information_view` AS 
+SELECT
+	a.`user_id`,
+	a.`employment_information_id`,
+	a.`id_number`,
+	c.`last_name`,
+	c.`first_name`,
+	c.`middle_name`,
+	c.`personal_email_address`,
+	b.`company_email_address`,
+	a.`username`,
+	a.`password`,
+	a.`designation`,
+	a.`role_id`,
+	a.`default_page`,
+	a.`is_active`,
+	a.`last_login`,
+	a.`login_hash`,
+	a.`e_login_hash`
+FROM 
+	`mmpi`.`sa_user` a
+LEFT JOIN
+	`human_relations`.`pm_employment_information` b
+ON 
+	a.`employment_information_id` = b.`employment_information_id`
+LEFT JOIN
+	`human_relations`.`pm_personal_information` c
+ON 
+	b.`personal_information_id` = c.`personal_information_id`;
+
+

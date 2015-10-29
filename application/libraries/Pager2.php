@@ -173,7 +173,7 @@ class Pager2 {
         $pagination .= $this->page_links($this->type);
         $pagination .= $this->next_link($this->template['next_text']);
         $pagination .= $this->template['page_end'];
-        $pagination .= $this->template['wrapper_end'];
+        $pagination .= $this->template['wrapper_end'];    
 
         return $pagination;
     }
@@ -377,7 +377,7 @@ class Pager2 {
             return $this->template['disabled_start'].anchor('#', $this->template['previous_mark'].$value, array('onclick'=>'return false;','class'=>'btn btn-prev')).$this->template['disabled_end'];
         }
         else
-        {
+        {            
             $previous_page = $this->current_page - 1;
             if($this->type=="ajax"){
                 return $this->template['item_start']."<a href='#' class='goto_page btn btn-prev' page='{$previous_page}' >".$this->template['previous_mark'].$value."</a>".$this->template['item_end'];

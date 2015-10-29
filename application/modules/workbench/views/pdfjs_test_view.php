@@ -1,0 +1,1 @@
+<iframe id="viewer" src="/assets/js/libs/ViewerJS/index.html#../../../uploads/gimpToolbox.pdf" width="80%" height="600px" allowfullscreen webkitallowfullscreen=""></iframe> 

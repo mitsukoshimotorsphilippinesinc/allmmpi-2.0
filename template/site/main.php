@@ -31,6 +31,7 @@
 	<?php echo js('libs/yoxview/yoxview-init.js'); ?>
 	<?php echo js('apps/core.js'); ?>
 	<?php echo js('apps/site.js'); ?>
+	<?php echo js('libs/pdf.js'); ?>
 	<?php if($this->member->member_id>0) : ?>
 		<script type="text/javascript" >
 			vitalc.member.member_id = <?=$this->member->member_id;?>;
@@ -71,7 +72,7 @@
 	</header>
 	<div id='content'>
 		<div class='content-area'>
-			<?= $this->load->view('snippets/alerts', NULL, TRUE,'main');  ?>
+			<!--?= $this->load->view('snippets/alerts', NULL, TRUE,'main');  ?-->
 		</div>
 		<?= $content ?>
 	</div>

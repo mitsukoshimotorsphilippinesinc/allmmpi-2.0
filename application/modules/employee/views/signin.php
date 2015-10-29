@@ -12,9 +12,20 @@
 	$this->load->model('human_relations_model');
 ?>
 
+<?php
+	
+	// get all alert messages
+	$where = "is_visible = 1 AND employee_only = 0 AND ((now() BETWEEN start_timestamp AND end_timestamp) OR (start_timestamp = '0000-00-00 00:00:00' AND end_timestamp = '0000-00-00 00:00:00'))";
+	$active_alert_message_details = $this->asset_model->get_alert_message($where, NULL, 'insert_timestamp DESC');
+
+	foreach($active_alert_message_details as $aamd) {
+		echo "<div class='alert alert-danger'><strong>{$aamd->title}</strong><br/>{$aamd->content}</div>";
+	}
+?>
+
 <ul class="member-login-ads" style="list-style: none;">
 	<li>		
-		<div id='slider-2' class="slider-horizontal" style="height:800px">
+		<div id='slider-2' class="slider-horizontal" style="height:400px">
 			
 			<?php								
 				$login_ads = $this->asset_model->get_employee_login_ad("is_active = 1", "", "priority_id");
@@ -38,8 +49,8 @@
 						}
 			?>
 				<div class='member-image'>
-					<div class='member-image' style="width:500px;height:800px">
-						<a  href="<?= $image ?>" target="_blank"><img src="<?= $this->config->item('admin_base_url') . $image ?>" class="member-login-ads-image" style="width:498px;max-height:800px"></img><?= $this->config->item('admin_base_url') ?></a>
+					<div class='member-image' style="width:500px;height:400px">
+						<a  href="<?= $image ?>" target="_blank"><img src="<?= $this->config->item('admin_base_url') . $image ?>" class="member-login-ads-image" style="width:100%;height:400px"></img><?= $this->config->item('admin_base_url') ?></a>
 						<!--a href="<?= $image ?>" target="_blank"><?= $image ?></a-->
 					</div>					
 				</div>
@@ -50,6 +61,7 @@
 				}
 			?>
 		</div>
+		<div style="clear:both;"></div>
 	</li>	
 </ul>
 <?php
@@ -64,13 +76,13 @@
 <section id='admin_signin'>	
 
 	<?php
-		if ($this->setting->disable_employee_login == 0) {
-		?>
+	if ($this->setting->disable_employee_login == 0) {
+	?>
 
 		<div class=''>
 			<div class='span5'>
 				<div class='well' style="margin-top:75px;">
-				<h4>Welcome to MMPI Employees Portal</h4>
+				<h4>Welcome to MMPI Employee's Portal</h4>
 				<?php if (isset($invalid_login)) if ($invalid_login) :?>
 					<div class="alert alert-error">
 						<h4 class="alert-heading">Error!</h4>

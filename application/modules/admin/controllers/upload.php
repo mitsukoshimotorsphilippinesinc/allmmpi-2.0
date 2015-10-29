@@ -109,16 +109,16 @@ class Upload extends Base_Controller {
 		
 		$target_fullpath = FCPATH . $location;
 		$target_thumb_fullpath = FCPATH . $location. "/thumbnail";
-		//$fullpath = FCPATH . $location . "/". $filename;
-		$fullpath = "c:\laragon\www\allmmpi\webroot_admin\assets\media\agents\\". $filename; // WINDOWS
+		$fullpath = FCPATH . $location . "/". $filename;
+		//$fullpath = "c:\laragon\www\allmmpi\webroot_admin\assets\media\agents\\". $filename; // WINDOWS
 		
 		$_ret = true;
 		
 
-		exec("attrib -r c:\laragon\www\allmmpi\webroot_admin\assets\media\agents\*.* /s"); // WINDOWS
+		//exec("attrib -r c:\laragon\www\allmmpi\webroot_admin\assets\media\agents\*.* /s"); // WINDOWS
 		if ($using_file) {			
 			$_ret = move_uploaded_file($temp_file, $fullpath);
-			//chmod($fullpath, 777);			
+			chmod($fullpath, 777);			
 		} else {			
 			$_ret = copy($temp_file, $fullpath);
 			chmod($fullpath, 777);
@@ -274,11 +274,11 @@ class Upload extends Base_Controller {
 				
 				// Display resized image
 		        $thumb_filename = "";
-				// unlink($fullpath); // commented WINDOWS TEST
-				//imagejpeg($image_resized, $target_fullpath);
+				 unlink($fullpath); // commented WINDOWS TEST
+				imagejpeg($image_resized, $target_fullpath);
 				
-		        $target_fullpath = "c:\laragon\www\allmmpi\webroot_admin\assets\media\agents\\" . $target_filename; // WINDOWS
-		        exec("attrib -r c:\laragon\www\allmmpi\webroot_admin\assets\media\agents\*.* /s"); // WINDOWS
+		        //$target_fullpath = "c:\laragon\www\allmmpi\webroot_admin\assets\media\agents\\" . $target_filename; // WINDOWS
+		        //exec("attrib -r c:\laragon\www\allmmpi\webroot_admin\assets\media\agents\*.* /s"); // WINDOWS
 
 				switch($format) {
 		            case 'gif':
@@ -295,7 +295,7 @@ class Upload extends Base_Controller {
 				
 				if(!is_null($image_thumb) && !empty($image_thumb)) 
 				{
-					//imagejpeg($image_thumb, $target_thumb_fullpath);
+					imagejpeg($image_thumb, $target_thumb_fullpath);
 					
 					switch($format) {
 		            case 'gif':

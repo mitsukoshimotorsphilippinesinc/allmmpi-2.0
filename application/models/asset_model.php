@@ -48,7 +48,7 @@ class Asset_model extends Base_model {
 		return $row->cnt;
 	}
 
-	function get_content_by_id($employee_login_ad_id)
+	function get_employee_login_ad_by_id($employee_login_ad_id)
 	{
 		$result = $this->get_employee_login_ad(array('employee_login_ad_id' => $employee_login_ad_id));
 		$row = NULL;

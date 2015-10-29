@@ -64,7 +64,7 @@ class Announcement extends Admin_Controller
 		);
 
 		$this->pager->set_config($config);
-		$this->template->announcements = $this->asset_model->get_announcement(NULL, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp");
+		$this->template->announcements = $this->asset_model->get_announcement(NULL, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");
 		$this->template->view('announcement/list');
 	}
 	
@@ -287,7 +287,7 @@ class Announcement extends Admin_Controller
 		);
 
 		$this->pager->set_config($config);
-		$this->template->announcements = $this->asset_model->get_announcement(NULL, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp");
+		$this->template->announcements = $this->asset_model->get_announcement(NULL, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");
 		$this->template->view('announcement/comments');
 	}
 

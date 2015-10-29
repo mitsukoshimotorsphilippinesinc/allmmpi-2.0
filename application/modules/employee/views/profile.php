@@ -50,7 +50,7 @@
 ?>
 
 <div class="page-header">
-  <h2>My Profile <small></small></h2>
+  <center><h2 style="color:#ffffff;border:1px solid;background:rgba(0, 0, 0, 0) linear-gradient(90deg, #0088CC 10%, #1828AA 90%) repeat scroll 0 0">My Profile</h2></center>
 </div>
 <div>
 	<div class="tabbable">

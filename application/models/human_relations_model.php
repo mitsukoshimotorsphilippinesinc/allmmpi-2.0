@@ -21,7 +21,9 @@ class Human_relations_model extends Base_Model
 			'company' => 'rf_company',
 			'department' => 'rf_department',
 			'branch' => 'rf_branch',
-			'job_grade_level' => 'rf_job_grade_level',
+			'job_grade_level' => 'rf_job_grade_level',			
+			's4s' => 'el_s4s',
+			's4s_asset' => 'el_s4s_asset',
 		);
 
 	}
@@ -366,8 +368,7 @@ class Human_relations_model extends Base_Model
 		}
 		return $row;
 	}
-	// ==============================================================
-	
+	// ==============================================================	
 	// ==============================================================
 	// rf_job_grade_level	
 	function get_job_grade_level($where = null, $limit = null, $orderby = null, $fields = null) 
@@ -401,6 +402,91 @@ class Human_relations_model extends Base_Model
 			$row = $result[0];
 		}
 		return $row;
+	}
+	// ==============================================================
+	
+	// ==============================================================
+	// el_s4s
+	function get_s4s($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('s4s', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;	
+	}
+
+	function insert_s4s($data) 
+	{
+		return $this->insert('s4s', $data);
+	}
+
+	function update_s4s($data, $where) 
+	{
+		return $this->update('s4s', $data, $where);
+	}
+
+	function delete_s4s($where) 
+	{
+		return $this->delete('s4s', $where);
+	}
+
+	function get_s4s_by_id($s4s_id) 
+	{
+		$result = $this->get_s4s(array('s4s_id' => $s4s_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+
+	function get_s4s_count($where = null) {
+		$query = $this->fetch('s4s', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+	// ==============================================================
+	// ==============================================================
+	// el_s4s_asset
+	function get_s4s_asset($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('s4s_asset', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;	
+	}
+
+	function insert_s4s_asset($data) 
+	{
+		return $this->insert('s4s_asset', $data);
+	}
+
+	function update_s4s_asset($data, $where) 
+	{
+		return $this->update('s4s_asset', $data, $where);
+	}
+
+	function delete_s4s_asset($where) 
+	{
+		return $this->delete('s4s_asset', $where);
+	}
+
+	function get_s4s_asset_by_id($s4s_asset_id) 
+	{
+		$result = $this->get_s4s_asset(array('s4s_asset_id' => $s4s_asset_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+
+	function get_s4s_asset_count($where = null) {
+		$query = $this->fetch('s4s_asset', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
 	}
 	// ==============================================================
 
