@@ -100,6 +100,13 @@
 			} else {
 				$image_filename = $this->employee->image_filename;
 			}
+		
+
+			// check if  password has been changed (first login)
+			$user_access_details = $this->user_model->get_user_by_id_number($this->employee->id_number);
+
+			if ($user_access_details->is_password_changed > 0) {
+
 		?>
 		
 			<div class='content-area member-area clearfix'>
@@ -193,6 +200,11 @@
 
 				</ul>
 				<hr class='user-nav-divider'/>
+				
+				<?php
+				}
+				?>
+
 				<div class="clearfix">
 					<?= $content ?>
 				</div>				

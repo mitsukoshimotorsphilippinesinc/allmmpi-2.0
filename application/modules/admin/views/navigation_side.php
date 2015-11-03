@@ -35,7 +35,9 @@
 
 	$department_details = $this->human_relations_model->get_department_by_url($this->uri->segment(1));
 
-	if (($this->uri->segment(2) == NULL) || (empty($this->uri->segment(2)))) {
+	$second_segment = $this->uri->segment(2);
+
+	if (($this->uri->segment(2) == NULL) || (empty($second_segment))) {
 		$where = "department_id = {$department_details->department_id} AND name = 'main_dashboard' AND is_active = 1";
 	} else {
 		$where = "department_id = {$department_details->department_id} AND name = '{$this->uri->segment(2)}' AND is_active = 1 AND parent_id = 0 AND is_active = 1 AND type = 'MODULE'";

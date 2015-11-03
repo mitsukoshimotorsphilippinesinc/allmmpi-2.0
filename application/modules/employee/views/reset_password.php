@@ -9,7 +9,7 @@
 		<?php else: ?>
 			<div class="alert alert-success">
 				<h4 class="alert-heading">Success!</h4>
-				Password was successfully reset. Your new password was sent thru <?=$email;?>.
+				Password was successfully reset. Your new password was sent thru your company email <?=$email;?>.
 			</div>
 		<?php endif; ?>
 	</div>

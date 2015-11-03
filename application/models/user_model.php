@@ -16,7 +16,8 @@ class User_model extends Base_Model
 			'user_roles' => 'sa_user_roles',
 			'user_role_privilege'=>'sa_user_role_privilege',
 			'user_role_privilege_view'=>'sa_user_role_privilege_view',
-			'privilege'=>'sa_privilege'
+			'privilege'=>'sa_privilege',
+			'user_verification'=>'sa_user_verification'
 		);
 
 	}
@@ -308,6 +309,49 @@ class User_model extends Base_Model
 	function get_privilege_count($where = null) {
 		// do a sql count instead of row count
 		$query = $this->fetch('privilege', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+	// ==============================================================
+	// ==============================================================
+	// sa_user_verification
+	function get_user_verification($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('user_verification', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+	}
+
+	function insert_user_verification($data) 
+	{
+		return $this->insert('user_verification', $data);
+	}
+
+	function update_user_verification($data, $where) 
+	{
+		return $this->update('user_verification', $data, $where);
+	}
+
+	function delete_user_verification($where) 
+	{
+		return $this->delete('user_verification', $where);
+	}
+
+	function get_user_verification_by_id_number($id_number) 
+	{
+		$result = $this->get_user_verification(array('id_number' => $id_number));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+
+	function get_user_verification_count($where = null) {
+		// do a sql count instead of row count
+		$query = $this->fetch('user_verification', 'count(1) as cnt', $where);
 		$row = $query->first_row();
 		$query->free_result();
 		return $row->cnt;

@@ -52,8 +52,8 @@ else
 	define('ENVIRONMENT', 'local');
 */
 
-#define('ENVIRONMENT', 'development');
 define('ENVIRONMENT', 'local');
+//define('ENVIRONMENT', 'production');
 
 /*
  *---------------------------------------------------------------

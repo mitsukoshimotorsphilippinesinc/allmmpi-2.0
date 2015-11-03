@@ -42,9 +42,11 @@
 			} else {
 		
 				if ($this->setting->disable_employee_login == 0) {
-					echo "<li class='dropdown-auto'><a href='/employee/signin'>Login</a></li>
-						<li class='dropdown-auto'><a href='/main/registration/'>Register</a></li>							
-					";
+					echo "<li class='dropdown-auto'><a href='/employee/signin'>Login</a></li>";
+				}
+
+				if ($this->setting->disable_registration == 0) {
+					echo "<li class='dropdown-auto'><a href='/main/registration/'>Register</a></li>";
 				}
 			}
 		?>

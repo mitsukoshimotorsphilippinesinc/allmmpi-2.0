@@ -41,7 +41,8 @@
 */
 $config['base_path'] 		= '';
 $config['base_url']			= HTTP_PROTOCOL . SITE_DOMAIN . $config['base_path'];
-$config['admin_base_url']	= HTTP_PROTOCOL . 'cp.' .SITE_DOMAIN;
+//$config['admin_base_url']	= HTTP_PROTOCOL . 'cp.' .SITE_DOMAIN;
+$config['admin_base_url']	= HTTP_PROTOCOL . 'cp.mmpi.local';
 $config['assets_url'] 		= '/assets'; // update to change assets location
 $config['js_url'] 			= '/assets/js'; // update to change assets location
 $config['css_url'] 			= '/assets/css'; // update to change assets location

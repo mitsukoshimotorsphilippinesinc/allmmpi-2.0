@@ -13,7 +13,7 @@ class SignIn extends Base_Controller
 	public function index() 
 	{
 		if ($this->authenticate->e_is_logged_in())
-		{
+		{			
 			redirect('/employee');
 			return;
 		}
@@ -64,17 +64,17 @@ class SignIn extends Base_Controller
 		$this->template->view('signin');
 		
 
-		var_dump($invalid_login);
+		//var_dump($invalid_login);
 
 		/*
 		// get member status
-		$member_user_account_details = $this->members_model->get_member_user_account_by_username($username);
+		$member_user_account_details = $this->user_model->get_member_user_account_by_username($username);
 		
 		if (empty($member_user_account_details)) {
 			$active_member == 0;
 			$invalid_login = true;
 		} else {						
-			$member_details = $this->members_model->get_member_by_id($member_user_account_details->member_id);
+			$member_details = $this->user_model->get_member_by_id($member_user_account_details->member_id);
 			
 			if (empty($member_details)) {
 				$active_member == 0;
@@ -112,75 +112,120 @@ class SignIn extends Base_Controller
 		$this->template->view('signin');
 		
 	}
+
+	public function proceed_password_change1()
+    {
+
+    	$new_password = $this->input->post("new_password");
+    	$id_number = $this->input->post("id_number");
+
+    	$hash = md5($id_number.time()); 
+
+    	$hash = hash_hmac('md5',$id_number.time(),$this->config->item('encryption_key'));
+					
+		$user_verification = $this->user_model->get_user_verification_by_id_number($id_number);
+
+		if(empty($user_verification)){
+			$data = array(
+	            'id_number' => $id_number,
+	            'change_password_code' => $hash
+	        );
+			$this->user_model->insert_user_verification($data);			
+		} else {
+			$this->user_model->update_user_verification(array('change_password_code'=>$hash), array('id_number'=>$id_number));
+		}
+
+		$url = $this->config->item('base_url') . '/members/signin/reset_password/'.$member->member_id.'/'.$hash;
+					
+		// send email
+		$email_params = array(
+			"first_name"=>$member->first_name,
+			"url"=>$url
+		);
+		
+		$email_data = array(
+			"email"=>$email,
+			"type"=>"forgot-password-request-email",
+			"params"=>$email_params
+		);
+
+		// send sms
+		$sms_params = array(
+			"first_name"=>$member ->first_name,
+			"url"=>$url
+		);
+		$sms_data = array(
+			"member_id"=>$member->member_id,
+			"mobile_number"=>$member->mobile_number,
+			"type"=>"forgot-password-request-sms",
+			"params"=>$sms_params
+		);
+		
+		$send_notification = true;
+		$email_sent = true;
+
+    }
+
 	
-	public function forgot_password(){
+	public function proceed_password_change(){
 		if ($this->authenticate->e_is_logged_in())
 		{
-			redirect('/members');
+			redirect('/employee');
 			return;
 		}
 		
-		$email = $this->input->get_post('email');
+		$new_password = $this->input->get_post('new_password');
+		$id_number = $this->input->get_post('id_number');
 		$user_not_found = false;
 		$email_sent = false;
 		$send_notification = false;
-		
+
 		if($_POST){
 			
-			$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email');
+			$this->form_validation->set_rules('new_password', 'new_password', 'trim|required');
 			$this->form_validation->set_error_delimiters('<span>', '</span>');
 
 			if ($this->form_validation->run()) 
 			{				
-				$this->load->model('members_model');
-				$member = $this->members_model->get_members(array('email'=>$email));
-				if(count($member)==0){
+				$this->load->model('user_model');
+				$this->load->model('human_relations_model');
+
+				$user = $this->human_relations_model->get_employment_information_view_by_id($id_number);
+				if(count($user)==0){
 					$user_not_found = true;
 				}else{
-					$member = $member[0];
 					
-					$hash = md5($member->member_id.time());
+					$hash = md5($user->id_number.time());
 					
-					$hash = hash_hmac('md5',$member->member_id.time(),$this->config->item('encryption_key'));
+					$hash = hash_hmac('md5',$user->id_number.time(),$this->config->item('encryption_key'));
 					
-					$member_verification = $this->members_model->get_member_verification(array('member_id'=>$member->member_id));
+					$user_verification = $this->user_model->get_user_verification(array('id_number'=>$user->id_number));
 					
-					if(count($member_verification) > 0){
-						$this->members_model->update_member_verification(array('forgot_password_code'=>$hash),array('member_id'=>$member->member_id));
+					if(count($user_verification) > 0){
+						$this->user_model->update_user_verification(array('change_password_code'=>$hash, 'change_password_original' => $new_password),array('id_number'=>$user->id_number));
 					}else{
 						$data = array(
-				            'member_id' => $member->member_id,
-				            'forgot_password_code' => $hash
+				            'id_number' => $user->id_number,
+				            'change_password_code' => $hash,
+				            'change_password_original' => $new_password
 				        );
-						$this->members_model->insert_member_verification($data);
+						$this->user_model->insert_user_verification($data);
 					}
 					
-					$url = $this->config->item('base_url') . '/members/signin/reset_password/'.$member->member_id.'/'.$hash;
+					$url = $this->config->item('base_url') . '/employee/signin/change_password/'.$user->id_number.'/'.$hash;
 					
 					// send email
 					$email_params = array(
-						"first_name"=>$member->first_name,
+						"first_name"=>$user->first_name,
 						"url"=>$url
 					);
 					
 					$email_data = array(
-						"email"=>$email,
-						"type"=>"forgot-password-request-email",
+						"email"=>$user->company_email_address,
+						"type"=>"change-password-request-email",
 						"params"=>$email_params
 					);
 
-					// send sms
-					$sms_params = array(
-						"first_name"=>$member ->first_name,
-						"url"=>$url
-					);
-					$sms_data = array(
-						"member_id"=>$member->member_id,
-						"mobile_number"=>$member->mobile_number,
-						"type"=>"forgot-password-request-sms",
-						"params"=>$sms_params
-					);
-					
 					$send_notification = true;
 					$email_sent = true;
 				}
@@ -192,90 +237,73 @@ class SignIn extends Base_Controller
 		$this->template->user_not_found = $user_not_found;
 		$this->template->email_sent = $email_sent;
 
-		$this->template->view('forgot_password');
-		// run here
+		$this->template->view('change_password_notify');
+		
 		if($send_notification){
 			Modules::run('jobs/notifications/send_email',$email_data);
-			Modules::run('jobs/notifications/send_sms',$sms_data);
+			//Modules::run('jobs/notifications/send_sms',$sms_data);
 		}
 		
 	}
 	
-	public function reset_password(){
-		$member_id = abs($this->uri->segment(4));
+	public function change_password(){
+		$id_number = abs($this->uri->segment(4));
 		$hash = trim($this->uri->segment(5));
 		
 		$error_found = false;
 		$error_message = "";
 		$send_notification = false;
 		
-		if($member_id == 0){
+		if($id_number == 0){
 			$error_found = true;
 			$error_message = "Error Code 001: Invalid url.";
 		}elseif(strlen($hash)==0){
 			$error_found = true;
 			$error_message = "Error Code 002: Invalid url.";
 		}else{
-			$this->load->model('members_model');
-			$member_verification = $this->members_model->get_member_verification_by_id($member_id);
-			if(empty($member_verification)){
+			$this->load->model('user_model');
+			$user_verification = $this->user_model->get_user_verification_by_id_number($id_number);
+			
+			if(empty($user_verification)){
 				$error_found = true;
 				$error_message = "Error Code 003: Invalid url.";
 			}else{
 				
-				if($member_verification->forgot_password_code==""){
+				if($hash != $user_verification->change_password_code){
 					$error_found = true;
-					$error_message = "Error Code 004: Password already reset.";
+					$error_message = "Error Code 005: Invalid url.";
 				}else{
-					$member = $this->members_model->get_member_by_id($member_id);
-					$member_user_account = $this->members_model->get_member_user_account_by_member_id($member_id);
+					// update password
+					
+					$data_user = array(
+						'password' => md5(strtoupper($user_verification->change_password_original)),
+						'original_password' => $user_verification->change_password_original,
+						'is_password_changed' => 1,
 
-					if($hash != $member_verification->forgot_password_code){
-						$error_found = true;
-						$error_message = "Error Code 005: Invalid url.";
-					}else{
-						// update password
-						$new_password = "";
-				        for($i=0; $i<6; $i++){
-				            $new_password .= chr(rand(65,90));
-				        }
-						$data_member_user_account = array(
-							'password' => md5(strtoupper($new_password)),
-							'orig_password' => $new_password
-						);
-						$this->members_model->update_member_user_accounts($data_member_user_account, array('member_id'=>$member_id));
-						
-						// update member_verification
-						$this->members_model->update_member_verification(array('forgot_password_code'=>""),array('member_id'=>$member_id));
-						
-						// send email
-						$email_params = array(
-							"first_name"=>$member->first_name,
-							"password"=>$new_password
-						);
-						$email_data = array(
-							"email"=>$member->email,
-							"type"=>"forgot-password-success-email",
-							"params"=>$email_params
-						);
+					);
+					$this->user_model->update_user($data_user, array('id_number'=>$id_number));
+					
+					// update member_verification
+					$this->user_model->update_user_verification(array('change_password_code'=> "", 'change_password_original'=> ""), array('id_number' => $id_number));
+					
+					$this->load->model('human_relations_model');
+					$employment_info_details = $this->human_relations_model->get_employment_information_view_by_id($id_number);
+					
+					// send email
+					$email_params = array(
+						"first_name" => $employment_info_details->first_name,
+						"password" => $user_verification->change_password_original
+					);
+					
+					$email_data = array(
+						"email" => $employment_info_details->company_email_address,
+						"type" => "change-password-success-email",
+						"params" => $email_params
+					);
 
-						$this->template->email = $member->email;
+					$this->template->email = $employment_info_details->company_email_address;
+					$send_notification = true; 
 
-						// send sms
-						$sms_params = array(
-							"first_name"=>$member->first_name,
-							"password"=>$new_password
-						);
-						$sms_data = array(
-							"member_id"=>$member->member_id,
-							"mobile_number"=>$member->mobile_number,
-							"type"=>"forgot-password-success-sms",
-							"params"=>$sms_params
-						);
-						
-						$send_notification = true;
-
-					}
 				}
 				
 			}
@@ -285,10 +313,10 @@ class SignIn extends Base_Controller
 		$this->template->error_message = $error_message;
 		
 		$this->template->view('reset_password');
-		// run here
+		
 		if($send_notification){
 			Modules::run('jobs/notifications/send_email',$email_data);
-			Modules::run('jobs/notifications/send_sms',$sms_data);
+			//Modules::run('jobs/notifications/send_sms',$sms_data);
 		}
 		
 	}

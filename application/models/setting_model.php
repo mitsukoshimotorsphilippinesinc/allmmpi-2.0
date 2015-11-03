@@ -10,7 +10,8 @@ class Setting_model extends Base_Model
 
 		// assign the table for this model
 		$this->_TABLES = array(
-			'setting' => 'rf_setting'
+			'setting' => 'rf_setting',
+			'notification_content' => 'rf_notification_content'
 		);
 
 	}
@@ -69,6 +70,70 @@ class Setting_model extends Base_Model
 		}
 		return $row;
 	}
+	
+
+	//-------------------------------------------------------
+	// rf_notification_content
+	
+	function get_notification_content($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('notification_content', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+    }
+
+	function insert_notification_content($data) 
+	{
+		return $this->insert('notification_content', $data);
+	}
+
+	function update_notification_content($data, $where) 
+	{
+		return $this->update('notification_content', $data, $where);
+	}
+
+	function delete_notification_content($where) 
+	{
+		return $this->delete('notification_content', $where);
+	}
+	
+	function get_notification_content_count($where = null) {
+		// do a sql count instead of row count
+		$query = $this->fetch('notification_content', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+	
+	function get_notification_content_by_slug($slug) 
+	{
+		$result = $this->get_notification_content(array('slug' => $slug));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+
+	function get_content_template($slug, $data = array())
+	{
+		$_content = $this->get_notification_content_by_slug($slug);
+
+		if (!empty($_content))
+		{
+			// parse the title & body
+			foreach ($data as $key=>$value)
+			{
+				$_content->title = str_replace("{@=".$key."}", $value, $_content->title);
+				$_content->body = str_replace("{@=".$key."}", $value, $_content->body);
+			}
+
+		}
+
+		return $_content;
+	}
+
 
 
 }

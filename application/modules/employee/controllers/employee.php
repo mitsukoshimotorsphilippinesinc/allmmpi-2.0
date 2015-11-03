@@ -28,17 +28,29 @@ class Employee extends Site_Controller
 	);
 	
 	public function index() 
-	{ 
-		//// TODO : must be dependent to members session id
+	{ 		
 		$is_notify = 0;
         $error_tag = "";
-		
-		$this->template->current_page = 'dashboard'; 
-        $this->template->view('dashboard');
+	
+        // check if user already changed password or not 
+        $user_access_details = $this->user_model->get_user_by_id_number($this->employee->id_number);
+
+        if ($user_access_details->is_password_changed == 0) {
+        	$this->authenticate->logout();
+        	$this->password_change($user_access_details);        	
+        } else { 
+			$this->template->current_page = 'dashboard'; 
+        	$this->template->view('dashboard');
+        }
     }
 	
+    public function password_change($user_access_details) {
 
-	
+    	$this->template->user_access_details = $user_access_details;
+    	$this->template->view('change_password');
+    }
+
+
 	public function get_html()
 	{
 		$page = $this->input->post("page");

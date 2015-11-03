@@ -25,7 +25,7 @@
 
 <ul class="member-login-ads" style="list-style: none;">
 	<li>		
-		<div id='slider-2' class="slider-horizontal" style="height:400px">
+		<div id='slider-2' class="slider-horizontal" style="height:500px">
 			
 			<?php								
 				$login_ads = $this->asset_model->get_employee_login_ad("is_active = 1", "", "priority_id");
@@ -49,8 +49,8 @@
 						}
 			?>
 				<div class='member-image'>
-					<div class='member-image' style="width:500px;height:400px">
-						<a  href="<?= $image ?>" target="_blank"><img src="<?= $this->config->item('admin_base_url') . $image ?>" class="member-login-ads-image" style="width:100%;height:400px"></img><?= $this->config->item('admin_base_url') ?></a>
+					<div class='member-image' style="width:500px;height:500px">
+						<a  href="<?= $image ?>" target="_blank"><img src="<?= $this->config->item('admin_base_url') . $image ?>" class="member-login-ads-image" style="width:100%;height:500px"></img><?= $this->config->item('admin_base_url') ?></a>
 						<!--a href="<?= $image ?>" target="_blank"><?= $image ?></a-->
 					</div>					
 				</div>
@@ -133,7 +133,7 @@
 	?>
 
 </section>
-
+<div class="clearfix"></div>
 <div class="login-ads pull-right">
 </div>
 
