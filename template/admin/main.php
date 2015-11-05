@@ -77,6 +77,12 @@ body > .container > #content {
 						$employment_view_details = $this->human_relations_model->get_employment_information_view_by_id($this->user->id_number);
 
 						if ((empty($employment_view_details->image_filename)) || ($employment_view_details->image_filename == NULL) || (trim($employment_view_details->image_filename) == "")) {
+							
+							//if (strtolower($employment_view_details->gender) == 'm')
+							//	$image_display = "ni_male.png";	
+							//else 
+							//	$image_display = "ni_female.png";		
+							
 							$image_display = "ni_". strtolower($employment_view_details->gender) .".png";
 						} else {
 							$image_display = $employment_view_details->image_filename;

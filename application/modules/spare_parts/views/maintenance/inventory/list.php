@@ -12,10 +12,10 @@
 
 	<strong>Search By:&nbsp;</strong>
 	<select name="search_option" id="search_option" style="width:150px;" value="<?= $search_by ?>">		
-		<option value="complete_name">SKU</option>
-		<option value="complete_address">Model Name</option>
-		<option value="contact_number">Brand Name</option>
-		<option value="contact_number">Description</option>
+		<option value="sku">SKU</option>
+		<option value="model_name">Model Name</option>
+		<option value="brand_name">Brand Name</option>
+		<option value="description">Description</option>
 	</select>                 
 
 	<input title="Search" class="input-large search-query" style="margin-top:-10px;margin-left:5px;" type="text" id="search_string" name="search_string" value="" maxlength='25' autofocus="">	

@@ -75,6 +75,7 @@ class Maintenance extends Admin_Controller {
 		$this->template->search_text = $search_text;
 		$this->template->search_url = $search_url;
 		
+		//var_dump($this->pager->per_page . '|' . $this->pager->offset);
 
 		$this->pager->set_config($config);
 		$this->template->agents = $this->spare_parts_model->get_agent(null, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), 'complete_name');
@@ -555,6 +556,73 @@ class Maintenance extends Admin_Controller {
 		$this->template->view('spare_parts/maintenance/privileges/edit_user');
 	}
 
+	public function inventory2()
+	{
+		$search_by = trim($this->input->get("search_option"));
+		$search_text = trim($this->input->get("search_string"));
+
+
+		$search_url = "";
+
+		if (($search_text == "") || empty($search_text)) {
+			$where = NULL;			
+		} else {
+			$where = "WHERE {$search_by} LIKE LOWER('%{$search_text}%')";
+			$search_url = "?search_option=" . $search_by . "&search_string=" . $search_text;
+		}	
+
+		$sql = "SELECT 
+					sku, model_name, brand_name, description, SUM(good_quantity) AS good_quantity, SUM(bad_quantity) AS bad_quantity, srp, stock_limit
+				FROM 
+				 	is_item_view {$where}
+				GROUP BY
+					sku, model_name, brand_name, description				
+				ORDER BY 
+				 	sku";
+
+		$query = $this->db_spare_parts->query($sql);
+		$item_details = $query->result();			
+		$query->free_result();
+
+		// set pagination data
+		$config = array(
+		    'pagination_url' => '/spare_parts/maintenance/inventory/',
+		    'total_items' => count($item_details),
+		    'per_page' => 30,
+		    'uri_segment' => 4,
+		);
+
+		$current_offset = $this->pager->per_page * $this->pager->offset;
+
+		$sql = "SELECT 
+					sku, model_name, brand_name, description, SUM(good_quantity) AS good_quantity, SUM(bad_quantity) AS bad_quantity, srp, stock_limit
+				FROM 
+				 	is_item_view {$where}
+				GROUP BY
+					sku, model_name, brand_name, description				
+				ORDER BY 
+				 	sku
+				LIMIT 
+					{$this->pager->per_page} 
+				OFFSET 
+					{$current_offset}";
+
+		$query = $this->db_spare_parts->query($sql);
+		$items = $query->result();			
+		$query->free_result();			
+
+		// search vars
+		$this->template->search_by = $search_by;
+		$this->template->search_text = $search_text;
+		$this->template->search_url = $search_url;
+		
+		$this->pager->set_config($config);
+		//$this->template->items = $this->spare_parts_model->get_item_view($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), 'model_name');
+		$this->template->items = $items;
+		$this->template->view('maintenance/inventory/list');
+	}
+
+
 	public function inventory()
 	{
 		$search_by = trim($this->input->get("search_option"));
@@ -591,6 +659,17 @@ class Maintenance extends Admin_Controller {
 		    'uri_segment' => 4,
 		);
 
+		// search vars
+		$this->template->search_by = $search_by;
+		$this->template->search_text = $search_text;
+		$this->template->search_url = $search_url;
+		
+		//var_dump($this->pager->per_page . '|' . $this->pager->offset);
+
+		$this->pager->set_config($config);
+
+		$current_offset = $this->pager->per_page * $this->pager->offset;
+
 		$sql = "SELECT 
 					sku, model_name, brand_name, description, SUM(good_quantity) AS good_quantity, SUM(bad_quantity) AS bad_quantity, srp, stock_limit
 				FROM 
@@ -602,20 +681,14 @@ class Maintenance extends Admin_Controller {
 				LIMIT 
 					{$this->pager->per_page} 
 				OFFSET 
-					{$this->pager->offset}";
+					{$current_offset}";
 
+		$query = $this->db_spare_parts->query($sql);
+		$items = $query->result();			
+		$query->free_result();		
 
-
-
-		// search vars
-		$this->template->search_by = $search_by;
-		$this->template->search_text = $search_text;
-		$this->template->search_url = $search_url;
-		
-
-		$this->pager->set_config($config);
-		$this->template->items = $this->spare_parts_model->get_item_view($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), 'model_name');
-		$this->template->items = $item_details;
+		$this->template->items = $items;
 		$this->template->view('maintenance/inventory/list');
 	}
+
 }

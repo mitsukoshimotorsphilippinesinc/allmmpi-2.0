@@ -26,4 +26,18 @@ class Warehouse extends Admin_Controller {
 		$this->template->view('warehouse/dashboard');
 	}
 
+	public function reservation()
+	{
+
+		
+		//var_dump($this->user);
+
+		$where = "status = 'PENDING'";
+		$reservations = $this->spare_parts_model->get_warehouse_reservation($where);
+
+		var_dump($reservations);
+
+		$this->template->view('warehouse/reservation_listing');	
+	}
+
 }	
