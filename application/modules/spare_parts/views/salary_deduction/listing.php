@@ -119,8 +119,10 @@
 			}				
 
 			// get number of items
-			$where = "salary_deduction_id = " . $t->salary_deduction_id . " AND status NOT IN ('CANCELLED', 'DELETED')";
-			$salary_deduction_detail_info = $this->spare_parts_model->get_salary_deduction_detail($where);
+			//$where = "salary_deduction_id = " . $t->salary_deduction_id . " AND status NOT IN ('CANCELLED', 'DELETED')";
+			//$salary_deduction_detail_info = $this->spare_parts_model->get_salary_deduction_detail($where);
+			$where = "request_summary_id = " . $t->request_summary_id . " AND status NOT IN ('CANCELLED', 'DELETED')";
+			$salary_deduction_detail_info = $this->spare_parts_model->get_request_detail($where);
 
 			$total_items = 0;
 			foreach ($salary_deduction_detail_info as $wrdi) {
@@ -131,8 +133,10 @@
 			echo "<td  style='text-align:right;'>{$total_items}</td>";
 
 			// total amount
-			$where = "status IN ('PENDING') AND salary_deduction_id = " . $t->salary_deduction_id;
-			$salary_deduction_details = $this->spare_parts_model->get_salary_deduction_detail($where);
+			//$where = "status IN ('PENDING') AND salary_deduction_id = " . $t->salary_deduction_id;
+			//$salary_deduction_details = $this->spare_parts_model->get_salary_deduction_detail($where);
+			$where = "status IN ('PENDING') AND request_summary_id = " . $t->request_summary_id;
+			$salary_deduction_details = $this->spare_parts_model->get_request_detail($where);
 
 			$total_amount = 0;
 			if (count($salary_deduction_details) > 0) {
@@ -142,11 +146,10 @@
 			}
 			?>	
 			<td style='text-align:right'><?= number_format($total_amount, 2); ?></td>
-
-			?>				
+			
 			<td><?= $t->insert_timestamp; ?></td>
 
-			<td data1="<?= $t->salary_deduction_id ?>" data2="<?= $t->request_code ?>">				
+			<td data1="<?= $t->request_summary_id ?>" data2="<?= $t->request_code ?>">				
 				<a class='btn btn-small btn-info view-details' data='info' title="View Details"><i class="icon-white icon-list"></i></a>	
 				<?php
 				if ($t->status == 'PENDING') {

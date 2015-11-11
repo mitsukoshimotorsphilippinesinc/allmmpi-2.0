@@ -23,50 +23,40 @@
 	}
 ?>
 
-<ul class="member-login-ads" style="list-style: none;">
-	<li>		
-		<div id='slider-2' class="slider-horizontal" style="height:500px">
-			
-			<?php								
-				$login_ads = $this->asset_model->get_employee_login_ad("is_active = 1", "", "priority_id");
-				
-				if(!empty($login_ads))
-				{
-					foreach($login_ads as $g)
-					{
+<ul id="login_ads" style="list-style: none;">
 
-						//$member = $this->members_model->get_member_by_id($g->member_id);
-						if(!is_null($g->image_filename))
-						{
-							$image = $this->config->item('media_url') . '/employee_login_ads/' . $g->image_filename;
-							//$image = check_image_path($image. 0, 1, 1);
-							//$image = 'http://mmpi.local/assets/media/employee_login_ads/' . $g->image_filename;
-							
-						} else {
-							$image = $this->config->item('media_url') . '/employee_login_ads/' . $g->image_filename;
-							$image = check_image_path($image. 1, 1, 1);
-							
-						}
-			?>
-				<div class='member-image'>
-					<div class='member-image' style="width:500px;height:500px">
-						<a  href="<?= $image ?>" target="_blank"><img src="<?= $this->config->item('admin_base_url') . $image ?>" class="member-login-ads-image" style="width:100%;height:500px"></img><?= $this->config->item('admin_base_url') ?></a>
-						<!--a href="<?= $image ?>" target="_blank"><?= $image ?></a-->
-					</div>					
-				</div>
+	<?php								
+		$login_ads = $this->asset_model->get_employee_login_ad("is_active = 1", "", "priority_id");
+		
+		if(!empty($login_ads))
+		{
+			foreach($login_ads as $g)
+			{				
+				if(!is_null($g->image_filename))
+				{
+					$image = $this->config->item('media_url') . '/employee_login_ads/' . $g->image_filename;						
 					
-			<?php
-					}
+				} else {
+					$image = $this->config->item('media_url') . '/employee_login_ads/' . $g->image_filename;
+					//$image = check_image_path($image. 1, 1, 1);
 					
 				}
-			?>
-		</div>
-		<div style="clear:both;"></div>
-	</li>	
+				
+		?>
+
+		<li>
+			<a href="#"><img src="<?= $this->config->item('admin_base_url') . $image ?>" alt="Login Ads" /></a>
+		</li>	
+		
+		<?php
+			}
+		}
+		?>
 </ul>
+
 <?php
 	//random number generator
-	$slider2_random = rand(2, 5);
+	//$slider2_random = rand(2, 5);
 	$slider_speed = abs($this->setting->employee_login_ad_speed);
 	
 ?>
@@ -136,48 +126,20 @@
 <div class="clearfix"></div>
 <div class="login-ads pull-right">
 </div>
-
-
+<br/>
+<br/>
+<br/>
+<br/>
 <script>
 	$(document).ready(function (){
 
+		$('#login_ads').innerfade({
+			speed: 'slow',
+			timeout: <?= $slider_speed ?>,
+			type: 'sequence',
+			containerheight: '10px'
+		});
 	});
-	
-	$("#slider-2").FlowSlider({
-		detectTouchDevice: false,
-		infinite: true,
-		marginStart: 0,
-		marginEnd: 0,
-		startPosition: 0,
-		position: 0,
-		controllers: ["Timer"],
-		controllerOptions: [
-			{
-				el: $(document),
-				eventStart: "ready",
-				step: 500,
-				time: $("#random-slider-2").val(),
-				rewind: true,
-			}
-		]
-	});
-
-    var imgs = $("#slider-2 .member-login-ads-image");
-    var count = imgs.length;
-    if (count) {
-
-        imgs.each(function(index, elem){
-
-            $(elem).load(function(){
-                count--;
-                console.log("count:" +count);
-                if (count==0) {
-                    setTimeout(function(){$("#slider-2").css("visibility","visible")},700);
-                }
-            });
-        });
-
-    }setTimeout(function(){$("#slider-2").css("visibility","visible");},700);
-
-    
+	 
 </script>
+<br/>

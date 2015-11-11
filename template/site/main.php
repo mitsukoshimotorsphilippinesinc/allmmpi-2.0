@@ -26,7 +26,7 @@
 	<?php echo js('libs/underscore-min.js'); ?>
 	<?php echo js('libs/bootstrap.min.js'); ?>
 	<?php echo js('libs/jquery.countdown.min.js'); ?>
-	<?php echo js('libs/tweet/jquery.tweet.js'); ?>
+	<?php echo js('libs/jquery-innerfade/js/jquery.innerfade.js'); ?>
 	<?php echo js('libs/slides.min.jquery.js'); ?>
 	<?php echo js('libs/yoxview/yoxview-init.js'); ?>
 	<?php echo js('apps/core.js'); ?>

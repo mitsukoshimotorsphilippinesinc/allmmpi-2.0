@@ -96,7 +96,7 @@ function return_reserved_items($request_code, $reservation_status, $remarks, $re
 } // end function
 
 
-function get_items_total_amount($request_code) {
+function get_items_total_amount_old($request_code) {
 	
 	$ci = ci();
 
@@ -126,6 +126,46 @@ function get_items_total_amount($request_code) {
 								is_" . $department_module_details->segment_name . "_detail a
 							WHERE
 								a." . $department_module_details->segment_name . "_id = '" . $request_summary->id . "' 
+							AND 
+								a.status NOT IN ('CANCELLED', 'DELETED')";
+
+	$request_item_amount_total = $ci->db_spare_parts->query($request_item_amount_total_sql);
+	$request_item_amount_total = $request_item_amount_total->result();						
+	$request_item_amount_total = $request_item_amount_total[0];
+
+	return $request_item_amount_total;
+}
+
+function get_items_total_amount($request_code) {
+	
+	$ci = ci();
+
+	$ci->load->model('spare_parts_model');
+	
+	$ci->db_spare_parts = $ci->load->database('spare_parts', TRUE);
+
+	// identify which module
+	$module_code = substr($request_code, 0, 2);
+	$department_module_details = $ci->spare_parts_model->get_department_module_by_code($module_code);
+
+	// request_summary
+	$request_summary_sql = "SELECT a.`request_summary_id` as id, a.* FROM
+							is_request_summary a
+						WHERE
+						a.`request_code` = '" . $request_code . "'";
+
+	$request_summary = $ci->db_spare_parts->query($request_summary_sql);
+	$request_summary = $request_summary->result();		
+	$request_summary = $request_summary[0];		
+
+	$request_item_amount_total_sql = "SELECT 
+								a.`request_summary_id` as id, 
+								(SUM(a.`good_quantity`) + SUM(a.`bad_quantity`)) AS total_items, 
+								(SUM(a.`total_amount`)) AS total_amount 
+							FROM
+								is_request_detail a
+							WHERE
+								a.`request_summary_id` = '" . $request_summary->id . "' 
 							AND 
 								a.status NOT IN ('CANCELLED', 'DELETED')";
 
