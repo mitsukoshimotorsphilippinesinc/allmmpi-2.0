@@ -36,9 +36,11 @@ class Spare_parts_model extends Base_Model
 			'department' => 'rf_department',
 			'reprocessed_item' => 'is_reprocessed_item',
 			'warehouse_return' => 'tr_warehouse_return',
-			'spare_parts' => 'rf_spare_part',			
+			'spare_part' => 'rf_spare_part',			
 			'counter_summary' => 'is_counter_order_summary',
-			'counter_detail' => 'is_counter_order_detail'
+			'counter_detail' => 'is_counter_order_detail',
+			'request_summary' => 'is_request_summary',
+			'request_detail' => 'is_request_detail',
 		);
 
 	}
@@ -68,14 +70,6 @@ class Spare_parts_model extends Base_Model
 	{
 		return $this->insert('counter_detail', $data);
 	}
-
-	function get_spare_part($where = null, $limit = null, $orderby = null, $fields = null) 
-	{
-		$query = $this->fetch('spare_parts', $fields, $where, $orderby, $limit);
-		$row = $query->result();
-		$query->free_result();
-		return $row;
-    }
 
 	// is_salary_deduction
 	function get_salary_deduction($where = null, $limit = null, $orderby = null, $fields = null) 
@@ -1555,9 +1549,198 @@ class Spare_parts_model extends Base_Model
 	}
 		
 	// ===========================================================================
+	// ===========================================================================	
+	// is_request_summary
+	function get_request_summary($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('request_summary', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+    }
 
-	// ===========================================================================
-	// OTHER FUNCTIONS
+	function insert_request_summary($data) 
+	{
+		return $this->insert('request_summary', $data);
+	}
+
+	function update_request_summary($data, $where) 
+	{
+		return $this->update('request_summary', $data, $where);
+	}
+
+	function delete_request_summary($where) 
+	{
+		return $this->delete('request_summary', $where);
+	}
+
+	function get_request_summary_by_id($request_summary_id) 
+	{
+		$result = $this->get_request_summary(array('request_summary_id' => $request_summary_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+	
+	function get_request_summary_by_code($request_code) 
+	{
+		$result = $this->get_request_summary(array('request_code' => $request_code));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+	
+	function get_request_summary_count($where = null) {
+		// do a sql count instead of row count
+		$query = $this->fetch('request_summary', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+	
+	function search_request_summary($search, $query, $limit = null, $orderby = null, $fields = null)
+	{
+		// clear previous get request
+		$this->db->flush_cache();
+
+		$this->db->distinct();
+		$this->db->like($search,$query,'both');
+		
+		// No override function, procede with fetch
+		($fields!=null) ? $this->db->select($fields) : '';
+		($limit!=null) ? $this->db->limit($limit['rows'],$limit['offset']) : '';
+		($orderby!=null) ? $this->db->order_by($orderby) : '';
+
+		// set table to use
+		$this->db->from($this->_TABLES['request_summary']);
+		$result = $this->db->get();
+
+		$row = $result->result();
+		$result->free_result();
+		return $row;
+	}
 	
 
+	// is_request_detail
+	function get_request_detail($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('request_detail', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+    }
+
+	function insert_request_detail($data) 
+	{
+		return $this->insert('request_detail', $data);
+	}
+
+	function update_request_detail($data, $where) 
+	{
+		return $this->update('request_detail', $data, $where);
+	}
+
+	function delete_request_detail($where) 
+	{
+		return $this->delete('request_detail', $where);
+	}
+
+	function get_request_detail_by_id($request_detail_id) 
+	{
+		$result = $this->get_request_detail(array('request_detail_id' => $request_detail_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+	
+	function get_request_detail_by_request_summary_id($request_summary_id) 
+	{
+		$result = $this->get_salary_request_detail(array('request_summary_id' => $request_summary_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+	
+	function get_request_detail_count($where = null) {
+		// do a sql count instead of row count
+		$query = $this->fetch('request_detail', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+	
+	function search_request_detail($search, $query, $limit = null, $orderby = null, $fields = null)
+	{
+		// clear previous get request
+		$this->db->flush_cache();
+
+		$this->db->distinct();
+		$this->db->like($search,$query,'both');
+		
+		// No override function, procede with fetch
+		($fields!=null) ? $this->db->select($fields) : '';
+		($limit!=null) ? $this->db->limit($limit['rows'],$limit['offset']) : '';
+		($orderby!=null) ? $this->db->order_by($orderby) : '';
+
+		// set table to use
+		$this->db->from($this->_TABLES['request_detail']);
+		$result = $this->db->get();
+
+		$row = $result->result();
+		$result->free_result();
+		return $row;
+	}	
+
+	// ==========================================
+	// rf_spare_part
+	function get_spare_part($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('spare_part', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+    }
+
+    function insert_spare_part($data) 
+	{
+		return $this->insert('spare_part', $data);
+	}
+
+	function update_spare_part($data, $where) 
+	{
+		return $this->update('spare_part', $data, $where);
+	}
+
+	function delete_spare_part($where) 
+	{
+		return $this->delete('spare_part', $where);
+	}
+
+	function get_spare_part_by_sku($sku) 
+	{
+		$result = $this->get_spare_part(array('sku' => $sku));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+	
+	function get_spare_part_count($where = null) {
+		// do a sql count instead of row count
+		$query = $this->fetch('spare_part', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+	
+	
 }
