@@ -4,6 +4,7 @@ SetEnv BEYOND_ENV development
 
 # Make sure directory listing is disabled
 Options +FollowSymLinks -Indexes
+
 AddDefaultCharset utf-8
 #ExpiresActive On
 FileETag none
@@ -21,10 +22,10 @@ RedirectMatch 403 ^/(\.git|\.hg).*$
         Header set Cache-Control "max-age=604800, public, no-transform"
 </filesMatch>
 
-AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css application/x-javascript application/javascript application/json
+#AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css application/x-javascript application/javascript application/json
 
 <IfModule mod_expires.c>
-    ExpiresActive On
+#   ExpiresActive On
     ExpiresDefault "access plus 10 days"
     ExpiresByType text/css "access plus 1 week"
     ExpiresByType text/plain "access plus 1 month"
@@ -53,10 +54,13 @@ AddType font/opentype                  svg
 
 RewriteEngine on
 
-RedirectMatch 404 ^/(application\/cache|application|system|template|\.git|\.hg).*$
+RedirectMatch 404 ^/(application\/cache|application|system|main|member|ordering|\.git|\.hg).*$
 
 RewriteCond $1 !^(index\.php|assets|robots\.txt|favicon\.ico)
 RewriteCond  %{REQUEST_FILENAME}    !-f
 RewriteCond  %{REQUEST_FILENAME}    !-d
 
 RewriteRule ^(.*)$ index.php/$1 [L]
+
+q!
+
