@@ -23,7 +23,7 @@ body{
 header{
 	height: 100px;
 	min-width: 1100px;
-	background: rgba(0, 0, 0, 0) url("../img/footer-1024x100.jpg") repeat scroll 0 0;
+	background: rgba(0, 0, 0, 0) url("../img/header-1800x100.jpg") repeat scroll 0 0;
 }
 header > div{
 	width: 960px;
@@ -41,12 +41,11 @@ header > div h1 a{
 	text-indent: -9999px;
 }
 header > div h1 a:last-child{
-	background: url(http://portal.mmpi.local/assets/img/header-logo.png) no-repeat;
-	/*width: 134px;*/
-	/*height: 67px;*/
+	background: url(http://portal.mmpi.local/assets/img/header-logo.png) no-repeat;	
 	width: 300px;
 	height: 80px;
-	margin-top: 10px;
+	margin-left: -40px;
+	margin-top: 5px;
 }
 header > div ul{
 
@@ -1678,7 +1677,7 @@ footer .grid12 a:hover{
 }
 
 .navbar .nav > li.dropdown-auto > a {
-  color: #333;
+  color: #CCCCCC;
 }
 
 .navbar .nav > li.dropdown-auto:hover > .dropdown-menu li:not(.divider):hover {
