@@ -82,7 +82,7 @@ class S4s extends Site_Controller
 				foreach($s4s as $s) {
 
 					$html .= "<tr> 
-								<td><a href='/employee/s4s/swf_viewport(xmin, xmax, ymin, ymax)w/{$s->s4s_id}' target='_blank' class='link-elearn' data='{$s->s4s_id}'>{$s->pp_name}</a></td>
+								<td><a href='/employee/s4s/view/{$s->s4s_id}' target='_blank' class='link-elearn' data='{$s->s4s_id}'>{$s->pp_name}</a></td>
 								<td>{$s->pp_description}</td>						
 								<td>{$s->insert_timestamp}</td>
 								<td>{$s->insert_timestamp}</td>
