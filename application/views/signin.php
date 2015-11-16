@@ -12,6 +12,35 @@
 	$this->load->model('members_model');
 ?>
 
+<ul id="news">
+	<li>
+		<a href="#n1">1 Lorem ipsum dolor</a>
+	</li>
+	<li>
+		<a href="#n2">2 Sit amet, consectetuer</a>
+	</li>
+	<li>
+		<a href="#n3">3 Sdipiscing elit,</a>
+	</li>
+	<li>
+		<a href="#n4">4 sed diam nonummy nibh euismod tincidunt ut</a>
+	</li>
+	<li>
+		<a href="#n5">5 Nec Lorem.</a>
+	</li>
+	<li>
+		<a href="#n6">6 Et eget.</a>
+	</li>
+	<li>
+		<a href="#n7">7 Leo orci pede.</a>
+	</li>
+	<li>
+		<a href="#n8">8 Ratio randorus wil.</a>
+	</li>
+</ul>
+
+
+
 <ul class="member-login-ads" style="list-style: none;">
 	<li>		
 		<div id='slider-2' class="slider-horizontal" style="height:800px">

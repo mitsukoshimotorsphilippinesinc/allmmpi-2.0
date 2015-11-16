@@ -14,6 +14,7 @@ class Warehouse_request extends Admin_Controller {
 		$this->load->library('pager');		
 		$this->load->helper("spare_parts_helper");
 		$this->load->helper("breadcrumb_helper");
+		$this->load->helper("systems_helper");
 
 		$this->db_spare_parts = $this->load->database('spare_parts', TRUE);
 
@@ -37,6 +38,8 @@ class Warehouse_request extends Admin_Controller {
 		$count_is = 0;
 		$transfers = "";
 		$request_search_by = "";
+
+		$module_id = get_department_module_id();
 
 		if ($search_by == 'name') {
 			$request_search_by = "id_number";
@@ -68,15 +71,15 @@ class Warehouse_request extends Admin_Controller {
 		}
 
 		if (empty($search_status)) {
-			$where = "status IN ('FOR APPROVAL', 'APPROVED', 'DENIED', 'CANCELLATION-FOR APPROVAL', 'CANCELLATION-APPROVED', 'CANCELLATION-DENIED')";
+			$where = "department_module_id = {$module_id} AND status IN ('FOR APPROVAL', 'APPROVED', 'DENIED', 'CANCELLATION-FOR APPROVAL', 'CANCELLATION-APPROVED', 'CANCELLATION-DENIED')";
 			//$where = "";
 		} else {
 
 			if ($search_status == 'ALL') {
-				$where = "status IN ('FOR APPROVAL', 'APPROVED', 'DENIED', 'CANCELLATION-FOR APPROVAL', 'CANCELLATION-APPROVED', 'CANCELLATION-DENIED')";
+				$where = "department_module_id = {$module_id} AND status IN ('FOR APPROVAL', 'APPROVED', 'DENIED', 'CANCELLATION-FOR APPROVAL', 'CANCELLATION-APPROVED', 'CANCELLATION-DENIED')";
 				//$where = "";
 			} else {
-				$where = "status = '". $search_status ."'";
+				$where = "department_module_id = {$module_id} AND status = '". $search_status ."'";
 			}			
 		
 			if ($where != NULL) {
@@ -95,7 +98,8 @@ class Warehouse_request extends Admin_Controller {
 		// set pagination data
 		$config = array(
 				'pagination_url' => "/spare_parts/warehouse_request/approval/",
-				'total_items' => $this->spare_parts_model->get_warehouse_request_count($where),
+				//'total_items' => $this->spare_parts_model->get_warehouse_request_count($where),
+				'total_items' => $this->spare_parts_model->get_request_summary_count($where),
 				'per_page' => 10,
 				'uri_segment' => 4,
 		);
@@ -237,7 +241,8 @@ class Warehouse_request extends Admin_Controller {
 		$warehouse_request_code = $this->input->post("warehouse_request_code");
 		$listing_action = $this->input->post("listing_action");
 		
-		$warehouse_request = $this->spare_parts_model->get_warehouse_request_by_id($warehouse_request_id);		
+		//$warehouse_request = $this->spare_parts_model->get_warehouse_request_by_id($warehouse_request_id);		
+		$warehouse_request = $this->spare_parts_model->get_request_summary_by_id($warehouse_request_id);		
 
 		if (empty($warehouse_request)) {		
 			$html = "<p>There is something wrong with this transaction [Request Code: {$warehouse_request_code}].</p>";
@@ -247,8 +252,10 @@ class Warehouse_request extends Admin_Controller {
 			
 		} else {
 
-			$where = "warehouse_request_id = {$warehouse_request_id}";
-			$warehouse_request_details = $this->spare_parts_model->get_warehouse_request_detail($where);
+			//$where = "warehouse_request_id = {$warehouse_request_id}";
+			//$warehouse_request_details = $this->spare_parts_model->get_warehouse_request_detail($where);
+			$where = "request_summary_id = {$warehouse_request_id}";
+			$warehouse_request_details = $this->spare_parts_model->get_request_detail($where);
 			
 			$department_module_details = $this->spare_parts_model->get_department_module_by_segment_name($this->segment_name);	
 
@@ -319,16 +326,19 @@ class Warehouse_request extends Admin_Controller {
 			}
 		} 
 
+		// get module_id
+		$module_id = get_department_module_id();		
+
 		if (empty($search_status)) {
 			//$where = "status IN ('PENDING', 'FOR APPROVAL', 'FOR CANCELLATION', 'APPROVED', 'DENIED', 'DENIED (COMPLETED)', 'PROCESSING', 'ON PROCESS', 'COMPLETED', 'CANCELLED', 'CANCELLED (COMPLETED)', 'FORWARDED')";
-			$where = "";
+			$where = "department_module_id = {$module_id}";
 		} else {
 
 			if ($search_status == 'ALL') {
 				//$where = "status IN ('PENDING', 'FOR APPROVAL', 'FOR CANCELLATION', 'APPROVED', 'DENIED', 'DENIED (COMPLETED)', 'PROCESSING', 'ON PROCESS', 'COMPLETED', 'CANCELLED', 'CANCELLED (COMPLETED)', 'FORWARDED')";
-				$where = "";
+				$where = "department_module_id = {$module_id}";
 			} else {
-				$where = "status = '". $search_status ."'";
+				$where = "department_module_id = {$module_id} status = '". $search_status ."'";
 			}
 				
 			if ($where != NULL) {
@@ -338,23 +348,25 @@ class Warehouse_request extends Admin_Controller {
 					$where = $where . " AND ". $search_by ." LIKE '%" . $search_text . "%'";
 			} else {
 				if ($search_by == 'name')
-					$where = $request_search_by ." IN (" . $where_id_numbers . ")";
+					$where = "department_module_id = {$module_id} AND " . $request_search_by ." IN (" . $where_id_numbers . ")";
 				else
-					$where = $search_by ." LIKE '%" . $search_text . "%'";
+					$where = "department_module_id = {$module_id} AND " . $search_by ." LIKE '%" . $search_text . "%'";
 			}
-		}	
+		}		
 
 		// set pagination data
 		$config = array(
 				'pagination_url' => "/spare_parts/warehouse_request/listing/",
-				'total_items' => $this->spare_parts_model->get_warehouse_request_count($where),
+				//'total_items' => $this->spare_parts_model->get_warehouse_request_count($where),
+				'total_items' => $this->spare_parts_model->get_request_summary_count($where),
 				'per_page' => 10,
 				'uri_segment' => 4,
 		);
 
 		$this->pager->set_config($config);
 
-		$transfers = $this->spare_parts_model->get_warehouse_request($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");			
+		//$transfers = $this->spare_parts_model->get_warehouse_request($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");
+		$transfers = $this->spare_parts_model->get_request_summary($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");	
 		
 		// search vars
 		$this->template->search_status = $search_status;
@@ -818,7 +830,8 @@ class Warehouse_request extends Admin_Controller {
 
 		$department_module_details = $this->spare_parts_model->get_department_module_by_segment_name($this->segment_name);
 		
-		$warehouse_request_details = $this->spare_parts_model->get_warehouse_request_by_id($warehouse_request_id);
+		//$warehouse_request_details = $this->spare_parts_model->get_warehouse_request_by_id($warehouse_request_id);
+		$warehouse_request_details = $this->spare_parts_model->get_request_summary_by_id($warehouse_request_id);
 
 		if (!empty($warehouse_request_details)) {
 			$requester_details = $this->human_relations_model->get_employment_information_view_by_id($warehouse_request_details->id_number);
@@ -834,8 +847,10 @@ class Warehouse_request extends Admin_Controller {
 			$this->template->request_item_amount_total = $request_item_amount_total;
 
 			// get request items
-			$where = "status NOT IN ('CANCELLED', 'DELETED') AND warehouse_request_id = " . $warehouse_request_id;
-			$warehouse_request_detail_details = $this->spare_parts_model->get_warehouse_request_detail($where);
+			//$where = "status NOT IN ('CANCELLED', 'DELETED') AND warehouse_request_id = " . $warehouse_request_id;
+			//$warehouse_request_detail_details = $this->spare_parts_model->get_warehouse_request_detail($where);
+			$where = "status NOT IN ('CANCELLED', 'DELETED') AND request_summary_id = " . $warehouse_request_id;			
+			$warehouse_request_detail_details = $this->spare_parts_model->get_request_detail($where);
 
 			$json_items = array();
 			for($k = 0;$k<count($warehouse_request_detail_details);$k++)
@@ -844,7 +859,8 @@ class Warehouse_request extends Admin_Controller {
 				
 				//$total_amount = $total_amount + ($item_qty[$k]*$item_price[$k]);
 				$po_items = array(
-						'warehouse_request_detail_id' => $warehouse_request_detail_id,
+						//'warehouse_request_detail_id' => $warehouse_request_detail_id,
+						'request_detail_id' => $warehouse_request_detail_id,
 						'item_id' => $warehouse_request_detail_details[$k]->item_id,
 						'srp' => $warehouse_request_detail_details[$k]->srp,
 						'discount' => $warehouse_request_detail_details[$k]->discount,
@@ -1136,7 +1152,7 @@ class Warehouse_request extends Admin_Controller {
 
 			$current_datetime = date('Y-m-d H:i:s');						
 
-			$sql = "INSERT INTO 
+			/*$sql = "INSERT INTO 
 						is_warehouse_request 
 						(
 							`request_series`, 
@@ -1164,24 +1180,71 @@ class Warehouse_request extends Admin_Controller {
                     		request_series = '{$request_series}' 
 	                    ORDER BY 
 	                    	request_number DESC
+                    	)";*/
+
+			// get module_id
+			$module_id = get_department_module_id();
+
+			$sql = "INSERT INTO 
+						is_request_summary	 
+						(
+							`request_series`, 
+							`request_number`, 
+							`id_number`, 
+							/*`warehouse_approved_by`, */
+							/*`warehouse_id`, */
+							`motorcycle_brand_model_id`, 
+							`engine`, 
+							`chassis`,
+							`department_module_id`
+						)
+                    	(
+                    	SELECT 
+                    		'{$request_series}', 
+                    		IFNULL(MAX(request_number) + 1, 1) AS request_number, 
+                    		'{$requester_id}', 
+                    		/*'{$manager_id_number}',*/
+                            /*'{$warehouse_id}', */
+                            '{$brandmodel_id}', 
+                            '{$engine}',
+                            '{$chassis}',
+                            '{$module_id}'
+                    	FROM 
+                    		is_request_summary
+                    	WHERE 
+                    		request_series = '{$request_series}' 
+                    	AND 
+                    		department_module_id = '{$module_id}'	
+	                    ORDER BY 
+	                    	request_number DESC
                     	)";
 
 			$this->db_spare_parts->query($sql);	
 
 			// get last insert id
-			$sql = "SELECT LAST_INSERT_ID() AS last_id FROM is_warehouse_request";
+			//$sql = "SELECT LAST_INSERT_ID() AS last_id FROM is_warehouse_request";
+			$sql = "SELECT LAST_INSERT_ID() AS last_id FROM is_request_summary WHERE department_module_id = '{$module_id}'";
 			$query = $this->db_spare_parts->query($sql);
 			$warehouse_request_id = $query->first_row();
 
 			$active_warehouse_request_id = $warehouse_request_id->last_id;
 
 			// generate request code
-			$sql = "SELECT 
+			/*$sql = "SELECT 
 						CONCAT('{$module_code}', '{$request_series}', '-', LPAD(request_number, 5, 0)) AS gen_code
 					FROM
 						is_warehouse_request		
                     WHERE 
-                    	warehouse_request_id = " . $active_warehouse_request_id;
+                    	warehouse_request_id = " . $active_warehouse_request_id;*/
+
+            $sql = "SELECT 
+						CONCAT('{$module_code}', '{$request_series}', '-', LPAD(request_number, 5, 0)) AS gen_code
+					FROM
+						is_request_summary
+                    WHERE 
+                    	department_module_id = '{$module_id}'
+                    AND
+                    	request_summary_id = " . $active_warehouse_request_id;             	
 
             $query = $this->db_spare_parts->query($sql);
 			$request_code_details = $query->first_row();  
@@ -1203,8 +1266,9 @@ class Warehouse_request extends Admin_Controller {
 				$data_update['remarks'] = $requester_remarks_encoded;
 			}
 
-			$where_update = "warehouse_request_id = " . $active_warehouse_request_id;
-			$this->spare_parts_model->update_warehouse_request($data_update, $where_update);
+			$where_update = "request_summary_id = " . $active_warehouse_request_id;
+			//$this->spare_parts_model->update_warehouse_request($data_update, $where_update);
+			$this->spare_parts_model->update_request_summary($data_update, $where_update);
 
             //get department module id
             $department_module_details = $this->spare_parts_model->get_department_module_by_code($module_code);        
@@ -1238,7 +1302,7 @@ class Warehouse_request extends Admin_Controller {
 
 		// add item to details table
 		$data_insert = array(
-				'warehouse_request_id' => $active_warehouse_request_id,
+				'request_summary_id' => $active_warehouse_request_id,
 				'item_id' => $item_id,
 				'srp' => $srp,
 				'discount' => $discount,
@@ -1259,7 +1323,8 @@ class Warehouse_request extends Admin_Controller {
 			$data_insert['remarks'] = $item_remarks_encoded;
 		}
 
-		$this->spare_parts_model->insert_warehouse_request_detail($data_insert);
+		//$this->spare_parts_model->insert_warehouse_request_detail($data_insert);
+		$this->spare_parts_model->insert_request_detail($data_insert);
 
 		$active_warehouse_request_detail_id = $this->spare_parts_model->insert_id();
 

@@ -13,8 +13,7 @@ class Upload extends Base_Controller {
     public function process()
     {
 	
-        //$target_path = FCPATH . "assets/media/tmp/";
-        $target_path = FCPATH . "assets\\media\\tmp\\"; // WINDOWS
+        $target_path = FCPATH . "assets/media/tmp/";        
 		$allowedExts = array();
 		$maxFileSize = 0;
 	

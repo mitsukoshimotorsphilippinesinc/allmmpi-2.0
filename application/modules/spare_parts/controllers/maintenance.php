@@ -691,4 +691,208 @@ class Maintenance extends Admin_Controller {
 		$this->template->view('maintenance/inventory/list');
 	}
 
+
+	// SPARE PART
+	// ------------------------------------------
+	private $_spare_parts_validation_rule = array(
+		array(
+			'field' => 'complete_name',
+			'label' => 'Complete Name',
+			'rules' => 'trim|required'
+		),
+		array(
+			'field' => 'complete_address',
+			'label' => 'Complete Address',
+			'rules' => 'trim|required'
+		),
+		array(
+			'field' => 'contact_number',
+			'label' => 'Contact Number',
+			'rules' => 'trim|required'
+		),
+		array(
+			'field' => 'is_active',
+			'label' => 'Is Active',
+			'rules' => 'trim|required'
+		)
+	);
+
+	public function spare_parts()
+	{
+		$search_by = trim($this->input->get("search_option"));
+		$search_text = trim($this->input->get("search_string"));
+
+
+		$search_url = "";
+
+		if (($search_text == "") || empty($search_text)) {
+			$where = NULL;			
+		} else {
+			$where = "{$search_by} LIKE LOWER('%{$search_text}%')";
+			$search_url = "?search_option=" . $search_by . "&search_string=" . $search_text;
+		}	
+
+
+		// set pagination data
+		$config = array(
+		    'pagination_url' => '/spare_parts/maintenance/spare_parts/',
+		    'total_items' => $this->spare_parts_model->get_spare_part_count($where),
+		    'per_page' => 30,
+		    'uri_segment' => 4,
+		);
+
+		// search vars
+		$this->template->search_by = $search_by;
+		$this->template->search_text = $search_text;
+		$this->template->search_url = $search_url;
+		
+		$this->pager->set_config($config);
+		$this->template->spare_parts = $this->spare_parts_model->get_spare_part(null, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), 'sku');
+		$this->template->view('maintenance/spare_parts/list');
+	}
+
+	public function add_spare_part()
+	{
+		if ($_POST)
+		{
+			// post done here
+			$this->form_validation->set_rules($this->_agents_validation_rule);
+			if ($this->form_validation->run())
+			{
+				$this->spare_parts_model->update_spare_part(array('is_active' => 0),array());
+
+				// insert the new results
+				$data = array(
+					'complete_name' => strtoupper(set_value('complete_name')),
+					'complete_address' => strtoupper(set_value('complete_address')),					
+					'contact_number' => strtoupper(set_value('contact_number'))
+				);
+				$this->spare_parts_model->insert_spare_part($data);
+				
+				$insert_id = $this->spare_parts_model->insert_id();
+				
+				/*//logging of action
+				$details_after = array('id' => $insert_id, 'details' => $data);
+				$details_after = json_encode($details_after);
+				$add_result_log_data = array(
+					'user_id' => $this->user->user_id,
+					'module_name' => 'RESULTS',
+					'table_name' => 'sm_results',
+					'action' => 'ADD',
+					'details_after' => $details_after,
+					'remarks' => "",
+				);
+
+				$this->tracking_model->insert_logs('admin', $add_result_log_data);
+				*/
+				redirect('/spare_parts/maintenance/spare_parts');
+				return;
+			}
+		}
+		$this->template->view('spare_parts/maintenance/spare_parts/add');
+	}
+
+	public function edit_spare_part($sku = 0)
+	{
+		$spare_part_details = $this->spare_parts_model->get_spare_part_by_sku($sku);
+
+		if ($_POST and !empty($spare_part_details))
+		{
+			// post done here
+			$this->form_validation->set_rules($this->_spare_parts_validation_rule);
+
+			if ($this->form_validation->run())
+			{
+				//$this->spare_parts_model->update_agent(array('is_active' => 0),array());
+				// insert the new results
+				$data = array(					
+					'complete_name' => strtoupper(set_value('complete_name')),
+					'complete_address' => strtoupper(set_value('complete_address')),
+					'contact_number' => strtoupper(set_value('contact_number')),
+					'is_active' => set_value('is_active'),
+				);
+
+				$this->spare_parts_model->update_spare_part($data, array('sku' => $sku));
+				
+				/*//logging of action
+				$details_before = array('id' => $result_id, 'details' => array());
+				$details_after = array('id' => $result_id, 'details' => array());
+				
+				foreach($data as $k => $v)
+				{
+					if($result->$k != $v)
+					{
+						$details_before['details'][$k] = $result->$k;
+						$details_after['details'][$k] = $v;
+					}
+				}
+				$details_before = json_encode($details_before);
+				$details_after = json_encode($details_after);
+				$update_result_log_data = array(
+					'user_id' => $this->user->user_id,
+					'module_name' => 'RESULTS',
+					'table_name' => 'sm_results',
+					'action' => 'UPDATE',
+					'details_before' => $details_before,
+					'details_after' => $details_after,
+					'remarks' => "",
+				);
+
+				$this->tracking_model->insert_logs('admin', $update_result_log_data);*/
+				
+				redirect('/spare_parts/maintenance/spare_parts');
+				return;
+			}
+		}
+
+		$this->template->spare_part_details = $spare_part_details;
+		$this->template->view('spare_parts/maintenance/spare_parts/edit');
+
+	}
+
+	public function delete_spare_part($sku = 0)
+	{
+		$spare_part_details = $this->spare_parts_model->get_spare_part_by_sku($sku);
+
+		if ($_POST and !empty($spare_part_details))
+		{
+			$_sku = $this->input->post('_sku');
+			if (!empty($_sku)) if ($_sku == $agent_id)
+			{
+				$this->spare_parts_model->delete_spare_part(array('sku' => $sku));
+				
+				/*//logging of action
+				$details_before = array('id' => $sku, 'details' => $spare_part_details);
+				$details_before = json_encode($details_before);
+				
+				$delete_announcement_log_data = array(
+					'user_id' => $this->user->user_id,
+					'module_name' => 'RESULTS',
+					'table_name' => 'sm_results',
+					'action' => 'DELETE',
+					'details_before' => $details_before,
+					'remarks' => "",
+				);
+
+				$this->tracking_model->insert_logs('admin', $delete_announcement_log_data);*/
+				
+				redirect('/spare_parts/maintenance/spare_parts');
+				return;
+			}
+		}
+
+		$this->template->spare_part_details = $spare_part_details;
+		$this->template->view('spare_parts/maintenance/spare_parts/delete');
+
+	}
+
+	public function view_spare_part($sku = 0)
+	{
+		$spare_part_details = $this->spare_parts_model->get_spare_part_by_sku($sku);
+
+		$this->template->spare_part_details = $spare_part_details;
+		$this->template->view('spare_parts/maintenance/spare_parts/view');
+
+	}
+
 }

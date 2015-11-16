@@ -67,13 +67,13 @@
 					?>
 					<td><strong>Approved By (Warehouse):</strong></td>					
 					<?php
-					$warehouse_approvedby_details = $this->human_relations_model->get_employment_information_by_id($segment_request_summary->warehouse_approved_by);
+					//$warehouse_approvedby_details = $this->human_relations_model->get_employment_information_by_id($segment_request_summary->warehouse_approved_by);
 
-					if (count($warehouse_approvedby_details) == 0) {
+					//if (count($warehouse_approvedby_details) == 0) {
 						echo "<td>N/A</td>";
-					} else { 
-						echo "<td>{$warehouse_approvedby_details->complete_name}</td>"; 
-					}		
+					//} else { 
+					//	echo "<td>{$warehouse_approvedby_details->complete_name}</td>"; 
+					//}		
 					?>					
 				</tr>
 				<tr>
@@ -84,7 +84,7 @@
 								";	
 					} else {			
 						echo "<td><strong>MTR Number:</strong></td>
-								<td>{$segment_request_summary->mtr_number}</td>
+								<td>{$segment_request_summary->cross_reference_number}</td>
 								";
 					}
 					?>

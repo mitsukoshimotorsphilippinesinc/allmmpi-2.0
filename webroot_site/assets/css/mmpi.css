@@ -23,7 +23,7 @@ body{
 header{
 	height: 100px;
 	min-width: 1100px;
-	background: rgba(0, 0, 0, 0) url("../img/footer_bg.png") repeat scroll 0 0;
+	background: rgba(0, 0, 0, 0) url("../img/header-1800x100.jpg") repeat scroll 0 0;
 }
 header > div{
 	width: 960px;
@@ -41,12 +41,11 @@ header > div h1 a{
 	text-indent: -9999px;
 }
 header > div h1 a:last-child{
-	background: url(http://portal.mitsukoshimotors.com/assets/img/mmpi_logo2.png) no-repeat;
-	/*width: 134px;*/
-	/*height: 67px;*/
+	background: url("../img/header-logo.png") no-repeat;	
 	width: 300px;
 	height: 80px;
-	margin-top: 10px;
+	margin-left: -40px;
+	margin-top: 5px;
 }
 header > div ul{
 
@@ -785,7 +784,7 @@ a > i.icon-blue-arrow{
 /***** =footer *****/
 footer{
 	height: 20%;
-	background: url(../img/footer_bg.png) repeat;
+	background: url(../img/footer-1024x100.jpg) repeat;
 	/* commented since raffle promos are not visible */
 	/*margin-top: 200px;*/
 	max-height: 300px;
@@ -806,7 +805,7 @@ footer .grid12 ul li{
 	display: inline-block;
 }
 footer .grid12 ul li a{
-	color: #006699;
+	color: #FFFFFF;
 	padding: 0 5px;
 	font-size: 11px;
 }
@@ -816,14 +815,14 @@ footer .grid12 ul li:last-child a:after{
 }
 footer .grid12 p{
 	font-size: 12px;
-	color: #717171;
+	color: #FFFFFF;
 }
 footer .grid12 p:last-child {
 	font-size: 11px;	
 }
 footer .grid12 p a{
 	font-size: 11px;
-	color: #006699;
+	color: #FFAA00;
 }
 footer .grid12 a:hover{
 	opacity: 1;
@@ -1678,7 +1677,7 @@ footer .grid12 a:hover{
 }
 
 .navbar .nav > li.dropdown-auto > a {
-  color: #333;
+  color: #CCCCCC;
 }
 
 .navbar .nav > li.dropdown-auto:hover > .dropdown-menu li:not(.divider):hover {
