@@ -17,8 +17,11 @@ class Main extends Base_Controller {
 		//$this->cache($this->cache_timeout); // implement cache
 		
 		//$this->set_navigation('home');
-		//$this->template->view('dashboard');		
-
-		redirect("/employee/signin");
+		//$this->template->view('dashboard');	
+		if (strpos($this->config->item('base_url'), 'portal') !== false) {			
+			redirect("/employee/signin");
+		} else {
+			redirect("/admin/signin");
+		}	
 	}
 }
