@@ -11,7 +11,7 @@
 </style>
 
 <div class="page-header">
-  <center><h2 style="color:#ffffff;border:1px solid;background:rgba(0, 0, 0, 0) linear-gradient(90deg, #0088CC 10%, #1828AA 90%) repeat scroll 0 0">Dashboard</h2></center>
+  <center><h2 style="color:#ffffff;border:1px solid;background:rgba(0, 0, 0, 0) linear-gradient(90deg, #0088CC 10%, #0B4B77 90%) repeat scroll 0 0">Dashboard</h2></center>
 </div>
 	<div>		
 		<div class="tab-pane active" id="announcements">
@@ -30,7 +30,7 @@
 				$total = count((array)$announcements);
 				
 				if(empty($announcements)) {
-					echo "<h2>No Announcement</h2>";
+					echo "<center><h3>No Announcement Found.</h3></center>";
 				}
 			
 				$ctr = 0;

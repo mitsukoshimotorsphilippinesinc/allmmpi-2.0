@@ -61,41 +61,46 @@ class S4s extends Site_Controller
 
 		$html = "";
 
-		foreach($s4s as $a) {			
+		if (count($s4s) > 0) {
 
-			$html = "<div class='ui-element'>
-					<div>
-						<table class='table table-condensed table-striped table-bordered' style='font-size:12px;'>
-						<thead>
-							<tr>
-								<th>Policy / Procedure Name</th>
-								<th>Description</th>					
-								<th>Date Created</th>
-								<th>Date Accepted</th>
-							</tr>
-						</thead>
-						<tbody>";
+			foreach($s4s as $a) {			
 
-			if(empty($s4s)) {
-				$html .= "<tr><td colspan='4' style='text-align:center;''><strong>No Result</strong></td></tr>";
-			} else {
-				foreach($s4s as $s) {
+				$html = "<div class='ui-element'>
+						<div>
+							<table class='table table-condensed table-striped table-bordered' style='font-size:12px;'>
+							<thead>
+								<tr>
+									<th>Policy / Procedure Name</th>
+									<th>Description</th>					
+									<th>Date Created</th>
+									<th>Date Accepted</th>
+								</tr>
+							</thead>
+							<tbody>";
 
-					$html .= "<tr> 
-								<td><a href='/employee/s4s/swf_viewport(xmin, xmax, ymin, ymax)w/{$s->s4s_id}' target='_blank' class='link-elearn' data='{$s->s4s_id}'>{$s->pp_name}</a></td>
-								<td>{$s->pp_description}</td>						
-								<td>{$s->insert_timestamp}</td>
-								<td>{$s->insert_timestamp}</td>
-							</tr>";
-				}
-			}							
+				if(empty($s4s)) {
+					$html .= "<tr><td colspan='4' style='text-align:center;''><strong>No Result</strong></td></tr>";
+				} else {
+					foreach($s4s as $s) {
 
-			$html .= "</tbody>
-					</table>
-					</div>
-					</div>";
-			
-		}
+						$html .= "<tr> 
+									<td><a href='/employee/s4s/view/{$s->s4s_id}' target='_blank' class='link-elearn' data='{$s->s4s_id}'>{$s->pp_name}</a></td>
+									<td>{$s->pp_description}</td>						
+									<td>{$s->insert_timestamp}</td>
+									<td>{$s->insert_timestamp}</td>
+								</tr>";
+					}
+				}							
+
+				$html .= "</tbody>
+						</table>
+						</div>
+						</div>";
+				
+			}
+		} else {
+			$html .= "<center><h3>No Policy/Procedure Found.</h3><center>";
+		}	
 
 		$this->return_json(1, 'Success', array('html' => $html, 'pagination' => $pagination, 'result_count' => $s4s_count . " RESULT/S"));
 		return;

@@ -1,4 +1,4 @@
-<div id='members-top-menu' class="navbar" style="margin-top:4em;">
+<div id='members-top-menu' class="navbar" style="">
 	<ul class="nav pull-right">
 		<!--?php if ($this->authenticate->is_logged_in()) : ?-->
 		<?php 

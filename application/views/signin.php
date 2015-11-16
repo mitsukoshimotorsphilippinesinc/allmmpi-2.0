@@ -8,7 +8,7 @@
     }
 </style>
 <?php
-	$this->load->model('contents_model');
+	//$this->load->model('contents_model');
 	$this->load->model('members_model');
 ?>
 

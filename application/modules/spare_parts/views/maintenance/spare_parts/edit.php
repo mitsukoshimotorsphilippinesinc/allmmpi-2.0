@@ -25,6 +25,48 @@
 			</div>
 		</div>
 
+		<div class="control-group <?= $this->form_validation->error_class('brand_name') ?>">
+			<label class="control-label" for="card_type_code"><strong>Brand Name <em>*</em></strong></label>
+			<div class="controls">
+				<?php			
+
+				$brand_name_options = array('' => 'Please Select...');
+
+				foreach($brand_name_details as $brand_name)
+				{
+					$brand_name_options[$brand_name->motorcycle_brand_id] = $brand_name->motorcycle_brand_id . ' - ' . $brand_name->brand_name;
+				}
+				echo form_dropdown('motorcycle_brand_id', $brand_name_options, set_value('motorcycle_brand_id',$brand_name->motorcycle_brand_id),'id="motorcycle_brand_id" class="span5"');
+				?>			
+			</div>
+			<span class='label label-important' id='card_type_id_error' style='display:none;'>Brand Name Field is required.</span>
+		</div>		
+
+		<div class="control-group <?= $this->form_validation->error_class('model_name')?>">
+			<label class="control-label" for="card_type_code"><strong>Model Name <em>*</em></strong></label>
+			<div class="controls">
+				<?php			
+
+				$brand_name_options = array('' => 'Please Select...');
+
+				foreach($brand_name_details as $brand_name)
+				{
+					$brand_name_options[$brand_name->motorcycle_brand_id] = $brand_name->motorcycle_brand_id . ' - ' . $brand_name->brand_name;
+				}
+				echo form_dropdown('motorcycle_brand_id', $brand_name_options, set_value('motorcycle_brand_id'),'id="motorcycle_brand_id" class="span5"');
+				?>			
+			</div>
+			<span class='label label-important' id='card_type_id_error' style='display:none;'>Brand Name Field is required.</span>
+		</div>		
+
+
+
+
+
+
+
+
+		
 		<div class="control-group <?= $this->form_validation->error_class('complete_address') ?>">
 			<label class="control-label" for="complete_address">Complete Address <em>*</em></label>
 			<div class="controls">

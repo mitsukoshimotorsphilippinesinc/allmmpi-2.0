@@ -101,4 +101,10 @@ CREATE TABLE `is_dealer_request` (
   KEY `purchase_order_number` (`purchase_order_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+ALTER TABLE `rf_spare_part` ADD COLUMN `motorcycle_brand_id` int(11) NOT NULL DEFAULT 0 AFTER `part_number`;
+ALTER TABLE `rf_spare_part` ADD COLUMN `motorcycle_model_id` int(11) NOT NULL DEFAULT 0 AFTER `motorcycle_brand_id`;
+
+UPDATE rf_spare_part a, warehouse.rf_motorcycle_brand b SET a.motorcycle_brand_id = b.motorcycle_brand_id
+WHERE a.brand_name = b.brand_name;
+
 

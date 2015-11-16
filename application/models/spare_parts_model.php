@@ -41,6 +41,7 @@ class Spare_parts_model extends Base_Model
 			'counter_detail' => 'is_counter_order_detail',
 			'request_summary' => 'is_request_summary',
 			'request_detail' => 'is_request_detail',
+			'admin_log'=>'tr_admin_log',
 		);
 
 	}
@@ -1741,6 +1742,20 @@ class Spare_parts_model extends Base_Model
 		$query->free_result();
 		return $row->cnt;
 	}
-	
+
+	//---------------------------------------------
+	// tr_admin_log, tr_inventory_log
+	function insert_logs($type,$data) {	
+        if(isset($data['remarks'])) {
+            $data['remarks'] .= "\n\n URL:" . $this->uri->uri_string();
+        } else {
+            $data['remarks'] = "URL:" . $this->uri->uri_string();
+        }	
+		
+		if ($type=='admin')
+	        $result = $this->insert('admin_log', $data);			
+		else if ($type=='inventory')
+	        $result = $this->insert('inventory_log', $data);	
+    }	
 	
 }
