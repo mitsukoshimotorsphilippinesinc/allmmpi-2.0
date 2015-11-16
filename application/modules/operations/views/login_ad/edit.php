@@ -82,7 +82,7 @@
 			singleUpload : true,
 			progressGIF : '<?= image_path('pr.gif') ?>',
 			allowedExtensions: ['.gif','.jpg', '.png'],
-			target : base_url + '/admin/upload/process?filename=members_login_ad_'+member_login_ad_id+'&location=<?=$_upload_url?>&width=800&height=800&ts=<?=time()?>',
+			target : base_url + '/admin/upload/process?filename=members_login_ad_'+member_login_ad_id+'&location=<?=$_upload_url?>&width=500&height=500&ts=<?=time()?>',
 			onComplete: function() {
 				$("#member_picture").html('<img src="<?=$upload_url?>/members_login_ad_'+member_login_ad_id+'.jpg?v=' + Math.floor(Math.random() * 999999)+'">');
 				

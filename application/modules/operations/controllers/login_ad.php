@@ -12,6 +12,30 @@ class Login_ad extends Admin_Controller {
 		$this->load->model('asset_model');
 	}
 
+	private $_validation_rule = array(
+		array(
+			'field' => 'ad_name',
+			'label' => 'Ad Name',
+			'rules' => 'trim|required'
+		),
+		array(
+			'field' => 'description',
+			'label' => 'Description',
+			'rules' => 'trim'
+		),
+		array(
+			'field' => 'priority_id',
+			'label' => 'Priority Number',
+			'rules' => 'trim'
+		),
+		array(
+			'field' => 'is_active',
+			'label' => 'Is Active',
+			'rules' => 'trim'
+		)
+		
+	);
+
 	public function index() 
 	{
 		$this->listing();
@@ -184,5 +208,21 @@ class Login_ad extends Admin_Controller {
 			return;
 		}
 	}
+
+	public function update_image()
+	{
+		$filename = $this->input->post('filename');
+		$employee_login_ad_id = $this->input->post('employee_login_ad_id');
+		
+		$data = array("image_filename"=>$filename);
+		$where = array(
+			'employee_login_ad_id' => $employee_login_ad_id,
+		);
+		
+		$this->asset_model->update_employee_login_ad($data, $where);
+		
+		$this->return_json('ok','');
+	}
+	
 
 }

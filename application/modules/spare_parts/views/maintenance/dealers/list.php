@@ -83,7 +83,13 @@
 			?>
 			<td><?= $agent_name ?></td>
 			<td style="text-align:right;"><?= $discount ?></td>
-			<td><?= ($r->is_active) ? 'Yes' : 'No'  ?></td>
+			<?php
+				if ($r->is_active == 0) {
+					echo "<td style='text-align:center'><span class='label label-important'>NO</span></td>";
+				} else {
+					echo "<td style='text-align:center'><span class='label label-success'>YES</span></td>";
+				}
+			?>	
 			<td>
 				<a href='/spare_parts/maintenance/view_dealer/<?= $r->dealer_id ?>' class='btn btn-small btn-info' title="View"><i class="icon-search icon-white"></i></a>				
 				<a href='/spare_parts/maintenance/edit_dealer/<?= $r->dealer_id ?>' class='btn btn-small btn-primary' title="Edit"><i class="icon-pencil icon-white"></i></a>

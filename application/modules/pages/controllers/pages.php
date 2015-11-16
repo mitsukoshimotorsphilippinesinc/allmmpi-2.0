@@ -4,7 +4,7 @@ class Pages extends Base_Controller {
 
 	function __construct() {
 		parent::__construct();
-		$this->load->model("contents_model");
+		$this->load->model("setting_model");
 
 	}
     
@@ -12,7 +12,7 @@ class Pages extends Base_Controller {
 	
 		$this->cache($this->cache_timeout);
 	
-		$body = "<div style='min-height:300px;'><p style='font-size:18px;'>Oops! You have encountered a page that does not exist! </p></div>";
+		$body = "<div style='min-height:300px;'><p style='font-size:18px;'>Oops! Page that does not exist! </p></div>";
 		$title = "Page Not Found!";
 		$not_found = true;
 		
@@ -24,12 +24,9 @@ class Pages extends Base_Controller {
 			}
 			
 			if ($site == 1) {
-				//$content = $this->site_model->get_site_conent_by_slug($slug);
-				// find if there img src start with /uploads and replace it with /site/uploads
-				//$content->body = str_replace("'/uploads", "'/site/uploads", $content->body);
-				//$content->body = str_replace("\"/uploads", "\"/site/uploads", $content->body);
+				// TODO				
 			} else {
-				$content = $this->contents_model->get_content_by_slug($slug);
+				$content = $this->setting_model->get_page_content_by_slug($slug);
 			}
 			
 			if ($content->is_active == 1) {
@@ -54,7 +51,8 @@ class Pages extends Base_Controller {
 
 		$this->template->title = $title;
 		$this->template->body = $body;
-        $this->template->view('page_with_tweeter'); //load_view(array('view' => 'page_view', 'data' => $data, 'title' => $title));
+        //$this->template->view('page_with_tweeter'); 
+        $this->template->view('page_view'); 
 		
     }
 

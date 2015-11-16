@@ -81,13 +81,14 @@
 			<div class="row">
 				<p class="span5">@2015 Mitsukoshi Motors PHilippines Inc. All Rights Reserved.</p>
 				<ul class="span7" class="text-align:right;">
-					<li><a href="#">Home</a></li>
-					<li><a href="#">Privacy Policy</a></li>
-					<li><a href="#">Terms and Conditions</a></li>					
+					<li><a href="<?=$this->config->item('base_url')?>/employee">Home</a></li>
+					<li><a href="<?=$this->config->item('base_url')?>/pages/privacy_policy">Privacy Policy</a></li>
+					<li><a href="<?=$this->config->item('base_url')?>/pages/terms_and_conditions">Terms and Conditions</a></li>
+					<li><a  target="_blank" href="http://mitsukoshimotors.com/careers/">Careers</a></li>
 				</ul>
 			</div>
-			<div class="row">	
-				<p class='span12'>Powered by<a href="#"> MMPI IT Department</a></p>
+			<div class="row">					
+    			<p>Powered by<a href="http://mitsukoshimotors.com"> MMPI IT Department</a></p>
 			</div>
 		</div>
 	</footer>

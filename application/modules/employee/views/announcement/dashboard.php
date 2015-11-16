@@ -1,5 +1,5 @@
 <div class="page-header clearfix">
-	<center><h2 style="color:#ffffff;border:1px solid;background:rgba(0, 0, 0, 0) linear-gradient(90deg, #0088CC 10%, #1828AA 90%) repeat scroll 0 0">Announcements <small></small></h2></center>
+	<center><h2 style="color:#ffffff;border:1px solid;background:rgba(0, 0, 0, 0) linear-gradient(90deg, #0088CC 10%, #0B4B77 90%) repeat scroll 0 0">Announcements <small></small></h2></center>
 </div>
 
 <fieldset>		
