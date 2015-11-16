@@ -49,6 +49,7 @@
 			<th>Complete Name</th>
 			<th style="width: 25em;">Address</th>
 			<th style="width: 15em;">Contact Number</th>
+			<th style="">Is Active</th>
 			<th style='width: 10em;'>&nbsp;</th>
 		</tr>
 	</thead>
@@ -69,6 +70,13 @@
 			<td><?= $r->complete_name; ?></td>
 			<td><?= $r->complete_address ?></td>
 			<td><?= $r->contact_number ?></td>
+			<?php
+				if ($r->is_active == 0) {
+					echo "<td style='text-align:center'><span class='label label-important'>NO</span></td>";
+				} else {
+					echo "<td style='text-align:center'><span class='label label-success'>YES</span></td>";
+				}
+			?>						
 			<td>
 				<a href='/spare_parts/maintenance/view_agent/<?= $r->agent_id ?>' class='btn btn-small btn-info' title="View"><i class="icon-search icon-white"></i></a>				
 				<a href='/spare_parts/maintenance/edit_agent/<?= $r->agent_id ?>' class='btn btn-small btn-primary' title="Edit"><i class="icon-pencil icon-white"></i></a>

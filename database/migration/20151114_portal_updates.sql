@@ -1,0 +1,115 @@
+DROP TABLE IF EXISTS `rf_page_content`;
+CREATE TABLE `rf_page_content` (
+  `page_content_id` 			int(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_number` 					int(20) NOT NULL DEFAULT '0',
+  `title` 						varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `slug` 						varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `body` 						text COLLATE utf8_unicode_ci NOT NULL,
+  `is_active` 					tinyint(2) NOT NULL DEFAULT '0',
+  `path` 						varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `updated_timestamp` 			datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `insert_timestamp` 			timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`page_content_id`),
+  KEY `slug` (`slug`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `rf_page_content`(`id_number`,`title`,`slug`,`body`, `is_active`)
+VALUES ('0','Terms and Conditions', 'terms_and_conditions', '<p>
+<strong>Mitsukoshimotors.com</strong> offers this Web site, including all information, software, products and services available from this Web site or offered as part of or in conjunction with this Web site (the "Web site"), to you, the user, conditioned upon your acceptance of all of the terms, conditions, policies and notices stated here. <strong>Mitsukoshimotors.com</strong> reserves the right to make changes to these Terms and Conditions immediately by posting the changed Terms and Conditions in this location.
+</p>
+<p>
+Your continued use of the Web site constitutes your agreement to all such terms, conditions and notices, and any changes to the Terms and Conditions made by <strong>mitsukoshimotors.com</strong>.
+</p>
+<p>
+The term ''<strong>mitsukoshimotors.com</strong>'' or ''us'' or ''we'' refers to the owner of the website. The term ''you'' refers to the user or viewer of our website.
+</p>
+<p>
+The use of this website is subject to the following terms of use:
+</p>
+<p>
+Use the website at your own risk. This website is provided to you "as is," without warranty of any kind either express or implied. Neither <strong>mitsukoshimotors.com</strong> nor its employees, agents, third-party information providers, merchants, licensors or the like warrant that the Web site or its operation will be accurate, reliable, uninterrupted or error-free. No agent or representative has the authority to create any warranty regarding the Web site on behalf of <strong>mitsukoshimotors.com</strong>. <strong>Mitsukoshimotors.com</strong> reserves the right to change or discontinue at any time any aspect or feature of the Web site.
+</p>
+
+<strong>Exclusion of Liability</strong>
+
+<p>
+The content of the pages of this website is for your general information and use only. It is subject to change without notice.
+</p>
+<p>
+Neither we nor any third parties provide any warranty or guarantee as to the accuracy, timeliness, performance, completeness or suitability of the information and materials found or offered on this website for any particular purpose. You acknowledge that such information and materials may contain inaccuracies or errors and we expressly exclude liability for any such inaccuracies or errors to the fullest extent permitted by law.
+</p>
+
+<strong>Indemnification</strong>
+
+<p>
+Your use of any information or materials on this website is entirely at your own risk, for which we shall not be liable. It shall be your own responsibility to ensure that any products, services or information available through this website meet your specific requirements.
+</p>
+<p>
+This website contains material which is owned by or licensed to us. This material includes, but is not limited to, the design, layout, look, appearance and graphics. Reproduction is prohibited other than in accordance with the copyright notice, which forms part of these terms and conditions.
+</p>
+<p>
+All trade marks reproduced in this website which are not the property of, or licensed to, the operator are acknowledged on the website.
+</p>
+<p>
+Unauthorized use of this website may give rise to a claim for damages and/or be a criminal offense.
+</p>
+<p>
+From time to time this website may also include links to other websites. These links are provided for your convenience to provide further information. They do not signify that we endorse the website(s). We have no responsibility for the content of the linked website(s).
+</p>
+
+<strong>Copyright</strong>
+
+<p>
+Except as otherwise expressly provided in these terms and conditions, you may not copy, distribute, transmit, display, perform, reproduce, publish, license, modify, rewrite, create derivative works from, transfer, or sell any material contained on the Web site without the prior consent of the copyright owner.
+</p>
+<p>
+None of the material contained on <strong>mitsukoshimotors.com</strong> may be reverse-engineered, disassembled, decompiled, transcribed, stored in a retrieval system, translated into any language or computer language, retransmitted in any form or by any means (electronic, mechanical, photo reproduction, recordation or otherwise), resold or redistributed without the prior written consent of <strong>mitsukoshimotors.com</strong>. Violation of this provision may result in severe civil and criminal penalties.
+</p>', '1');
+
+
+
+
+
+INSERT INTO `rf_page_content`(`id_number`,`title`,`slug`,`body`, `is_active`)
+VALUES ('0','Privacy Policy', 'privacy_policy', '<p>
+	Your privacy is very important to us. Accordingly, we have developed this Policy in order for you to understand how we collect, use, communicate and disclose and make use of personal information. The following outlines our privacy policy.
+</p>
+
+<ul>
+	<li>
+		Before or at the time of collecting personal information, we will identify the purposes for which information is being collected.
+	</li>
+	<li>
+		We will collect and use of personal information solely with the objective of fulfilling those purposes specified by us and for other compatible purposes, unless we obtain the consent of the individual concerned or as required by law.		
+	</li>
+	<li>
+		We will only retain personal information as long as necessary for the fulfillment of those purposes. 
+	</li>
+	<li>
+		We will collect personal information by lawful and fair means and, where appropriate, with the knowledge or consent of the individual concerned. 
+	</li>
+	<li>
+		Personal data should be relevant to the purposes for which it is to be used, and, to the extent necessary for those purposes, should be accurate, complete, and up-to-date. 
+	</li>
+	<li>
+		We will protect personal information by reasonable security safeguards against loss or theft, as well as unauthorized access, disclosure, copying, use or modification.
+	</li>
+	<li>
+		We will make readily available to customers information about our policies and practices relating to the management of personal information. 
+	</li>
+</ul>
+
+<p>
+	We are committed to conducting our business in accordance with these principles in order to ensure that the confidentiality of personal information is protected and maintained. 
+</p>	', '1');	
+
+
+
+
+
+			
+
+
+
+
+

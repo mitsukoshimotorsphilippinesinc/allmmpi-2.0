@@ -109,12 +109,9 @@ class Upload extends Base_Controller {
 		$target_fullpath = FCPATH . $location;
 		$target_thumb_fullpath = FCPATH . $location. "/thumbnail";
 		$fullpath = FCPATH . $location . "/". $filename;
-		//$fullpath = "c:\laragon\www\allmmpi\webroot_admin\assets\media\agents\\". $filename; // WINDOWS
 		
 		$_ret = true;
 		
-
-		//exec("attrib -r c:\laragon\www\allmmpi\webroot_admin\assets\media\agents\*.* /s"); // WINDOWS
 		if ($using_file) {			
 			$_ret = move_uploaded_file($temp_file, $fullpath);
 			chmod($fullpath, 777);			
@@ -274,12 +271,9 @@ class Upload extends Base_Controller {
 				// Display resized image
 		        $thumb_filename = "";
 				 unlink($fullpath); // commented WINDOWS TEST
-				imagejpeg($image_resized, $target_fullpath);
+				//imagejpeg($image_resized, $target_fullpath);
 				
-		        //$target_fullpath = "c:\laragon\www\allmmpi\webroot_admin\assets\media\agents\\" . $target_filename; // WINDOWS
-		        //exec("attrib -r c:\laragon\www\allmmpi\webroot_admin\assets\media\agents\*.* /s"); // WINDOWS
-
-				switch($format) {
+		      	switch($format) {
 		            case 'gif':
 		                imagegif($image_resized, $target_fullpath);
 		                break;

@@ -11,7 +11,8 @@ class Setting_model extends Base_Model
 		// assign the table for this model
 		$this->_TABLES = array(
 			'setting' => 'rf_setting',
-			'notification_content' => 'rf_notification_content'
+			'notification_content' => 'rf_notification_content',
+			'page_content'=>'rf_page_content',
 		);
 
 	}
@@ -134,6 +135,60 @@ class Setting_model extends Base_Model
 		return $_content;
 	}
 
+	// ------------------------------------------------
+	// rf_page_content
+	function get_page_content($where = null, $limit = null, $orderby = null, $fields = null)
+	{
+		$query = $this->fetch('page_content', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+	}
 
+	function insert_page_content($data)
+	{
+		return $this->insert('page_content', $data);
+	}
+
+	function update_page_content($data, $where)
+	{
+		return $this->update('page_content', $data, $where);
+	}
+
+	function delete_page_content($where)
+	{
+		return $this->delete('page_content', $where);
+	}
+
+	function get_page_content_count($where = null)
+	{
+		// do a sql count instead of row count
+		$query = $this->fetch('page_content', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+
+	function get_page_content_by_id($content_id)
+	{
+		$result = $this->get_contents(array('page_content_id' => $page_content_id));
+		$row = NULL;
+		if (count($result) > 0)
+		{
+			$row = $result[0];
+		}
+		return $row;
+	}
+
+	function get_page_content_by_slug($slug)
+	{
+		$result = $this->get_page_content(array('slug' => $slug));
+		$row = NULL;
+		if (count($result) > 0)
+		{
+			$row = $result[0];
+		}
+		return $row;
+	}
 
 }

@@ -14,6 +14,7 @@ class Warehouse_model extends Base_Model
 		$this->_TABLES = array(
 			'warehouse' => 'rf_warehouse',
 			'motorcycle_brand_model_class_view' => 'rf_motorcycle_brand_model_class_view',
+			'motorcycle_brand' => 'rf_motorcycle_brand',
 		);
 
 	}
@@ -89,6 +90,51 @@ class Warehouse_model extends Base_Model
 		return $row->cnt;
 	}
 	// end: rf_motorcycle_brand_model_class_view
+	// ===========================================
+
+	// rf_motorcycle_brand
+	function get_motorcycle_brand($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('motorcycle_brand', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+    }
+
+	function insert_motorcycle_brand($data) 
+	{
+		return $this->insert('motorcycle_brand', $data);
+	}
+
+	function update_motorcycle_brand($data, $where) 
+	{
+		return $this->update('motorcycle_brand', $data, $where);
+	}
+
+	function delete_motorcycle_brand($where) 
+	{
+		return $this->delete('motorcycle_brand', $where);
+	}
+
+	function get_motorcycle_brand_by_id($motorcycle_brand_id) 
+	{
+		$result = $this->get_warehouse(array('motorcycle_brand_id' => $motorcycle_brand_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+	
+	function get_motorcycle_brand_count($where = null) {
+		// do a sql count instead of row count
+		$query = $this->fetch('motorcycle_brand', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+	
+
 	// ===========================================
 
 }

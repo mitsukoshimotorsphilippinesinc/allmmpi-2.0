@@ -61,22 +61,27 @@ class Announcement extends Site_Controller
 
 		$html = "";
 
-		foreach($announcements as $a) {
-					
-			$proper_date = date("jS F Y - h:i:s a", strtotime($a->insert_timestamp));
-			
-			$html .= "<h2 style='float:left;'>{$a->title}</h2><div style='clear:both;'></div><span style='float:left;margin-top:-15px;'><i>{$proper_date}</i></span><div style='clear:both;'></div><br/>{$a->body}";
+		if (count($announcements) > 0) {
 
-			$data = array(
-					"announcement_id" => $a->announcement_id,					
-				);
+			foreach($announcements as $a) {
+						
+				$proper_date = date("jS F Y - h:i:s a", strtotime($a->insert_timestamp));
+				
+				$html .= "<h2 style='float:left;'>{$a->title}</h2><div style='clear:both;'></div><span style='float:left;margin-top:-15px;'><i>{$proper_date}</i></span><div style='clear:both;'></div><br/>{$a->body}";
 
-			$html .= $this->load->view("announcement/display_comments", $data, TRUE);
+				$data = array(
+						"announcement_id" => $a->announcement_id,					
+					);
 
-			$html .= "<textarea class='span12 new-comment-{$a->announcement_id}'></textarea>
-					<button class='button-post btn btn-primary pull-right' style='margin-right: 20px;margin-bottom:10px;' data='{$a->announcement_id}' title='Post'>Post</button>
-					<div class='announcement-comments-{$a->announcement_id}'></div>
-					<div style='width: 100%; height: 2px; background: #F87431; overflow: hidden;''></div>";		
+				$html .= $this->load->view("announcement/display_comments", $data, TRUE);
+
+				$html .= "<textarea class='span12 new-comment-{$a->announcement_id}'></textarea>
+						<button class='button-post btn btn-primary pull-right' style='margin-right: 20px;margin-bottom:10px;' data='{$a->announcement_id}' title='Post'>Post</button>
+						<div class='announcement-comments-{$a->announcement_id}'></div>
+						<div style='width: 100%; height: 2px; background: #F87431; overflow: hidden;''></div>";		
+			}
+		} else {
+			$html .= "<center><h3>No Announcement Found.</h3></center>";
 		}
 
 		$this->return_json(1, 'Success', array('html' => $html, 'pagination' => $pagination, 'result_count' => $announcements_count . " RESULT/S"));
