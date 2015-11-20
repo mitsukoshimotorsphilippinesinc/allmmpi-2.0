@@ -7,8 +7,7 @@ class Tracking_model extends Base_model
         parent::__construct();
         $this->_TABLES = array(            
 			'admin_logs'=>'tr_admin_logs',
-			'inventory_logs'=>'tr_inventory_logs',
-			'member_voucher_transfer_logsogs'=>'tr_member_logs',
+			'inventory_logs'=>'tr_inventory_logs',			
             'credit_logs' => 'tr_member_funds_credit_logs',
             'debit_logs' => 'tr_member_funds_debit_logs',
             'acct_credit_logs' => 'tr_member_acct_credit_logs',
@@ -19,13 +18,7 @@ class Tracking_model extends Base_model
 			'ad_member_logs' => 'tr_ad_member_logs',
 			'member_transfers' => 'tr_member_transfers',
 			'transaction_codes' => 'rf_transaction_codes',
-			'cron_logs' => 'tr_cron_logs',
-            'card_series_generation_logs' => 'tr_card_series_generation_log',
-            'card_type_allocation_logs' => 'tr_card_type_allocation_log',
-			'member_voucher_transfer_logs' => 'tr_member_voucher_transfer_logs',
-            'member_acct_transfer_earnings_logs' => 'tr_member_acct_transfer_earnings_logs',
-            'member_acct_transfer_earnings_per_type_logs' => 'tr_member_acct_transfer_earnings_per_type_logs',
-            'auto_crediting_logs' => 'tr_auto_crediting_logs'
+			'cron_logs' => 'tr_cron_logs',            
         );
     }		
 

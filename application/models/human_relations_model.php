@@ -24,6 +24,7 @@ class Human_relations_model extends Base_Model
 			'job_grade_level' => 'rf_job_grade_level',			
 			's4s' => 'el_s4s',
 			's4s_asset' => 'el_s4s_asset',
+			's4s_acceptance' => 'tr_s4s_acceptance',
 		);
 
 	}
@@ -484,6 +485,48 @@ class Human_relations_model extends Base_Model
 
 	function get_s4s_asset_count($where = null) {
 		$query = $this->fetch('s4s_asset', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+	// ==============================================================
+	// ==============================================================
+	// tr_s4s_acceptance
+	function get_s4s_acceptance($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('s4s_acceptance', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;	
+	}
+
+	function insert_s4s_acceptance($data) 
+	{
+		return $this->insert('s4s_acceptance', $data);
+	}
+
+	function update_s4s_acceptance($data, $where) 
+	{
+		return $this->update('s4s_acceptance', $data, $where);
+	}
+
+	function delete_s4s_acceptance($where) 
+	{
+		return $this->delete('s4s_acceptance', $where);
+	}
+
+	function get_s4s_acceptance_by_id($s4s_acceptance_id) 
+	{
+		$result = $this->get_s4s_acceptance(array('s4s_acceptance_id' => $s4s_acceptance_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+
+	function get_s4s_acceptance_count($where = null) {
+		$query = $this->fetch('s4s_acceptance', 'count(1) as cnt', $where);
 		$row = $query->first_row();
 		$query->free_result();
 		return $row->cnt;

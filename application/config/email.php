@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-$config['useragent']        = 'Vital C';    
+$config['useragent']        = 'MMPI';    
 $config['protocol']         = 'smtp';        
 $config['mailpath']         = '/usr/sbin/sendmail';
 //$config['smtp_host']        = 'mail.vital-c.com';
@@ -8,7 +8,7 @@ $config['mailpath']         = '/usr/sbin/sendmail';
 //$config['smtp_pass']        = 'vc123456';
 //$config['smtp_port']        = 25;
 $config['smtp_host']        = 'smtp.mandrillapp.com';
-$config['smtp_user']        = 'vitalc.vchpi@gmail.com';
+$config['smtp_user']        = 'mmpi.vchpi@gmail.com';
 $config['smtp_pass']        = 'twQdpesZFEJrdhn_RiW0wA';
 $config['smtp_port']        = 587;
 $config['smtp_timeout']     = 5;

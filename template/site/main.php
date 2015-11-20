@@ -51,7 +51,7 @@
 	
 	<div id="loading_overlay">
 	    <div class="loading_message well clearfix">
-		<img src='/assets/img/loading.gif' class='pull-left' style='height: 55px;' alt='' />
+		<img src='/assets/img/SD-Loading.gif' class='pull-left' style='height: 55px;' alt='' />
 		<p>Please wait while processing...</p>
 		</div>
 	</div>

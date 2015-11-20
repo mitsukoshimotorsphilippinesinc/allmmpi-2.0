@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class SignOut extends Site_Controller 
+class Signout extends Site_Controller 
 {
 	
 	function __construct() 

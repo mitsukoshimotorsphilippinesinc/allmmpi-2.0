@@ -83,11 +83,21 @@ class S4s extends Site_Controller
 				} else {
 					foreach($s4s as $s) {
 
+						$where = "id_number = {$this->employee->id_number} AND s4s_id = {$s->s4s_id} AND is_accepted = 1";
+
+						// get acceptance_date
+						$acceptance_details = $this->human_relations_model->get_s4s_acceptance($where);
+
+						$acceptance_date = "0000-00-00 00:00:00";
+						if (count($acceptance_details) > 0) {
+							$acceptance_date = $acceptance_details[0]->insert_timestamp;
+						} 
+
 						$html .= "<tr> 
-									<td><a href='/employee/s4s/view/{$s->s4s_id}' target='_blank' class='link-elearn' data='{$s->s4s_id}'>{$s->pp_name}</a></td>
+									<td><a href='#' class='link-s4s' data='{$s->s4s_id}'>{$s->pp_name}</a></td>
 									<td>{$s->pp_description}</td>						
 									<td>{$s->insert_timestamp}</td>
-									<td>{$s->insert_timestamp}</td>
+									<td><span  class='acceptance-date-{$s->s4s_id}'>{$acceptance_date}</span></td>
 								</tr>";
 					}
 				}							
@@ -104,6 +114,65 @@ class S4s extends Site_Controller
 
 		$this->return_json(1, 'Success', array('html' => $html, 'pagination' => $pagination, 'result_count' => $s4s_count . " RESULT/S"));
 		return;
+	}
+
+	public function check_acceptance()
+	{
+		$s4s_id = $this->input->post("s4sId");
+
+		$where = "id_number = {$this->employee->id_number} AND s4s_id = {$s4s_id} AND is_accepted = 1";
+				
+		$s4s_acceptance_details = $this->human_relations_model->get_s4s_acceptance($where);
+
+		$html = "";
+
+		if (empty($s4s_acceptance_details)) {
+			// not yet accepted
+			$html .= "<h3>Terms and Conditions</h3>
+					<p>
+						Put terms and conditions here...
+					</p>";
+			$is_accepted = 0;
+		} else {
+			$is_accepted = 1;
+		}
+
+		$title = "Acceptance of Policy";
+
+		$this->return_json(1, 'Success', array('html' => $html, 'is_accepted' => $is_accepted, 'title' => $title));
+		return;
+	}
+
+	public function log_acceptance()
+	{
+		$s4s_id = $this->input->post("s4s_id");
+		$is_accepted = $this->input->post("is_accepted");
+
+		$data = array(
+				"id_number" => $this->employee->id_number,
+				"s4s_id" => $s4s_id,
+				"is_accepted" => $is_accepted,
+			);
+
+		$this->human_relations_model->insert_s4s_acceptance($data);
+
+		if ($is_accepted == 1) {
+			$html = "You may now view your S4S. Thank you";
+		} else {
+			$html = "Sorry, you cannot proceed without accepting the Terms and Conditions. Thank you";
+		}	
+
+		$created_id = $this->human_relations_model->insert_id();
+
+		$s4s_acceptance_details = $this->human_relations_model->get_s4s_acceptance_by_id($created_id);
+
+		$date_accepted = $s4s_acceptance_details->insert_timestamp;
+
+		$title = "Acceptance of Policy";
+
+		$this->return_json(1, 'Success', array('html' => $html, 'title' => $title, 'date_accepted' => $date_accepted));
+		return;
+
 	}
 
 	public function view($course_id = 0) {

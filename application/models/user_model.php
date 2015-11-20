@@ -17,7 +17,8 @@ class User_model extends Base_Model
 			'user_role_privilege'=>'sa_user_role_privilege',
 			'user_role_privilege_view'=>'sa_user_role_privilege_view',
 			'privilege'=>'sa_privilege',
-			'user_verification'=>'sa_user_verification'
+			'user_verification'=>'sa_user_verification',
+			'user_log'=>'tr_user_log',
 		);
 
 	}
@@ -357,4 +358,17 @@ class User_model extends Base_Model
 		return $row->cnt;
 	}
 	// ==============================================================
+
+	//---------------------------------------------
+	// tr_user_log
+	function insert_log($type, $data) {	
+        if(isset($data['remarks'])) {
+            $data['remarks'] .= "\n\n URL:" . $this->uri->uri_string();
+        } else {
+            $data['remarks'] = "URL:" . $this->uri->uri_string();
+        }	
+		
+		if ($type=='user')
+	        $result = $this->insert('user_log', $data);		
+    }	
 }

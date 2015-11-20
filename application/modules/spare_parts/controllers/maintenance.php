@@ -330,7 +330,7 @@ class Maintenance extends Admin_Controller {
 		if ($_POST)
 		{
 			// post done here
-			$this->form_validation->set_rules($this->_agents_validation_rule);
+			$this->form_validation->set_rules($this->_dealers_validation_rule);
 			if ($this->form_validation->run())
 			{
 				$this->spare_parts_model->update_dealer(array('is_active' => 0),array());
@@ -761,7 +761,7 @@ class Maintenance extends Admin_Controller {
 		if ($_POST)
 		{
 			// post done here
-			$this->form_validation->set_rules($this->_agents_validation_rule);
+			$this->form_validation->set_rules($this->_spare_parts_validation_rule);
 			if ($this->form_validation->run())
 			{
 				$this->spare_parts_model->update_spare_part(array('is_active' => 0),array());
