@@ -32,6 +32,7 @@ class Maintenance extends Admin_Controller {
 		$this->load->model('warehouse_model');
 		$this->load->library('pager');	
 		$this->load->helper("spare_parts_helper");	
+		$this->load->helper("systems_helper");	
 		$this->load->helper("breadcrumb_helper");	
 
 		$this->db_spare_parts = $this->load->database('spare_parts', TRUE);
@@ -77,7 +78,7 @@ class Maintenance extends Admin_Controller {
 		$this->template->search_url = $search_url;
 		
 		$this->pager->set_config($config);
-		$this->template->agents = $this->spare_parts_model->get_agent(null, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), 'complete_name');
+		$this->template->agents = $this->spare_parts_model->get_agent($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), 'complete_name');
 		$this->template->view('maintenance/agents/list');
 	}
 
@@ -236,29 +237,23 @@ class Maintenance extends Admin_Controller {
 	public function update_image()
 	{
 		$filename = $this->input->post('filename');
-		$agent_id = $this->input->post('agent_id');
+		$id = $this->input->post('_id');
+		$maintenance_name = $this->input->post('maintenance_name');
 
 		$data = array("image_filename"=>$filename);
 
-		$this->spare_parts_model->update_agent($data, "agent_id = {$agent_id}");
+
+		if ($maintenance_name == 'agent') {
+			$this->spare_parts_model->update_agent($data, "agent_id = {$id}");
+		} else {
+			$this->spare_parts_model->update_dealer($data, "dealer_id = {$id}");
+		}	
 		
 		//logging of action
 		$details_before = array('id' => $result_id, 'details' => array("image_filename"=>$filename));
 		$details_after = array('id' => $result_id, 'details' => array("image_filename"=>$filename));
 		
-		$details_before = json_encode($details_before);
-		$details_after = json_encode($details_after);
-		$update_result_log_data = array(
-			'user_id' => $this->user->id_number,
-			'module_name' => 'SPARE PARTS',
-			'table_name' => 'rf_agent',
-			'action' => 'UPDATE',
-			'details_before' => $details_before,
-			'details_after' => $details_after,
-			'remarks' => "",
-		);
-
-		$this->tracking_model->insert_logs('admin', $update_result_log_data);
+		log_to_db("spare_parts", $this->user->id_number, "MAINTENANCE-DEALERS", "rf_dealer", "UPDATE", $details_before, $details_after);
 		
 		$this->return_json('ok','');
 	}
@@ -281,6 +276,16 @@ class Maintenance extends Admin_Controller {
 			'field' => 'contact_number',
 			'label' => 'Contact Number',
 			'rules' => 'trim|required'
+		),
+		array(
+			'field' => 'agent_id',
+			'label' => 'Agent Name',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'max_discount',
+			'label' => 'Max Discount',
+			'rules' => 'required'
 		),
 		array(
 			'field' => 'is_active',
@@ -321,7 +326,7 @@ class Maintenance extends Admin_Controller {
 		
 
 		$this->pager->set_config($config);
-		$this->template->dealers = $this->spare_parts_model->get_dealer(null, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), 'complete_name');
+		$this->template->dealers = $this->spare_parts_model->get_dealer($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), 'complete_name');
 		$this->template->view('maintenance/dealers/list');
 	}
 
@@ -330,7 +335,7 @@ class Maintenance extends Admin_Controller {
 		if ($_POST)
 		{
 			// post done here
-			$this->form_validation->set_rules($this->_agents_validation_rule);
+			$this->form_validation->set_rules($this->_dealers_validation_rule);
 			if ($this->form_validation->run())
 			{
 				$this->spare_parts_model->update_dealer(array('is_active' => 0),array());
@@ -365,6 +370,97 @@ class Maintenance extends Admin_Controller {
 		}
 		$this->template->view('spare_parts/maintenance/dealers/add');
 	}
+
+	public function edit_dealer($dealer_id = 0)
+	{
+		$dealer_details = $this->spare_parts_model->get_dealer_by_id($dealer_id);
+
+		if ($_POST and !empty($dealer_details))
+		{
+			// post done here
+			$this->form_validation->set_rules($this->_dealers_validation_rule);
+
+			if ($this->form_validation->run())
+			{				
+				// insert the new results
+				$data = array(					
+					'complete_name' => strtoupper(set_value('complete_name')),
+					'complete_address' => strtoupper(set_value('complete_address')),
+					'contact_number' => strtoupper(set_value('contact_number')),
+					'agent_id' => set_value('agent_id'),
+					'max_discount' => (set_value('max_discount') / 100),
+					'is_active' => set_value('is_active'),
+				);
+
+				$this->spare_parts_model->update_dealer($data, array('dealer_id' => $dealer_id));
+				
+				//logging of action
+				$details_before = array('id' => $dealer_id, 'details' => array());
+				$details_after = array('id' => $dealer_id, 'details' => array());
+				
+				foreach($data as $k => $v)
+				{
+					if($dealer_details->$k != $v)
+					{
+						$details_before['details'][$k] = $dealer_details->$k;
+						$details_after['details'][$k] = $v;
+					}
+				}
+
+				log_to_db("spare_parts", $this->user->id_number, "MAINTENANCE-DEALERS", "rf_dealer", "UPDATE", $details_before, $details_after);
+				
+				redirect('/spare_parts/maintenance/dealers');
+				return;
+			}
+		}
+
+		$this->template->dealer_details = $dealer_details;
+		$this->template->view('spare_parts/maintenance/dealers/edit');
+	}
+
+	public function delete_dealer($dealer_id = 0)
+	{
+		$dealer_details = $this->spare_parts_model->get_dealer_by_id($dealer_id);
+
+		if ($_POST and !empty($dealer_details))
+		{
+			$_dealer_id = $this->input->post('dealer_id');
+			if (!empty($_dealer_id)) if ($_dealer_id == $dealer_id)
+			{
+				
+				//$data = array(
+				//	"is_deleted" => 1
+				//);
+
+				//$this->spare_parts_model->update_agent($data, "agent_id = {$agent_id}");
+
+				$this->spare_parts_model->delete_dealer(array('dealer_id' => $dealer_id));
+				
+				//logging of action
+				$details_before = array('id' => $dealer_id, 'details' => $dealer_details);
+				$details_after = "";
+				
+				log_to_db("spare_parts", $this->user->id_number, "MAINTENANCE-DEALERS", "rf_dealer", "DELETE", $details_before, $details_after);
+
+				redirect('/spare_parts/maintenance/dealers');
+				return;
+			}
+		}
+
+		$this->template->dealer_details = $dealer_details;
+		$this->template->view('spare_parts/maintenance/dealers/delete');
+
+	}
+
+	public function view_dealer($dealer_id = 0)
+	{
+		$dealer_details = $this->spare_parts_model->get_dealer_by_id($dealer_id);
+
+		$this->template->dealer_details = $dealer_details;
+		$this->template->view('spare_parts/maintenance/dealers/view');
+
+	}
+
 
 	public function privileges() 
 	{
@@ -761,7 +857,7 @@ class Maintenance extends Admin_Controller {
 		if ($_POST)
 		{
 			// post done here
-			$this->form_validation->set_rules($this->_agents_validation_rule);
+			$this->form_validation->set_rules($this->_spare_parts_validation_rule);
 			if ($this->form_validation->run())
 			{
 				$this->spare_parts_model->update_spare_part(array('is_active' => 0),array());

@@ -5,7 +5,7 @@
 <fieldset>		
 	<div>
 		<div class="control-group">					
-			<input type="text" class="input-large span11" id="search-data" name='search-data' style='margin-top:10px;' onkeypress="handle(event)" />
+			<input type="text" placeholder="Type your search text here..." class="input-large span11" id="search-data" name='search-data' style='margin-top:10px;' onkeypress="handle(event)" />
 			<button class='btn btn-warning' id="search-button" title="Search" style='margin-right: 10px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="icon-search icon-white"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
 			<span id="result-count" style="display:none;" class="label">RESULTS</span>				
 		</div>									
@@ -73,6 +73,89 @@
 
         return false;
     }
+
+    $(".link-s4s").live("click", function(){
+    	var _s4sId = $(this).attr("data");
+    	
+    	// check if already accepted or not
+    	beyond.request({
+			url: '/employee/s4s/check_acceptance',
+			data: {
+				"s4sId": _s4sId				
+
+			},
+			on_success: function(data){
+				if(data.status == "1") {					
+						
+					if (data.data.is_accepted == 0) {
+						// display modal
+						// show add form modal					
+						viewAcceptanceModal = b.modal.new({
+							title: data.data.title,
+							width: 800,							
+							html: data.data.html,
+							buttons: {
+								'Do Not Accept' : function() {
+									viewAcceptanceModal.hide();
+									logS4sAcceptance(0, _s4sId);
+								},
+								'Accept' : function() {
+									viewAcceptanceModal.hide();
+									logS4sAcceptance(1, _s4sId);
+								}									
+							}
+						});
+						viewAcceptanceModal.show();
+
+					} else {
+						// proceed to pdf loading						
+						window.open("s4s/view/" + _s4sId);
+					}
+
+				} else {
+					var err_modal = beyond.modal.create({
+						title: 'Error :: Error',
+						html: data.msg
+					});
+					err_modal.show();
+				}
+			}
+		});
+
+    });
+
+	var logS4sAcceptance = function(_is_accepted = 0, _s4sId) {
+		
+		beyond.request({
+			url : '/employee/s4s/log_acceptance',
+			data : {
+				's4s_id' : _s4sId,
+				'is_accepted' : _is_accepted,				
+			},
+			on_success : function(data) {
+				if (data.status == "1")	{									
+					var acceptanceModal = b.modal.new({
+						title: data.data.title,
+						disableClose: true,
+						html: data.data.html,
+						buttons: {							
+							'Ok' : function() {																
+								acceptanceModal.hide();
+
+								if (_is_accepted == 1) {
+									$(".acceptance-date-" + _s4sId).html(data.data.date_accepted);
+									window.open("s4s/view/" + _s4sId);
+								}
+							}
+						}
+					});
+					acceptanceModal.show();	
+				} else {
+					// TODO: error here...
+				}
+			} // end on_success
+		})
+	};
 
 </script>
 

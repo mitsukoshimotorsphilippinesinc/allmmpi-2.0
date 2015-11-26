@@ -104,6 +104,54 @@ VALUES ('0','Privacy Policy', 'privacy_policy', '<p>
 </p>	', '1');	
 
 
+UPDATE `rf_page_content` SET body = '<p>This policy is developed for you to have knowledge and awareness on how we communicate and make use of personal information. </p>
+<p>The following outlines MMPI’s Portal Privacy Policy. </p>
+
+<ul>
+	<li>Purposes of collecting personal information will be identified.</li>
+	<li>We will only retain personal information as long as necessary for the fulfillment of those purposes.</li>
+	<li>All information collate will have consent or knowledge of the subject individual.</li>
+	<li>All personal data should be relevant, accurate, complete and up to date to the purposes for which it is to be used.</li>
+	<li>We will protect personal information by reasonable security safeguards against loss or theft, as well as unauthorized access, disclosure, copying, use or modification.</li>
+	<li>We will make readily available to customers information about our policies and practices relating to the management of personal information.</li>
+</ul>
+
+<p>
+	We are committed to conducting our business in accordance with these principles in order to ensure that the confidentiality of personal information is protected and maintained. 
+</p>'
+WHERE slug = 'privacy_policy';	
+
+
+
+DROP TABLE IF EXISTS `el_s4s_position`;
+CREATE TABLE `el_s4s_position` (  
+  `s4s_id` 						int(20) NOT NULL DEFAULT '0',
+  `position_id` 				int(20) NOT NULL DEFAULT '0',
+  `priority_order` 				tinyint(2) NOT NULL DEFAULT '0',
+  `insert_timestamp` 			timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`s4s_id`, `position_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+DROP VIEW IF EXISTS `el_s4s_position_view`;
+CREATE VIEW `el_s4s_position_view` AS
+(SELECT 
+a.s4s_id,
+a.pp_name,
+a.pp_description,
+a.is_active AS is_active_s4s,
+b.position_id,
+b.parent_position_id,
+b.position_name,
+b.is_active AS is_active_position,
+c.priority_order
+FROM 
+	el_s4s_position c
+LEFT JOIN 
+	el_s4s a ON (a.s4s_id = c.s4s_id)
+LEFT JOIN 
+	rf_position b ON (b.position_id = c.position_id));
+
+
 
 
 

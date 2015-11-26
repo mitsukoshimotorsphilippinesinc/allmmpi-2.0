@@ -21,9 +21,14 @@ class Human_relations_model extends Base_Model
 			'company' => 'rf_company',
 			'department' => 'rf_department',
 			'branch' => 'rf_branch',
-			'job_grade_level' => 'rf_job_grade_level',			
+			'agency' => 'rf_agency',
+			'job_grade_level' => 'rf_job_grade_level',
+			'employment_status' => 'rf_employment_status',
 			's4s' => 'el_s4s',
 			's4s_asset' => 'el_s4s_asset',
+			's4s_acceptance' => 'tr_s4s_acceptance',
+			's4s_position' => 'el_s4s_position',
+			's4s_position_view' => 'el_s4s_position_view',
 		);
 
 	}
@@ -489,5 +494,163 @@ class Human_relations_model extends Base_Model
 		return $row->cnt;
 	}
 	// ==============================================================
+	// ==============================================================
+	// tr_s4s_acceptance
+	function get_s4s_acceptance($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('s4s_acceptance', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;	
+	}
 
+	function insert_s4s_acceptance($data) 
+	{
+		return $this->insert('s4s_acceptance', $data);
+	}
+
+	function update_s4s_acceptance($data, $where) 
+	{
+		return $this->update('s4s_acceptance', $data, $where);
+	}
+
+	function delete_s4s_acceptance($where) 
+	{
+		return $this->delete('s4s_acceptance', $where);
+	}
+
+	function get_s4s_acceptance_by_id($s4s_acceptance_id) 
+	{
+		$result = $this->get_s4s_acceptance(array('s4s_acceptance_id' => $s4s_acceptance_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+
+	function get_s4s_acceptance_count($where = null) {
+		$query = $this->fetch('s4s_acceptance', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+	// ==============================================================
+	// ==============================================================
+	// el_s4s_position
+	function get_s4s_position($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('s4s_position', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;	
+	}
+
+	function insert_s4s_position($data) 
+	{
+		return $this->insert('s4s_position', $data);
+	}
+
+	function update_s4s_position($data, $where) 
+	{
+		return $this->update('s4s_position', $data, $where);
+	}
+
+	function delete_s4s_position($where) 
+	{
+		return $this->delete('s4s_position', $where);
+	}
+
+	function get_s4s_position_count($where = null) {
+		$query = $this->fetch('s4s_position', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+	// ==============================================================
+	// ==============================================================
+	// el_s4s_position_view
+	function get_s4s_position_view($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('s4s_position_view', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;	
+	}
+
+	function get_s4s_position_view_count($where = null) {
+		$query = $this->fetch('s4s_position_view', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+	// ==============================================================
+	// rf_agency
+	function get_agency($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('agency', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;	
+	}
+
+	function insert_agency($data) 
+	{
+		return $this->insert('agency', $data);
+	}
+
+	function update_agency($data, $where) 
+	{
+		return $this->update('agency', $data, $where);
+	}
+
+	function delete_agency($where) 
+	{
+		return $this->delete('agency', $where);
+	}
+
+	function get_agency_by_id($agency_id) 
+	{
+		$result = $this->get_agency(array('agency_id' => $agency_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+	// ==============================================================	
+	// rf_employment_status
+	function get_employment_status($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('employment_status', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;	
+	}
+
+	function insert_employment_status($data) 
+	{
+		return $this->insert('employment_status', $data);
+	}
+
+	function update_employment_status($data, $where) 
+	{
+		return $this->update('employment_status', $data, $where);
+	}
+
+	function delete_employment_status($where) 
+	{
+		return $this->delete('employment_status', $where);
+	}
+
+	function get_employment_status_by_id($employment_status_id) 
+	{
+		$result = $this->get_employment_status(array('employment_status_id' => $employment_status_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+	// ==============================================================	
 }

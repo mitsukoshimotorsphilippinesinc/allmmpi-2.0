@@ -1744,18 +1744,15 @@ class Spare_parts_model extends Base_Model
 	}
 
 	//---------------------------------------------
-	// tr_admin_log, tr_inventory_log
-	function insert_logs($type,$data) {	
+	// tr_admin_log
+	function insert_log($type, $data) {	
         if(isset($data['remarks'])) {
             $data['remarks'] .= "\n\n URL:" . $this->uri->uri_string();
         } else {
             $data['remarks'] = "URL:" . $this->uri->uri_string();
         }	
 		
-		if ($type=='admin')
-	        $result = $this->insert('admin_log', $data);			
-		else if ($type=='inventory')
-	        $result = $this->insert('inventory_log', $data);	
-    }	
-	
+		if ($type=='spare_parts')
+	        $result = $this->insert('admin_log', $data);
+    }		
 }

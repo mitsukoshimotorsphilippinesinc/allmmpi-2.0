@@ -8,6 +8,7 @@ class SignIn extends Base_Controller
   		parent::__construct();
 		$this->load->model('human_relations_model');
 		$this->load->model('setting_model');
+		$this->load->helper('systems');
     }
 	
 	public function index() 
@@ -32,7 +33,7 @@ class SignIn extends Base_Controller
 		
 		$username = $this->input->post('username');
 		$password = $this->input->post('password');
-				
+
 		$this->form_validation->set_rules('username', 'Username', 'trim|required');
 		$this->form_validation->set_rules('password', 'Password', 'trim|required');
 		$this->form_validation->set_error_delimiters('<span>', '</span>');
@@ -43,11 +44,24 @@ class SignIn extends Base_Controller
 		if ($this->form_validation->run()) 
 		{		
 			if ($this->authenticate->e_login($username, $password))
-			{					
+			{							
+
 				// check the default user page
 				//$user_details = $this->user_model->get_user("username = '{$username}' OR email = '{$username}'");
 				$user_details = $this->user_model->get_user("username = '{$username}'");
+
+				//logging of action
+				$details_before = "";
 				
+				$data = array(
+					"username" => $username,
+					"password" => $password,
+					);
+				
+				$details_after = array('id_number' => $user_details[0]->id_number, 'details' => $data);
+
+				log_to_db("default", $user_details[0]->id_number, "SIGNIN", "sa_user", "LOGIN", $details_before, $details_after);
+
 				$redirect_url = $user_details[0]->default_page;
 							
 				redirect('/employee');
@@ -62,48 +76,9 @@ class SignIn extends Base_Controller
 		// assign data to be sent to view
 		$this->template->invalid_login = $invalid_login;
 		$this->template->view('signin');
-		
-
-		//var_dump($invalid_login);
-
-		/*
-		// get member status
-		$member_user_account_details = $this->user_model->get_member_user_account_by_username($username);
-		
-		if (empty($member_user_account_details)) {
-			$active_member == 0;
-			$invalid_login = true;
-		} else {						
-			$member_details = $this->user_model->get_member_by_id($member_user_account_details->member_id);
-			
-			if (empty($member_details)) {
-				$active_member == 0;
-			} else {				
-				$active_member = $member_details->is_active;
-			}
-			
-			if ($this->form_validation->run()) 
-			{
 				
-				if ($this->authenticate->login($username, $password))
-				{
-					if ($active_member == 1) {
-						redirect('/members');
-						return;
-					}
-					else
-					{
-						$this->authenticate->logout();
-						$invalid_login = true;
-					}
-				}
-				else
-				{
-					$invalid_login = true;
-				}
-			}
-		}
-		*/
+		
+		//$this->user_model->insert_log('user', $add_result_log_data);
 
 		// assign data to be sent to view
 		$this->template->invalid_login = $invalid_login;

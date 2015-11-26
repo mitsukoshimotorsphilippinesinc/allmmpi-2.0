@@ -31,3 +31,27 @@ function get_segment_name()
 
 	return $ci->uri->segment(2);	
 }
+
+
+function log_to_db($model_name, $id_number, $module_name, $table_name, $action, $details_before = NULL, $details_after = NULL, $remarks = NULL)
+{
+	$ci = ci();
+	//$ci->load->model($model_name . '_model');
+
+	$ci->db_database = $ci->load->database($model_name, TRUE);
+	
+	$details_before = json_encode($details_before);
+	$details_after = json_encode($details_after);
+	
+	$tableis = "admin";
+	
+	if ($model_name == "default") {
+		$tableis = "user";
+	} 
+	
+	$sql_insert = "INSERT INTO tr_". $tableis ."_log(`id_number`, `module_name`, `table_name`, `action`, `details_before`, `details_after`, `remarks`)
+					VALUES ('{$id_number}', '{$module_name}', '{$table_name}', '{$action}', '{$details_before}', '{$details_after}', '{$remarks}')";
+
+	$ci->db_database->query($sql_insert);	
+
+}

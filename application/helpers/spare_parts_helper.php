@@ -8,13 +8,13 @@ function return_reserved_items($request_code, $reservation_status, $remarks, $re
 	//$this->db_spare_parts = $this->load->database('spare_parts', TRUE);	
 	$ci->db_spare_parts = $ci->load->database('spare_parts', TRUE);
 
-	// identify which module
-	$module_code = substr($request_code, 0, 2);
-	$department_module_details = $ci->spare_parts_model->get_department_module_by_code($module_code);
+	//// identify which module
+	//$module_code = substr($request_code, 0, 2);
+	//$department_module_details = $ci->spare_parts_model->get_department_module_by_code($module_code);
 
 	// request_summary
-	$request_summary_sql = "SELECT a." . $department_module_details->segment_name . "_id as id, a.* FROM
-							is_" . $department_module_details->segment_name . " a
+	$request_summary_sql = "SELECT a.request_summary_id as id, a.* FROM
+							is_request_summary a
 						WHERE
 						a.request_code = '" . $request_code . "'";
 
@@ -25,14 +25,14 @@ function return_reserved_items($request_code, $reservation_status, $remarks, $re
 	$add_condition = "";
 
 	if ($request_detail_id > 0) {
-		$add_condition = " AND ". $department_module_details->segment_name ."_detail_id = " . $request_detail_id;
+		$add_condition = " AND request_detail_id = " . $request_detail_id;
 	}
 
 	// get request details
-	$request_details_sql = "SELECT a." . $department_module_details->segment_name . "_id as id, a.* FROM
-								is_" . $department_module_details->segment_name . "_detail a
+	$request_details_sql = "SELECT a.request_detail_id as id, a.* FROM
+								is_request_detail a
 							WHERE
-							a." . $department_module_details->segment_name . "_id = '" . $request_summary->id . "' AND a.status IN ('PENDING')" . $add_condition;
+							a.request_summary_id = '" . $request_summary->id . "' AND a.status IN ('PENDING')" . $add_condition;
 
 	$request_details = $ci->db_spare_parts->query($request_details_sql);
 	$request_details = $request_details->result();		
@@ -54,13 +54,13 @@ function return_reserved_items($request_code, $reservation_status, $remarks, $re
 		// TODO REMARKS TO JSON
 		$complete_remarks = "[" . $current_datetime . "] " . $remarks . "\n" . $rd->remarks;
 
-		$update_detail_status_sql =  "UPDATE is_" . $department_module_details->segment_name . "_detail
+		$update_detail_status_sql =  "UPDATE is_request_detail
 										SET
 											status = '" . $reservation_status . "',
 											update_timestamp = '" . $current_datetime . "',
 											remarks = '" . $complete_remarks . "'
 										WHERE
-											" . $department_module_details->segment_name . "_detail_id = " . $rd->id ;
+										    request_detail_id = " . $rd->id ;
 
 		
 		$ci->db_spare_parts->query($update_detail_status_sql);
@@ -72,13 +72,13 @@ function return_reserved_items($request_code, $reservation_status, $remarks, $re
 		// update status = $reservation_status
 		$complete_remarks = "[" . $current_datetime . "] " . $remarks . "\n" . $request_summary->remarks;
 
-		$update_summary_status_sql =  "UPDATE is_" . $department_module_details->segment_name . "
+		$update_summary_status_sql =  "UPDATE is_request_summary
 											SET
 												status = '" . $reservation_status . "',
 												update_timestamp = '" . $current_datetime . "',
 												remarks = '" . $complete_remarks . "'
 											WHERE
-												" . $department_module_details->segment_name . "_id = " . $request_summary->id;
+												request_summary_id = " . $request_summary->id;
 
 		$ci->db_spare_parts->query($update_summary_status_sql);
 

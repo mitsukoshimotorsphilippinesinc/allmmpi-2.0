@@ -63,10 +63,13 @@
 	<?php foreach ($dealers as $r): ?>
 		<tr>
 			<?php			
-				if (empty($r->image_filename)) {
+				if (!($r->image_filename == NULL)) {
+					$image_display = $r->image_filename;	
+				} else {
 					$image_display = "ni_dealer.jpg";
-				}
+				}									
 			?>
+			
 			<td><img id="" style="width:70px; height:70px;" alt="" src="<?= $upload_url; ?>/<?= $image_display ?>"></td>
 			<td><?= $r->complete_name; ?></td>
 			<td><?= $r->complete_address ?></td>
