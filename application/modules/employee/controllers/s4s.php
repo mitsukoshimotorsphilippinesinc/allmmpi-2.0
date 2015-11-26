@@ -32,7 +32,10 @@ class S4s extends Site_Controller
 
 		if(empty($page)) $page = 1;
 
-		$where = "company_id IN (0, {$this->employee->company_id}) AND branch_id IN (0, {$this->employee->branch_id}) AND department_id IN (0, {$this->employee->department_id}) AND position_id IN (0, {$this->employee->position_id})";
+
+
+		//$where = "company_id IN (0, {$this->employee->company_id}) AND branch_id IN (0, {$this->employee->branch_id}) AND department_id IN (0, {$this->employee->department_id}) AND position_id IN (0, {$this->employee->position_id})";
+		$where = "(position_id = {$this->employee->position_id} OR parent_position_id = {$this->employee->position_id}) AND is_active_s4s = 1";
 
 		$add_where = "";
 		if (strlen($search_data) > 0) {
@@ -40,7 +43,8 @@ class S4s extends Site_Controller
 			$where .= $add_where;
 		}
 
-		$s4s_count = $this->human_relations_model->get_s4s_count($where);
+		//$s4s_count = $this->human_relations_model->get_s4s_count($where);
+		$s4s_count = $this->human_relations_model->get_s4s_position_view_count($where);
 
 		$records_per_page = 30;
 		$offset = ($page - 1) * $records_per_page;
@@ -57,7 +61,8 @@ class S4s extends Site_Controller
         $pagination = $this->pager2->create_links();
        
 		$limit = array("rows"=>$records_per_page,"offset"=>$offset);
-		$s4s = $this->human_relations_model->get_s4s($where, $limit,'insert_timestamp DESC');
+		//$s4s = $this->human_relations_model->get_s4s($where, $limit,'priority_order');
+		$s4s = $this->human_relations_model->get_s4s_position_view($where, $limit, 'priority_order');
 
 		$html = "";
 

@@ -5,7 +5,7 @@
 <fieldset>		
 	<div>
 		<div class="control-group">					
-			<input type="text" class="input-large span11" id="search-data" name='search-data' style='margin-top:10px;' onkeypress="handle(event)" />
+			<input type="text" placeholder="Type your search text here..." class="input-large span11" id="search-data" name='search-data' style='margin-top:10px;' onkeypress="handle(event)" />
 			<button class='btn btn-warning' id="search-button" title="Search" style='margin-right: 10px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="icon-search icon-white"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
 			<span id="result-count" style="display:none;" class="label">RESULTS</span>				
 		</div>									
@@ -92,8 +92,7 @@
 						// show add form modal					
 						viewAcceptanceModal = b.modal.new({
 							title: data.data.title,
-							width: 800,
-							disableClose: true,
+							width: 800,							
 							html: data.data.html,
 							buttons: {
 								'Do Not Accept' : function() {

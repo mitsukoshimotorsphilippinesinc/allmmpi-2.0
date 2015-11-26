@@ -58,7 +58,7 @@
             <li class="active" data="personal"><a href="#personal" data-toggle="tab">Personal Information</a></li>
 			<li data="employment"><a href="#employment" data-toggle="tab">Employment Information</a></li>
 			<li data="contact"><a href="#contact" data-toggle="tab">Contact Information</a></li>			
-			<li data="change_password"><a href="#change_password" data-toggle="tab">Change Password</a></li>
+			<!--li data="change_password"><a href="#change_password" data-toggle="tab">Change Password</a></li-->
         </ul>
 		<div class="tab-content">
 			<div class="tab-pane active" id="personal">
@@ -69,7 +69,7 @@
 	  			<div class="span10" style='position: relative;'>
 					<div style='position: absolute; top: 5px; right:10px;'>
 						<small id='profile_processing' style='margin-right:10px; display:none;'><img src='/assets/img/loading2.gif' alt='' /></small>
-						<button id='btn_edit_profile' class='btn btn-primary btn_profile_edit'>Edit</button>
+						<!--button id='btn_edit_profile' class='btn btn-primary btn_profile_edit'>Edit</button-->
 						<button id='btn_save_profile' class='btn btn-warning btn_profile_save' style='display:none;'>Save</button>
 						<button id='btn_cancel_profile' class='btn btn-danger btn_profile_save' style='display:none;'>Cancel</button>
 					</div>
@@ -338,9 +338,9 @@
 									<div class="input-append">
 										<input type='email' id='email' name='email' class='span4' value='<?= $personal_information->personal_email_address ?>' readonly/>
 										<?php if ($personal_information->is_personal_email_verified == 0) : ?>
-										<button id="edit_email" class="btn btn-primary" data-type='email'  type="button">Edit</button>
+										<!--button id="edit_email" class="btn btn-primary" data-type='email'  type="button">Edit</button-->
 										<?php if (!empty($personal_information->personal_email_address)) : ?>
-										<button class="btn btn-warning verify_email_mobile_number" data-type='email' type="button">Verify</button>
+										<!--button class="btn btn-warning verify_email_mobile_number" data-type='email' type="button">Verify</button-->
 										<?php
 												endif;
 											else :
@@ -362,9 +362,9 @@
 									<div class="input-append">
 										<input type='text' id='mobile_number' name='mobile_number' class='span4' value='<?=$personal_information->mobile_number?>' readonly/>
 										<?php if ($personal_information->is_mobile_number_verified == 0) : ?>
-										<button id="edit_mobile" class="btn btn-primary" data-type='mobile_number' type="button">Edit</button>
+										<!--button id="edit_mobile" class="btn btn-primary" data-type='mobile_number' type="button">Edit</button-->
 										<?php if (!empty($personal_information->mobile_number)) : ?>
-										<button class="btn btn-warning verify_email_mobile_number" data-type='mobile_number' type="button">Verify</button>
+										<!--button class="btn btn-warning verify_email_mobile_number" data-type='mobile_number' type="button">Verify</button-->
 										<?php
 												endif;
 											else :
@@ -381,9 +381,9 @@
 					<div class='well well-small clearfix' style='margin-bottom:10px; margin-top:10px;'>
 						<h4 class='pull-left' style='margin:0;'>Address <small id='address_processing' style='display:none;'><img src='/assets/img/loading2.gif' alt='' /></small></h4>
 						<div class='pull-right'>
-							<button id='btn_edit_address' class='btn btn-small btn-primary btn_address_edit'>Edit</button>
+							<!--button id='btn_edit_address' class='btn btn-small btn-primary btn_address_edit'>Edit</button>
 							<button id='btn_save_address' class='btn btn-small btn-warning btn_address_save' style='display:none;'>Save</button>
-							<button id='btn_cancel_address' class='btn btn-small btn-danger btn_address_save' style='display:none;'>Cancel</button>
+							<button id='btn_cancel_address' class='btn btn-small btn-danger btn_address_save' style='display:none;'>Cancel</button-->
 						</div>
 					</div>
 					<div class='row'>

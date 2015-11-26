@@ -2,7 +2,8 @@
 	<ul class="nav pull-right">
 		<!--?php if ($this->authenticate->is_logged_in()) : ?-->
 		<?php 
-			if ($this->authenticate->e_is_logged_in()) { ?>
+			if ($this->authenticate->e_is_logged_in()) { 		
+		?>
 			
 			<li class='dropdown-auto'>
 				<a id='nav_members_area' class="dropdown-toggle" data-toggle="dropdown" href='/members'>My Menu<i class='icon-play-down'></i></a>

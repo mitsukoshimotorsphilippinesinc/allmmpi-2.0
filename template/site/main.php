@@ -77,7 +77,8 @@
 		<?= $content ?>
 	</div>
 	<footer>
-		<div class="grid12">
+		<?= $this->load->view('snippets/footer', NULL, TRUE,'main');  ?>
+		<!--div class="grid12">
 			<div class="row">
 				<p class="span5">@2015 Mitsukoshi Motors PHilippines Inc. All Rights Reserved.</p>
 				<ul class="span7" class="text-align:right;">
@@ -90,7 +91,7 @@
 			<div class="row">					
     			<p>Powered by<a href="http://mitsukoshimotors.com"> MMPI IT Department</a></p>
 			</div>
-		</div>
+		</div-->
 	</footer>
 
 </body>

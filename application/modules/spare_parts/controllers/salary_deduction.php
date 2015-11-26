@@ -1283,7 +1283,7 @@ class Salary_deduction extends Admin_Controller {
 
 			//$active_salary_deduction_details = $this->spare_parts_model->get_salary_deduction_by_code($request_code);
 			$active_salary_deduction_details = $this->spare_parts_model->get_request_summary_by_code($request_code);
-			$active_salary_deduction_id = $active_salary_deduction_details->salary_deduction_id;
+			$active_salary_deduction_id = $active_salary_deduction_details->request_summary_id;
 		}	
 
 		// total amount
@@ -1525,9 +1525,9 @@ class Salary_deduction extends Admin_Controller {
 		$salary_deduction_detail_id = $this->input->post("salary_deduction_detail_id");
 
 		// get salary_deduction_id
-		$salary_deduction_details = $this->spare_parts_model->get_salary_deduction_by_code($request_code);
+		$salary_deduction_details = $this->spare_parts_model->get_request_summary_by_code($request_code);
 
-		$salary_deduction_detail_info = $this->spare_parts_model->get_salary_deduction_detail_by_id($salary_deduction_detail_id);
+		$salary_deduction_detail_info = $this->spare_parts_model->get_request_detail_by_id($salary_deduction_detail_id);
 
 		$item_view_details = $this->spare_parts_model->get_item_view_by_id($salary_deduction_detail_info->item_id);
 		
@@ -1544,7 +1544,7 @@ class Salary_deduction extends Admin_Controller {
 					<br/>
 					Do you want to continue?</p>";
 
-		$this->return_json("1","Confirm Remove Item", array("html" => $html, "title" => $title, 'salary_deduction_id' => $salary_deduction_details->salary_deduction_id));
+		$this->return_json("1","Confirm Remove Item", array("html" => $html, "title" => $title, 'salary_deduction_id' => $salary_deduction_details->request_summary_id));
 		return;
 	}
 
@@ -1557,10 +1557,10 @@ class Salary_deduction extends Admin_Controller {
 		//$where = "salary_deduction_id = '{$salary_deduction_id}' AND item_id = '{$item_id}'";
 		//$salary_deduction_detail = $this->spare_parts_model->get_salary_deduction_detail($where);
 
-		$salary_deduction_details = $this->spare_parts_model->get_salary_deduction_by_id($salary_deduction_id);
+		$salary_deduction_details = $this->spare_parts_model->get_request_summary_by_id($salary_deduction_id);
 
 		$where = "salary_deduction_detail_id = " . $salary_deduction_detail_id;		
-		$salary_deduction_detail_info = $this->spare_parts_model->get_salary_deduction_detail_by_id($salary_deduction_detail_id);
+		$salary_deduction_detail_info = $this->spare_parts_model->get_request_detail_by_id($salary_deduction_detail_id);
 
 		$current_datetime = date('Y-m-d H:i:s');		
 
@@ -1642,7 +1642,7 @@ class Salary_deduction extends Admin_Controller {
 					"status" => $new_status,
 				);
 
-			$this->spare_parts_model->update_salary_deduction($data_update, "salary_deduction_id = " . $salary_deduction_id);
+			$this->spare_parts_model->update_request_summary($data_update, "request_summary_id = " . $salary_deduction_id);
 		}	
 
 		$html = "Item is now successfully removed from request.";

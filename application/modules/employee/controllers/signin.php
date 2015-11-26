@@ -60,7 +60,7 @@ class SignIn extends Base_Controller
 				
 				$details_after = array('id_number' => $user_details[0]->id_number, 'details' => $data);
 
-				log_to_db("user", $user_details[0]->id_number, "SIGNIN", "sa_user", "LOGIN", $details_before, $details_after);
+				log_to_db("default", $user_details[0]->id_number, "SIGNIN", "sa_user", "LOGIN", $details_before, $details_after);
 
 				$redirect_url = $user_details[0]->default_page;
 							

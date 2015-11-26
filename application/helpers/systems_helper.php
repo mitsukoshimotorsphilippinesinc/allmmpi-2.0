@@ -36,19 +36,22 @@ function get_segment_name()
 function log_to_db($model_name, $id_number, $module_name, $table_name, $action, $details_before = NULL, $details_after = NULL, $remarks = NULL)
 {
 	$ci = ci();
-	$ci->load->model($model_name . '_model');
+	//$ci->load->model($model_name . '_model');
 
+	$ci->db_database = $ci->load->database($model_name, TRUE);
+	
 	$details_before = json_encode($details_before);
 	$details_after = json_encode($details_after);
 	
-	$add_result_log_data = array(
-		'id_number' => $id_number,
-		'module_name' => $module_name,
-		'table_name' => $table_name,
-		'action' => $action,
-		'details_after' => $details_after,
-		'remarks' => $remarks,
-	);
+	$tableis = "admin";
+	
+	if ($model_name == "default") {
+		$tableis = "user";
+	} 
+	
+	$sql_insert = "INSERT INTO tr_". $tableis ."_log(`id_number`, `module_name`, `table_name`, `action`, `details_before`, `details_after`, `remarks`)
+					VALUES ('{$id_number}', '{$module_name}', '{$table_name}', '{$action}', '{$details_before}', '{$details_after}', '{$remarks}')";
 
-	$ci->user_model->insert_log($model_name, $add_result_log_data);
+	$ci->db_database->query($sql_insert);	
+
 }
