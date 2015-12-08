@@ -11,8 +11,9 @@
 	<table class="table table-striped table-condensed assign-requester-list">
 		<thead>
 			<tr>
-				<th class='id_number' style="width:80px;">IDNO</th>
-				<th style="width: 220px;">Name</th>
+				<th style="width: 70px;">Image</th>
+				<th style="width: 0px;" class='id_number'>IDNO</th>
+				<th style="width: 250px;">Name</th>
 				<th style="width: 110px;">Department</th>
 				<th style="width: 110px;">Position</th>
 				<th style="width: 40px;">Is Employed</th>
@@ -29,11 +30,13 @@
 </script>
 
 <script id='assign-requester-item-template' type='text/template'>
+
 	<%	console.log(employees);
 		$.each(employees, function(index, item) { 
 		
 	%>
 			<tr id='emp_<%= item.id_number %>'>
+				<td style="width: 70px;"><img id="" src="<%= item.upload_url %>/<%= item.image_filename %>" alt="" style="width:50px; height:50px;"></img></td>
 				<td class='account_number' style="width:80px;"><%= item.id_number %></td>
 				<td style="width: 250px;"><%= item.complete_name %></td>
 				<td style="width: 110px;"><%= item.department_name  %></td>

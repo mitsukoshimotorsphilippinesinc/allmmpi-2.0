@@ -95,14 +95,14 @@ class Warehouse_claim extends Admin_Controller {
 		// set pagination data
 		$config = array(
 				'pagination_url' => "/spare_parts/warehouse_claim/approval/",
-				'total_items' => $this->spare_parts_model->get_warehouse_claim_count($where),
+				'total_items' => $this->spare_parts_model->get_request_summary_count($where),
 				'per_page' => 10,
 				'uri_segment' => 4,
 		);
 
 		$this->pager->set_config($config);
 
-		$transfers = $this->spare_parts_model->get_warehouse_claim($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");			
+		$transfers = $this->spare_parts_model->get_request_summary($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");			
 		
 		// search vars
 		$this->template->search_status = $search_status;
@@ -121,7 +121,7 @@ class Warehouse_claim extends Admin_Controller {
 		$warehouse_claim_code = $this->input->post("warehouse_claim_code");
 		$is_approved = $this->input->post("is_approved");
 
-		$warehouse_claim = $this->spare_parts_model->get_warehouse_claim_by_id($warehouse_claim_id);
+		$warehouse_claim = $this->spare_parts_model->get_request_summary_by_id($warehouse_claim_id);
 
 		if (empty($warehouse_claim)) {		
 			$html = "<p>There is something wrong with this transaction [Request Code: {$warehouse_claim_code}].</p>";
@@ -166,7 +166,7 @@ class Warehouse_claim extends Admin_Controller {
 		$is_approved = $this->input->post("is_approved");
 		$remarks =  $this->input->post("remarks");
 		
-		$warehouse_claim = $this->spare_parts_model->get_warehouse_claim_by_id($warehouse_claim_id);		
+		$warehouse_claim = $this->spare_parts_model->get_request_summary_by_id($warehouse_claim_id);		
 
 		if (empty($warehouse_claim)) {		
 			$html = "<p>There is something wrong with this transaction [Request Code: {$warehouse_claim_code}].</p>";
@@ -221,8 +221,8 @@ class Warehouse_claim extends Admin_Controller {
 				$title = "Request Approved :: " . $warehouse_claim_code;
 			}
 			
-			$where = "warehouse_claim_id = " . $warehouse_claim_id;
-			$this->spare_parts_model->update_warehouse_claim($data, $where);
+			$where = "request_summary_id = " . $warehouse_claim_id;
+			$this->spare_parts_model->update_request_summary($data, $where);
 
 			$this->return_json("1","Successful Approval/Disapproval of Warehouse Claim.",array("html" => $html, "title" => $title));
 						
@@ -237,7 +237,7 @@ class Warehouse_claim extends Admin_Controller {
 		$warehouse_claim_code = $this->input->post("warehouse_claim_code");
 		$listing_action = $this->input->post("listing_action");
 		
-		$warehouse_claim = $this->spare_parts_model->get_warehouse_claim_by_id($warehouse_claim_id);		
+		$warehouse_claim = $this->spare_parts_model->get_request_summary_by_id($warehouse_claim_id);		
 
 		if (empty($warehouse_claim)) {		
 			$html = "<p>There is something wrong with this transaction [Request Code: {$warehouse_claim_code}].</p>";
@@ -247,8 +247,8 @@ class Warehouse_claim extends Admin_Controller {
 			
 		} else {
 
-			$where = "warehouse_claim_id = {$warehouse_claim_id}";
-			$warehouse_claim_details = $this->spare_parts_model->get_warehouse_claim_detail($where);
+			$where = "request_summary_id = {$warehouse_claim_id}";
+			$warehouse_claim_details = $this->spare_parts_model->get_request_detail($where);
 			
 			$department_module_details = $this->spare_parts_model->get_department_module_by_segment_name($this->segment_name);	
 
@@ -347,14 +347,14 @@ class Warehouse_claim extends Admin_Controller {
 		// set pagination data
 		$config = array(
 				'pagination_url' => "/spare_parts/warehouse_claim/listing/",
-				'total_items' => $this->spare_parts_model->get_warehouse_claim_count($where),
+				'total_items' => $this->spare_parts_model->get_request_summary_count($where),
 				'per_page' => 10,
 				'uri_segment' => 4,
 		);
 
 		$this->pager->set_config($config);
 
-		$transfers = $this->spare_parts_model->get_warehouse_claim($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");			
+		$transfers = $this->spare_parts_model->get_request_summary($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");			
 		
 		// search vars
 		$this->template->search_status = $search_status;
@@ -373,7 +373,7 @@ class Warehouse_claim extends Admin_Controller {
 		$warehouse_claim_code = $this->input->post("warehouse_claim_code");
 		$listing_action = $this->input->post("listing_action");
 
-		$warehouse_claim = $this->spare_parts_model->get_warehouse_claim_by_id($warehouse_claim_id);
+		$warehouse_claim = $this->spare_parts_model->get_request_summary_by_id($warehouse_claim_id);
 
 		if (empty($warehouse_claim)) {		
 			$html = "<p>There is something wrong with this transaction [Request Code: {$warehouse_claim_code}].</p>";
@@ -445,7 +445,7 @@ class Warehouse_claim extends Admin_Controller {
 		$remarks =  $this->input->post("remarks");
 		$mtr_number =  abs($this->input->post("mtr_number"));
 		
-		$warehouse_claim = $this->spare_parts_model->get_warehouse_claim_by_id($warehouse_claim_id);		
+		$warehouse_claim = $this->spare_parts_model->get_request_summary_by_id($warehouse_claim_id);		
 
 		if (empty($warehouse_claim)) {		
 			$html = "<p>There is something wrong with this transaction [Request Code: {$warehouse_claim_code}].</p>";
@@ -557,8 +557,8 @@ class Warehouse_claim extends Admin_Controller {
 				$title = "For Approval - Cancel Completed Request :: " . $warehouse_claim_code;
 			}
 			
-			$where = "warehouse_claim_id = " . $warehouse_claim_id;
-			$this->spare_parts_model->update_warehouse_claim($data, $where);
+			$where = "request_summary_id = " . $warehouse_claim_id;
+			$this->spare_parts_model->update_request_summary($data, $where);
 	
 		}	
 
@@ -618,7 +618,7 @@ class Warehouse_claim extends Admin_Controller {
 		// check if query will return records to execute
 		$where = "insert_timestamp BETWEEN '$start_date' AND '$end_date'";
 
-		$pending_count = $this->spare_parts_model->get_warehouse_claim($where);
+		$pending_count = $this->spare_parts_model->get_request_summary($where);
 
 		if (empty($pending_count))
 		{
@@ -722,7 +722,7 @@ class Warehouse_claim extends Admin_Controller {
 
 			$where .= " AND insert_timestamp BETWEEN '{$start_date}' AND '{$end_date}'";
 
-			$warehouse_claim_count = $this->spare_parts_model->get_warehouse_claim_count($where);
+			$warehouse_claim_count = $this->spare_parts_model->get_request_summary_count($where);
 
 			$filename = "warehouse_claims_" . str_replace("-", "", $start_date) . "-" . str_replace("-", "", $end_date) . ".xls";
 
@@ -768,7 +768,7 @@ class Warehouse_claim extends Admin_Controller {
 
 			for($prow = 0;$prow < ceil($warehouse_claim_count/$allowed_rows)+1; $prow++)
 			{
-				$warehouse_claims = $this->spare_parts_model->get_warehouse_claim($where, array('rows' => $allowed_rows, 'offset' => $prow*$allowed_rows), 'insert_timestamp ASC');
+				$warehouse_claims = $this->spare_parts_model->get_request_summary($where, array('rows' => $allowed_rows, 'offset' => $prow*$allowed_rows), 'insert_timestamp ASC');
 
 				foreach ($warehouse_claims as $dr)
 				{
@@ -818,7 +818,7 @@ class Warehouse_claim extends Admin_Controller {
 
 		$department_module_details = $this->spare_parts_model->get_department_module_by_segment_name($this->segment_name);
 		
-		$warehouse_claim_details = $this->spare_parts_model->get_warehouse_claim_by_id($warehouse_claim_id);
+		$warehouse_claim_details = $this->spare_parts_model->get_request_summary_by_id($warehouse_claim_id);
 
 		if (!empty($warehouse_claim_details)) {
 			$requester_details = $this->human_relations_model->get_employment_information_view_by_id($warehouse_claim_details->id_number);
@@ -835,7 +835,7 @@ class Warehouse_claim extends Admin_Controller {
 
 			// get request items
 			$where = "status NOT IN ('CANCELLED', 'DELETED') AND warehouse_claim_id = " . $warehouse_claim_id;
-			$warehouse_claim_detail_details = $this->spare_parts_model->get_warehouse_claim_detail($where);
+			$warehouse_claim_detail_details = $this->spare_parts_model->get_request_detail($where);
 
 			$json_items = array();
 			for($k = 0;$k<count($warehouse_claim_detail_details);$k++)
@@ -1136,8 +1136,8 @@ class Warehouse_claim extends Admin_Controller {
 
 			$current_datetime = date('Y-m-d H:i:s');						
 
-			$sql = "INSERT INTO 
-						is_warehouse_claim 
+			/*$sql = "INSERT INTO 
+						is_request_summary 
 						(
 							`request_series`, 
 							`request_number`, 
@@ -1159,7 +1159,36 @@ class Warehouse_claim extends Admin_Controller {
                             '{$engine}', 
                             '{$chassis}'                            
                     	FROM 
-                    		is_warehouse_claim
+                    		is_request_summary
+                    	WHERE 
+                    		request_series = '{$request_series}' 
+	                    ORDER BY 
+	                    	request_number DESC
+                    	)";
+			*/
+
+			$sql = "INSERT INTO 
+						is_request_summary 
+						(
+							`request_series`, 
+							`request_number`, 
+							`id_number`, 							
+							`warehouse_id`, 
+							`motorcycle_brand_model_id`, 
+							`engine`, 
+							`chassis`
+						)
+                    	(
+                    	SELECT 
+                    		'{$request_series}', 
+                    		IFNULL(MAX(request_number) + 1, 1) AS request_number, 
+                    		'{$requester_id}',                     		
+                            '{$warehouse_id}', 
+                            '{$brandmodel_id}', 
+                            '{$engine}', 
+                            '{$chassis}'                            
+                    	FROM 
+                    		is_request_summary
                     	WHERE 
                     		request_series = '{$request_series}' 
 	                    ORDER BY 
@@ -1169,7 +1198,7 @@ class Warehouse_claim extends Admin_Controller {
 			$this->db_spare_parts->query($sql);	
 
 			// get last insert id
-			$sql = "SELECT LAST_INSERT_ID() AS last_id FROM is_warehouse_claim";
+			$sql = "SELECT LAST_INSERT_ID() AS last_id FROM is_request_summary";
 			$query = $this->db_spare_parts->query($sql);
 			$warehouse_claim_id = $query->first_row();
 
@@ -1179,9 +1208,9 @@ class Warehouse_claim extends Admin_Controller {
 			$sql = "SELECT 
 						CONCAT('{$module_code}', '{$request_series}', '-', LPAD(request_number, 5, 0)) AS gen_code
 					FROM
-						is_warehouse_claim		
+						is_request_summary		
                     WHERE 
-                    	warehouse_claim_id = " . $active_warehouse_claim_id;
+                    	request_summary_id = " . $active_warehouse_claim_id;
 
             $query = $this->db_spare_parts->query($sql);
 			$request_code_details = $query->first_row();  
@@ -1203,8 +1232,8 @@ class Warehouse_claim extends Admin_Controller {
 				$data_update['remarks'] = $requester_remarks_encoded;
 			}
 
-			$where_update = "warehouse_claim_id = " . $active_warehouse_claim_id;
-			$this->spare_parts_model->update_warehouse_claim($data_update, $where_update);
+			$where_update = "request_summary_id = " . $active_warehouse_claim_id;
+			$this->spare_parts_model->update_request_summary($data_update, $where_update);
 
             //get department module id
             $department_module_details = $this->spare_parts_model->get_department_module_by_code($module_code);        
@@ -1221,8 +1250,8 @@ class Warehouse_claim extends Admin_Controller {
 
 		} else {
 			
-			$active_warehouse_claim_details = $this->spare_parts_model->get_warehouse_claim_by_code($request_code);
-			$active_warehouse_claim_id = $active_warehouse_claim_details->warehouse_claim_id;
+			$active_warehouse_claim_details = $this->spare_parts_model->get_request_summary_by_code($request_code);
+			$active_warehouse_claim_id = $active_warehouse_claim_details->request_summary_id;
 		}	
 
 		// total amount
@@ -1238,7 +1267,7 @@ class Warehouse_claim extends Admin_Controller {
 
 		// add item to details table
 		$data_insert = array(
-				'warehouse_claim_id' => $active_warehouse_claim_id,
+				'request_summary_id' => $active_warehouse_claim_id,
 				'item_id' => $item_id,
 				'srp' => $srp,
 				'discount' => $discount,
@@ -1259,7 +1288,7 @@ class Warehouse_claim extends Admin_Controller {
 			$data_insert['remarks'] = $item_remarks_encoded;
 		}
 
-		$this->spare_parts_model->insert_warehouse_claim_detail($data_insert);
+		$this->spare_parts_model->insert_request_detail($data_insert);
 
 		$active_warehouse_claim_detail_id = $this->spare_parts_model->insert_id();
 
@@ -1322,7 +1351,7 @@ class Warehouse_claim extends Admin_Controller {
 
 		$department_module_details = $this->spare_parts_model->get_department_module_by_segment_name($this->segment_name);
 
-		$warehouse_claim_detail_details = $this->spare_parts_model->get_warehouse_claim_detail_by_id($request_detail_id);
+		$warehouse_claim_detail_details = $this->spare_parts_model->get_request_detail_by_id($request_detail_id);
 
 		// get remaining number of items available
 		$where = "request_detail_id = {$request_detail_id} AND department_module_id = {$department_module_details->department_module_id}
@@ -1442,7 +1471,7 @@ class Warehouse_claim extends Admin_Controller {
 				"status" => $new_status,
 			);
 
-		$this->spare_parts_model->update_warehouse_claim($data_update, "warehouse_claim_id = " . $warehouse_claim_detail_details->warehouse_claim_id);
+		$this->spare_parts_model->update_request_summary($data_update, "warehouse_claim_id = " . $warehouse_claim_detail_details->warehouse_claim_id);
 
 		// get item details 
 		$item_details = $this->spare_parts_model->get_item_view_by_id($warehouse_claim_detail_details->item_id);
@@ -1462,9 +1491,9 @@ class Warehouse_claim extends Admin_Controller {
 		$warehouse_claim_detail_id = $this->input->post("warehouse_claim_detail_id");
 
 		// get warehouse_claim_id
-		$warehouse_claim_details = $this->spare_parts_model->get_warehouse_claim_by_code($request_code);
+		$warehouse_claim_details = $this->spare_parts_model->get_request_summary_by_code($request_code);
 
-		$warehouse_claim_detail_info = $this->spare_parts_model->get_warehouse_claim_detail_by_id($warehouse_claim_detail_id);
+		$warehouse_claim_detail_info = $this->spare_parts_model->get_request_detail_by_id($warehouse_claim_detail_id);
 
 		$item_view_details = $this->spare_parts_model->get_item_view_by_id($warehouse_claim_detail_info->item_id);
 		
@@ -1492,12 +1521,12 @@ class Warehouse_claim extends Admin_Controller {
 		$remarks = $this->input->post("remarks");		
 
 		//$where = "warehouse_claim_id = '{$warehouse_claim_id}' AND item_id = '{$item_id}'";
-		//$warehouse_claim_detail = $this->spare_parts_model->get_warehouse_claim_detail($where);
+		//$warehouse_claim_detail = $this->spare_parts_model->get_request_detail($where);
 
-		$warehouse_claim_details = $this->spare_parts_model->get_warehouse_claim_by_id($warehouse_claim_id);
+		$warehouse_claim_details = $this->spare_parts_model->get_request_summary_by_id($warehouse_claim_id);
 
 		$where = "warehouse_claim_detail_id = " . $warehouse_claim_detail_id;		
-		$warehouse_claim_detail_info = $this->spare_parts_model->get_warehouse_claim_detail_by_id($warehouse_claim_detail_id);
+		$warehouse_claim_detail_info = $this->spare_parts_model->get_request_detail_by_id($warehouse_claim_detail_id);
 
 		$current_datetime = date('Y-m-d H:i:s');		
 
@@ -1579,7 +1608,7 @@ class Warehouse_claim extends Admin_Controller {
 					"status" => $new_status,
 				);
 
-			$this->spare_parts_model->update_warehouse_claim($data_update, "warehouse_claim_id = " . $warehouse_claim_id);
+			$this->spare_parts_model->update_request_summary($data_update, "warehouse_claim_id = " . $warehouse_claim_id);
 		}	
 
 		$html = "Item is now successfully removed from request.";
@@ -1597,7 +1626,7 @@ class Warehouse_claim extends Admin_Controller {
 
 		$department_module_details = $this->spare_parts_model->get_department_module_by_segment_name($this->segment_name);
 		
-		$warehouse_claim_details = $this->spare_parts_model->get_warehouse_claim_by_id($warehouse_claim_id);
+		$warehouse_claim_details = $this->spare_parts_model->get_request_summary_by_id($warehouse_claim_id);
 
 		if (!empty($warehouse_claim_details)) {
 			$requester_details = $this->human_relations_model->get_employment_information_view_by_id($warehouse_claim_details->id_number);
@@ -1614,7 +1643,7 @@ class Warehouse_claim extends Admin_Controller {
 
 			// get request items
 			$where = "status NOT IN ('CANCELLED', 'DELETED') AND warehouse_claim_id = " . $warehouse_claim_id;
-			$warehouse_claim_detail_details = $this->spare_parts_model->get_warehouse_claim_detail($where);
+			$warehouse_claim_detail_details = $this->spare_parts_model->get_request_detail($where);
 
 			$json_items = array();
 			for($k = 0;$k<count($warehouse_claim_detail_details);$k++)
@@ -1648,7 +1677,7 @@ class Warehouse_claim extends Admin_Controller {
 			for($l = 0;$l<count($reprocessed_item_details);$l++)
 			{				
 
-				$warehouse_claim_detail_details = $this->spare_parts_model->get_warehouse_claim_detail_by_id($reprocessed_item_details[$l]->request_detail_id);
+				$warehouse_claim_detail_details = $this->spare_parts_model->get_request_detail_by_id($reprocessed_item_details[$l]->request_detail_id);
 
 				$ri_items = array(
 						'request_item_id' => $reprocessed_item_details[$l]->reprocessed_item_id,
@@ -1772,7 +1801,7 @@ class Warehouse_claim extends Admin_Controller {
 	    $where = $data->where;
 	    $current_date = date('Y-m-d');
     
-		$total_records = $this->spare_parts_model->get_warehouse_claim_count($where);
+		$total_records = $this->spare_parts_model->get_request_summary_count($where);
 
 		$config = array(
 			'pagination_url' => '/spare_parts/warehouse_claim/generate_report',
@@ -1781,7 +1810,7 @@ class Warehouse_claim extends Admin_Controller {
 			'uri_segment' => 4,
 		);
 		$this->pager->set_config($config);
-		$warehouse_claim_details = $this->spare_parts_model->get_warehouse_claim($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");
+		$warehouse_claim_details = $this->spare_parts_model->get_request_summary($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");
 
 		$html = "<table class='table table-bordered table-condensed'>
 			<thead>
@@ -1841,7 +1870,7 @@ class Warehouse_claim extends Admin_Controller {
 	    $this->load->library('PHPExcel/IOFactory');
 	    $objPHPExcel = new PHPExcel();
 
-	    $warehouse_claim_details = $this->spare_parts_model->get_warehouse_claim($where, null, "insert_timestamp DESC");
+	    $warehouse_claim_details = $this->spare_parts_model->get_request_summary($where, null, "insert_timestamp DESC");
 
 	    if (!empty($warehouse_claim_details))
 	    {

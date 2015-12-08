@@ -194,6 +194,23 @@ $db['operations']['autoinit'] = TRUE;
 $db['operations']['stricton'] = FALSE;
 $db['operations']['failover'] = array();
 
+$db['information_technology']['hostname'] = 'localhost';
+$db['information_technology']['username'] = 'root';
+$db['information_technology']['password'] = '';
+$db['information_technology']['database'] = 'information_technology';
+$db['information_technology']['dbdriver'] = 'mysql';
+$db['information_technology']['dbprefix'] = '';
+$db['information_technology']['pconnect'] = FALSE;
+$db['information_technology']['db_debug'] = TRUE;
+$db['information_technology']['cache_on'] = FALSE;
+$db['information_technology']['cachedir'] = '';
+$db['information_technology']['char_set'] = 'utf8';
+$db['information_technology']['dbcollat'] = 'utf8_unicode_ci';
+$db['information_technology']['swap_pre'] = '';
+$db['information_technology']['autoinit'] = TRUE;
+$db['information_technology']['stricton'] = FALSE;
+$db['information_technology']['failover'] = array();
+
 
 /* End of file database.php */
 /* Location: ./application/config/database.php */

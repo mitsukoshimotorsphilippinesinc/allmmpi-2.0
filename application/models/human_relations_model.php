@@ -250,6 +250,13 @@ class Human_relations_model extends Base_Model
 	{
 		return $this->delete('position', $where);
 	}
+	
+	function get_position_count($where = null) {
+		$query = $this->fetch('position', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
 
 	function get_position_by_id($position_id) 
 	{

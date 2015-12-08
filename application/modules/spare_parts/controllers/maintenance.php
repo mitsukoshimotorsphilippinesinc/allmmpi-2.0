@@ -999,4 +999,338 @@ class Maintenance extends Admin_Controller {
 
 	}
 
+	// RUNNERS
+	// ------------------------------------------
+	private $_runners_validation_rule = array(
+		array(
+			'field' => 'runner_name',
+			'label' => 'Runner Name',
+			'rules' => 'trim|required'
+		),
+		array(
+			'field' => 'warehouse_name',
+			'label' => 'Warehouse Name',
+			'rules' => 'trim|required'
+		),		
+		array(
+			'field' => 'is_active',
+			'label' => 'Is Active',
+			'rules' => 'trim|required'
+		)
+	);
+
+	public function runners()
+	{
+		$search_by = trim($this->input->get("search_option"));
+		$search_text = trim($this->input->get("search_string"));
+
+
+		$search_url = "";
+
+		if (($search_text == "") || empty($search_text)) {
+			$where = NULL;			
+		} else {
+			$where = "{$search_by} LIKE LOWER('%{$search_text}%')";
+			$search_url = "?search_option=" . $search_by . "&search_string=" . $search_text;
+		}	
+
+
+		// set pagination data
+		$config = array(
+		    'pagination_url' => '/spare_parts/maintenance/runners/',
+		    'total_items' => $this->spare_parts_model->get_runner_view_count($where),
+		    'per_page' => 5,
+		    'uri_segment' => 4,
+		);
+
+		// search vars
+		$this->template->search_by = $search_by;
+		$this->template->search_text = $search_text;
+		$this->template->search_url = $search_url;
+		
+		$this->pager->set_config($config);
+		$this->template->runners = $this->spare_parts_model->get_runner_view($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), 'last_name');
+		$this->template->view('maintenance/runners/list');
+	}
+
+	public function add_runner()
+	{
+		if ($_POST)
+		{
+			// post done here
+			$this->form_validation->set_rules($this->_runners_validation_rule);
+			if ($this->form_validation->run())
+			{
+				//$this->spare_parts_model->update_runner(array('is_active' => 0),array());
+
+				// insert the new results
+				$data = array(
+					'id_number' => strtoupper(set_value('runner_name')),
+					'warehouse_id' => strtoupper(set_value('warehouse_name')),					
+					'is_active' => strtoupper(set_value('is_active'))
+				);
+				$this->spare_parts_model->insert_runner($data);
+				
+				$insert_id = $this->spare_parts_model->insert_id();
+				
+				/*//logging of action
+				*/
+				
+				redirect('/spare_parts/maintenance/runners');
+				return;
+			}
+		}
+		
+		$this->template->view('spare_parts/maintenance/runners/add');
+	}
+
+	public function edit_runner($runner_id = 0)
+	{
+		$runner_details = $this->spare_parts_model->get_runner_by_id($runner_id);
+
+
+		if ($_POST and !empty($runner_details))
+		{
+			// post done here
+			$this->form_validation->set_rules($this->_runners_validation_rule);
+
+			if ($this->form_validation->run())
+			{				
+				$data = array(					
+					'warehouse_id' => strtoupper(set_value('warehouse_name')),					
+					'is_active' => strtoupper(set_value('is_active'))
+				);				
+
+				$this->spare_parts_model->update_runner($data, array('runner_id' => $runner_id));				
+				
+				//logging of actionv here
+				
+				
+				redirect('/spare_parts/maintenance/runners');
+				return;
+			}
+		}
+
+		$this->template->runner_details = $runner_details;
+		$this->template->view('spare_parts/maintenance/runners/edit');
+	}
+
+	public function delete_runner($runner_id = 0)
+	{
+		$runner_details = $this->spare_parts_model->get_runner_by_id($runner_id);
+
+		if ($_POST and !empty($runner_details))
+		{
+			$_runner_id = $this->input->post('runner_id');
+			if (!empty($_runner_id)) if ($_runner_id == $runner_id)
+			{
+				
+				$this->spare_parts_model->delete_runner(array('runner_id' => $runner_id));
+				
+				/*//logging of action
+				
+				*/
+				
+				redirect('/spare_parts/maintenance/runners');
+				return;
+			}
+		}
+
+		$this->template->runner_details = $runner_details;
+		$this->template->view('spare_parts/maintenance/runners/delete');
+
+	}
+
+	public function view_runner($runner_id = 0)
+	{
+		$runner_details = $this->spare_parts_model->get_agent_by_id($runner_id);
+
+		$this->template->runner_details = $runner_details;
+		$this->template->view('spare_parts/maintenance/runner/view');
+
+	}
+
+	public function get_runner_image()
+	{
+		$id_number = $this->input->post("id_number");
+
+		$employment_view_details = $this->human_relations_model->get_employment_information_view_by_id($id_number);
+
+		if ((empty($employment_view_details->image_filename)) || ($employment_view_details->image_filename == NULL) || (trim($employment_view_details->image_filename) == "")) {
+			$image_display = "ni_". strtolower($employment_view_details->gender) .".png";
+		} else {
+			$image_display = $employment_view_details->image_filename;
+		}
+
+		$html = "<img id='agent_image' src='/assets/media/employees/{$image_display}' alt='' style='width:180px; height:180px;border:dashed 1px gray;'>";
+
+		$this->return_json("1","OK", array("html" => $html));
+		return;
+	}
+
+
+	// WAREHOUSE
+	// ------------------------------------------
+	private $_warehouse_validation_rule = array(
+		array(
+			'field' => 'warehouse_name',
+			'label' => 'Warehouse Name',
+			'rules' => 'trim|required'
+		),
+		array(
+			'field' => 'description',
+			'label' => 'Description',
+			'rules' => 'trim|required'
+		),
+		array(
+			'field' => 'warehouse_head',
+			'label' => 'Warehouse Head',
+			'rules' => 'trim|required'
+		),		
+		array(
+			'field' => 'is_active',
+			'label' => 'Is Active',
+			'rules' => 'trim|required'
+		)
+	);
+
+	public function warehouse()
+	{
+		$search_by = trim($this->input->get("search_option"));
+		$search_text = trim($this->input->get("search_string"));
+
+
+		$search_url = "";
+
+		if (($search_text == "") || empty($search_text)) {
+			$where = NULL;			
+		} else {
+			$where = "{$search_by} LIKE LOWER('%{$search_text}%')";
+			$search_url = "?search_option=" . $search_by . "&search_string=" . $search_text;
+		}	
+
+
+		// set pagination data
+		$config = array(
+		    'pagination_url' => '/spare_parts/maintenance/warehouse/',
+		    'total_items' => $this->spare_parts_model->get_warehouse_view_count($where),
+		    'per_page' => 5,
+		    'uri_segment' => 4,
+		);
+
+		// search vars
+		$this->template->search_by = $search_by;
+		$this->template->search_text = $search_text;
+		$this->template->search_url = $search_url;
+		
+		$this->pager->set_config($config);
+		$this->template->warehouse = $this->spare_parts_model->get_warehouse_view($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), 'warehouse_name');
+		$this->template->view('maintenance/warehouse/list');
+	}
+
+	public function add_warehouse()
+	{
+		if ($_POST)
+		{
+			
+			// post done here
+			$this->form_validation->set_rules($this->_warehouse_validation_rule);
+			if ($this->form_validation->run())
+			{
+				
+				//$this->spare_parts_model->update_runner(array('is_active' => 0),array());
+
+				// insert the new results
+				$data = array(
+					'warehouse_name' => strtoupper(set_value('warehouse_name')),
+					'description' => strtoupper(set_value('description')),
+					'warehouse_head' => strtoupper(set_value('warehouse_head')),
+					'is_active' => set_value('is_active')
+				);
+
+				$this->spare_parts_model->insert_warehouse($data);
+				
+				$insert_id = $this->spare_parts_model->insert_id();
+								
+				/*//logging of action
+				*/
+				
+				redirect('/spare_parts/maintenance/warehouse');
+				return;
+			}
+		}
+		
+		$this->template->view('spare_parts/maintenance/warehouse/add');
+	}
+
+	public function edit_warehouse($warehouse_id = 0)
+	{
+		$warehouse_details = $this->spare_parts_model->get_warehouse_by_id($warehouse_id);
+
+
+		if ($_POST and !empty($warehouse_details))
+		{
+			
+			// post done here
+			$this->form_validation->set_rules($this->_warehouse_validation_rule);
+
+			if ($this->form_validation->run())
+			{				
+				$data = array(					
+					'warehouse_name' => strtoupper(set_value('warehouse_name')),
+					'description' => strtoupper(set_value('description')),
+					'warehouse_head' => strtoupper(set_value('warehouse_head')),
+					'is_active' => set_value('is_active')
+				);				
+
+				$this->spare_parts_model->update_warehouse($data, array('warehouse_id' => $warehouse_id));				
+				
+				//logging of actionv here
+				
+				
+				redirect('/spare_parts/maintenance/warehouse');
+				return;
+			}
+		}
+
+		$this->template->warehouse_details = $warehouse_details;
+		$this->template->view('spare_parts/maintenance/warehouse/edit');
+	}
+
+	public function delete_warehouse($warehouse_id = 0)
+	{
+		$warehouse_details = $this->spare_parts_model->get_warehouse_by_id($warehouse_id);
+
+		if ($_POST and !empty($warehouse_details))
+		{
+			$_warehouse_id = $this->input->post('warehouse_id');
+			if (!empty($_warehouse_id)) if ($_warehouse_id == $warehouse_id)
+			{
+				
+				$this->spare_parts_model->delete_warehouse(array('warehouse_id' => $warehouse_id));
+				
+				/*//logging of action
+				
+				*/
+				
+				redirect('/spare_parts/maintenance/warehouse');
+				return;
+			}
+		}
+
+		$this->template->warehouse_details = $warehouse_details;
+		$this->template->view('spare_parts/maintenance/warehouse/delete');
+
+	}
+
+	public function view_warehouse($warehouse_id = 0)
+	{
+		$warehouse_details = $this->spare_parts_model->get_warehouse_by_id($warehouse_id);
+
+		$this->template->warehouse_details = $warehouse_details;
+		$this->template->view('spare_parts/maintenance/warehouse/view');
+
+	}
+
+
 }

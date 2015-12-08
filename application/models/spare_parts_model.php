@@ -12,24 +12,28 @@ class Spare_parts_model extends Base_Model
 
 		// assign the table for this model
 		$this->_TABLES = array(
-			'salary_deduction' => 'is_salary_deduction',
-			'salary_deduction_detail' => 'is_salary_deduction_detail',
+			//'salary_deduction' => 'is_salary_deduction',
+			//'salary_deduction_detail' => 'is_salary_deduction_detail',
 			'dealer_request' => 'is_dealer_request',
 			'dealer_request_detail' => 'is_dealer_request_detail',
 			'free_of_charge' => 'is_free_of_charge',
 			'service_unit_detail' => 'is_service_unit_detail',
 			'service_unit' => 'is_service_unit',
 			'service_unit_detail' => 'is_service_unit_detail',
-			'warehouse_request' => 'is_warehouse_request',
-			'warehouse_request_detail' => 'is_warehouse_request_detail',
-			'warehouse_claim' => 'is_warehouse_claim',
-			'warehouse_claim_detail' => 'is_warehouse_claim_detail',
+			//'warehouse_request' => 'is_warehouse_request',
+			//'warehouse_request_detail' => 'is_warehouse_request_detail',
+			//'warehouse_claim' => 'is_warehouse_claim',
+			//'warehouse_claim_detail' => 'is_warehouse_claim_detail',
 			'dealer' => 'rf_dealer',
 			'agent' => 'rf_agent',
+			'runner' => 'rf_runner',
+			'warehouse' => 'rf_warehouse',
+			'runner_view' => 'rf_runner_view',
+			'warehouse_view' => 'rf_warehouse_view',
 			'department_module' => 'rf_department_module',
 			'warehouse' => 'rf_warehouse',
 			'spare_part_stock_level_view' => 'is_spare_part_stock_level_view',
-			'warehouse_reservation' => 'tr_warehouse_reservation',
+			'warehouse_reservation' => 'is_warehouse_reservation',
 			'item' => 'is_item',
 			'item_view' => 'is_item_view',
 			'department_module_submodule' => 'rf_department_module_submodule',
@@ -42,6 +46,7 @@ class Spare_parts_model extends Base_Model
 			'request_summary' => 'is_request_summary',
 			'request_detail' => 'is_request_detail',
 			'admin_log'=>'tr_admin_log',
+			'warehouse_transaction' => 'is_warehouse_transaction'
 		);
 
 	}
@@ -72,154 +77,6 @@ class Spare_parts_model extends Base_Model
 		return $this->insert('counter_detail', $data);
 	}
 
-	// is_salary_deduction
-	function get_salary_deduction($where = null, $limit = null, $orderby = null, $fields = null) 
-	{
-		$query = $this->fetch('salary_deduction', $fields, $where, $orderby, $limit);
-		$row = $query->result();
-		$query->free_result();
-		return $row;
-    }
-
-	function insert_salary_deduction($data) 
-	{
-		return $this->insert('salary_deduction', $data);
-	}
-
-	function update_salary_deduction($data, $where) 
-	{
-		return $this->update('salary_deduction', $data, $where);
-	}
-
-	function delete_salary_deduction($where) 
-	{
-		return $this->delete('salary_deduction', $where);
-	}
-
-	function get_salary_deduction_by_id($salary_deduction_id) 
-	{
-		$result = $this->get_salary_deduction(array('salary_deduction_id' => $salary_deduction_id));
-		$row = NULL;
-		if (count($result) > 0) {
-			$row = $result[0];
-		}
-		return $row;
-	}
-	
-	function get_salary_deduction_by_code($request_code) 
-	{
-		$result = $this->get_salary_deduction(array('request_code' => $request_code));
-		$row = NULL;
-		if (count($result) > 0) {
-			$row = $result[0];
-		}
-		return $row;
-	}
-	
-	function get_salary_deduction_count($where = null) {
-		// do a sql count instead of row count
-		$query = $this->fetch('salary_deduction', 'count(1) as cnt', $where);
-		$row = $query->first_row();
-		$query->free_result();
-		return $row->cnt;
-	}
-	
-	function search_salary_deduction($search, $query, $limit = null, $orderby = null, $fields = null)
-	{
-		// clear previous get request
-		$this->db->flush_cache();
-
-		$this->db->distinct();
-		$this->db->like($search,$query,'both');
-		
-		// No override function, procede with fetch
-		($fields!=null) ? $this->db->select($fields) : '';
-		($limit!=null) ? $this->db->limit($limit['rows'],$limit['offset']) : '';
-		($orderby!=null) ? $this->db->order_by($orderby) : '';
-
-		// set table to use
-		$this->db->from($this->_TABLES['salary_deduction']);
-		$result = $this->db->get();
-
-		$row = $result->result();
-		$result->free_result();
-		return $row;
-	}
-	
-
-	// is_salary_deduction_detail
-	function get_salary_deduction_detail($where = null, $limit = null, $orderby = null, $fields = null) 
-	{
-		$query = $this->fetch('salary_deduction_detail', $fields, $where, $orderby, $limit);
-		$row = $query->result();
-		$query->free_result();
-		return $row;
-    }
-
-	function insert_salary_deduction_detail($data) 
-	{
-		return $this->insert('salary_deduction_detail', $data);
-	}
-
-	function update_salary_deduction_detail($data, $where) 
-	{
-		return $this->update('salary_deduction_detail', $data, $where);
-	}
-
-	function delete_salary_deduction_detail($where) 
-	{
-		return $this->delete('salary_deduction_detail', $where);
-	}
-
-	function get_salary_deduction_detail_by_id($salary_deduction_detail_id) 
-	{
-		$result = $this->get_salary_deduction_detail(array('salary_deduction_detail_id' => $salary_deduction_detail_id));
-		$row = NULL;
-		if (count($result) > 0) {
-			$row = $result[0];
-		}
-		return $row;
-	}
-	
-	function get_salary_deduction_detail_by_salary_deduction_id($salary_deduction_id) 
-	{
-		$result = $this->get_salary_deduction_detail(array('salary_deduction_id' => $salary_deduction_id));
-		$row = NULL;
-		if (count($result) > 0) {
-			$row = $result[0];
-		}
-		return $row;
-	}
-	
-	function get_salary_deduction_detail_count($where = null) {
-		// do a sql count instead of row count
-		$query = $this->fetch('salary_deduction_detail', 'count(1) as cnt', $where);
-		$row = $query->first_row();
-		$query->free_result();
-		return $row->cnt;
-	}
-	
-	function search_salary_deduction_detail($search, $query, $limit = null, $orderby = null, $fields = null)
-	{
-		// clear previous get request
-		$this->db->flush_cache();
-
-		$this->db->distinct();
-		$this->db->like($search,$query,'both');
-		
-		// No override function, procede with fetch
-		($fields!=null) ? $this->db->select($fields) : '';
-		($limit!=null) ? $this->db->limit($limit['rows'],$limit['offset']) : '';
-		($orderby!=null) ? $this->db->order_by($orderby) : '';
-
-		// set table to use
-		$this->db->from($this->_TABLES['salary_deduction_detail']);
-		$result = $this->db->get();
-
-		$row = $result->result();
-		$result->free_result();
-		return $row;
-	}
 	//===========================================================
 	// is_dealer_request
 	function get_dealer_request($where = null, $limit = null, $orderby = null, $fields = null) 
@@ -531,302 +388,8 @@ class Spare_parts_model extends Base_Model
 		return $row;
 	}
 
-	// ========================================================================
-	// ========================================================================
-	// is_warehouse_request
-	function get_warehouse_request($where = null, $limit = null, $orderby = null, $fields = null) 
-	{
-
-		$query = $this->fetch('warehouse_request', $fields, $where, $orderby, $limit);
-		$row = $query->result();
-		$query->free_result();
-		return $row;
-    }
-
-	function insert_warehouse_request($data) 
-	{
-		return $this->insert('warehouse_request', $data);
-	}
-
-	function update_warehouse_request($data, $where) 
-	{
-		return $this->update('warehouse_request', $data, $where);
-	}
-
-	function delete_warehouse_request($where) 
-	{
-		return $this->delete('warehouse_request', $where);
-	}
-
-	function get_warehouse_request_by_id($warehouse_request_id) 
-	{
-		$result = $this->get_warehouse_request(array('warehouse_request_id' => $warehouse_request_id));
-		$row = NULL;
-		if (count($result) > 0) {
-			$row = $result[0];
-		}
-		return $row;
-	}
-	
-	function get_warehouse_request_by_code($request_code) 
-	{
-		$result = $this->get_warehouse_request(array('request_code' => $request_code));
-		$row = NULL;
-		if (count($result) > 0) {
-			$row = $result[0];
-		}
-		return $row;
-	}
-	
-	function get_warehouse_request_count($where = null) {
-		// do a sql count instead of row count
-		$query = $this->fetch('warehouse_request', 'count(1) as cnt', $where);
-		$row = $query->first_row();
-		$query->free_result();
-		return $row->cnt;
-	}
-	
-	function search_warehouse_request($search, $query, $limit = null, $orderby = null, $fields = null)
-	{
-		// clear previous get request
-		$this->db->flush_cache();
-
-		$this->db->distinct();
-		$this->db->like($search,$query,'both');
-		
-		// No override function, procede with fetch
-		($fields!=null) ? $this->db->select($fields) : '';
-		($limit!=null) ? $this->db->limit($limit['rows'],$limit['offset']) : '';
-		($orderby!=null) ? $this->db->order_by($orderby) : '';
-
-		// set table to use
-		$this->db->from($this->_TABLES['warehouse_request']);
-		$result = $this->db->get();
-
-		$row = $result->result();
-		$result->free_result();
-		return $row;
-	}
-	// ========================================================================
-	// ========================================================================
-	// is_warehouse_request_detail
-	function get_warehouse_request_detail($where = null, $limit = null, $orderby = null, $fields = null) 
-	{
-
-		$query = $this->fetch('warehouse_request_detail', $fields, $where, $orderby, $limit);
-		$row = $query->result();
-		$query->free_result();
-		return $row;
-    }
-
-	function insert_warehouse_request_detail($data) 
-	{
-		return $this->insert('warehouse_request_detail', $data);
-	}
-
-	function update_warehouse_request_detail($data, $where) 
-	{
-		return $this->update('warehouse_request_detail', $data, $where);
-	}
-
-	function delete_warehouse_request_detail($where) 
-	{
-		return $this->delete('warehouse_request_detail', $where);
-	}
-
-	function get_warehouse_request_detail_by_id($warehouse_request_detail_id) 
-	{
-		$result = $this->get_warehouse_request_detail(array('warehouse_request_detail_id' => $warehouse_request_detail_id));
-		$row = NULL;
-		if (count($result) > 0) {
-			$row = $result[0];
-		}
-		return $row;
-	}
-	
-	function get_warehouse_request_detail_count($where = null) {
-		// do a sql count instead of row count
-		$query = $this->fetch('warehouse_request_detail', 'count(1) as cnt', $where);
-		$row = $query->first_row();
-		$query->free_result();
-		return $row->cnt;
-	}
-	
-	function search_warehouse_request_detail($search, $query, $limit = null, $orderby = null, $fields = null)
-	{
-		// clear previous get request
-		$this->db->flush_cache();
-
-		$this->db->distinct();
-		$this->db->like($search,$query,'both');
-		
-		// No override function, procede with fetch
-		($fields!=null) ? $this->db->select($fields) : '';
-		($limit!=null) ? $this->db->limit($limit['rows'],$limit['offset']) : '';
-		($orderby!=null) ? $this->db->order_by($orderby) : '';
-
-		// set table to use
-		$this->db->from($this->_TABLES['warehouse_request_detail']);
-		$result = $this->db->get();
-
-		$row = $result->result();
-		$result->free_result();
-		return $row;
-	}
 	// ======================================================================
 	// ======================================================================
-	// is_warehouse_claim
-	function get_warehouse_claim($where = null, $limit = null, $orderby = null, $fields = null) 
-	{
-
-		$query = $this->fetch('warehouse_claim', $fields, $where, $orderby, $limit);
-		$row = $query->result();
-		$query->free_result();
-		return $row;
-    }
-
-	function insert_warehouse_claim($data) 
-	{
-		return $this->insert('warehouse_claim', $data);
-	}
-
-	function update_warehouse_claim($data, $where) 
-	{
-		return $this->update('warehouse_claim', $data, $where);
-	}
-
-	function delete_warehouse_claim($where) 
-	{
-		return $this->delete('warehouse_claim', $where);
-	}
-
-	function get_warehouse_claim_by_id($warehouse_claim_id) 
-	{
-		$result = $this->get_warehouse_claim(array('warehouse_claim_id' => $warehouse_claim_id));
-		$row = NULL;
-		if (count($result) > 0) {
-			$row = $result[0];
-		}
-		return $row;
-	}
-	
-	function get_warehouse_claim_by_code($request_code) 
-	{
-		$result = $this->get_warehouse_claim(array('request_code' => $request_code));
-		$row = NULL;
-		if (count($result) > 0) {
-			$row = $result[0];
-		}
-		return $row;
-	}
-	
-	function get_warehouse_claim_count($where = null) {
-		// do a sql count instead of row count
-		$query = $this->fetch('warehouse_claim', 'count(1) as cnt', $where);
-		$row = $query->first_row();
-		$query->free_result();
-		return $row->cnt;
-	}
-	
-	function search_warehouse_claim($search, $query, $limit = null, $orderby = null, $fields = null)
-	{
-		// clear previous get request
-		$this->db->flush_cache();
-
-		$this->db->distinct();
-		$this->db->like($search,$query,'both');
-		
-		// No override function, procede with fetch
-		($fields!=null) ? $this->db->select($fields) : '';
-		($limit!=null) ? $this->db->limit($limit['rows'],$limit['offset']) : '';
-		($orderby!=null) ? $this->db->order_by($orderby) : '';
-
-		// set table to use
-		$this->db->from($this->_TABLES['warehouse_claim']);
-		$result = $this->db->get();
-
-		$row = $result->result();
-		$result->free_result();
-		return $row;
-	}
-	// ========================================================================
-	// ========================================================================
-	// is_warehouse_claim_detail
-	function get_warehouse_claim_detail($where = null, $limit = null, $orderby = null, $fields = null) 
-	{
-
-		$query = $this->fetch('warehouse_claim_detail', $fields, $where, $orderby, $limit);
-		$row = $query->result();
-		$query->free_result();
-		return $row;
-    }
-
-	function insert_warehouse_claim_detail($data) 
-	{
-		return $this->insert('warehouse_claim_detail', $data);
-	}
-
-	function update_warehouse_claim_detail($data, $where) 
-	{
-		return $this->update('warehouse_claim_detail', $data, $where);
-	}
-
-	function delete_warehouse_claim_detail($where) 
-	{
-		return $this->delete('warehouse_claim_detail', $where);
-	}
-
-	function get_warehouse_claim_detail_by_id($warehouse_claim_detail_id) 
-	{
-		$result = $this->get_warehouse_claim_detail(array('warehouse_claim_detail_id' => $warehouse_claim_detail_id));
-		$row = NULL;
-		if (count($result) > 0) {
-			$row = $result[0];
-		}
-		return $row;
-	}
-	
-	function get_warehouse_claim_detail_by_request_id($request_id) 
-	{
-		$result = $this->get_warehouse_claim_detail(array('warehouse_claim_id' => $request_id));
-		$row = NULL;
-		if (count($result) > 0) {
-			$row = $result[0];
-		}
-		return $row;
-	}
-	
-	function get_warehouse_claim_detail_count($where = null) {
-		// do a sql count instead of row count
-		$query = $this->fetch('warehouse_claim_detail', 'count(1) as cnt', $where);
-		$row = $query->first_row();
-		$query->free_result();
-		return $row->cnt;
-	}
-	
-	function search_warehouse_claim_detail($search, $query, $limit = null, $orderby = null, $fields = null)
-	{
-		// clear previous get request
-		$this->db->flush_cache();
-
-		$this->db->distinct();
-		$this->db->like($search,$query,'both');
-		
-		// No override function, procede with fetch
-		($fields!=null) ? $this->db->select($fields) : '';
-		($limit!=null) ? $this->db->limit($limit['rows'],$limit['offset']) : '';
-		($orderby!=null) ? $this->db->order_by($orderby) : '';
-
-		// set table to use
-		$this->db->from($this->_TABLES['warehouse_claim_detail']);
-		$result = $this->db->get();
-
-		$row = $result->result();
-		$result->free_result();
-		return $row;
-	}
-	// ========================================================================
-	// ========================================================================
 	// is_service_unit
 	function get_service_unit($where = null, $limit = null, $orderby = null, $fields = null) 
 	{
@@ -1222,7 +785,7 @@ class Spare_parts_model extends Base_Model
 	}	
 
 	// ========================================================================
-	// is_warehouse_claim
+	// 
 	function get_warehouse_reservation($where = null, $limit = null, $orderby = null, $fields = null) 
 	{
 
@@ -1624,8 +1187,7 @@ class Spare_parts_model extends Base_Model
 		$result->free_result();
 		return $row;
 	}
-	
-
+	// ----------------------------------------------------
 	// is_request_detail
 	function get_request_detail($where = null, $limit = null, $orderby = null, $fields = null) 
 	{
@@ -1700,7 +1262,7 @@ class Spare_parts_model extends Base_Model
 		return $row;
 	}	
 
-	// ==========================================
+	//-------------------------------------------------------------------------
 	// rf_spare_part
 	function get_spare_part($where = null, $limit = null, $orderby = null, $fields = null) 
 	{
@@ -1743,7 +1305,7 @@ class Spare_parts_model extends Base_Model
 		return $row->cnt;
 	}
 
-	//---------------------------------------------
+	//-------------------------------------------------------------------------
 	// tr_admin_log
 	function insert_log($type, $data) {	
         if(isset($data['remarks'])) {
@@ -1755,4 +1317,148 @@ class Spare_parts_model extends Base_Model
 		if ($type=='spare_parts')
 	        $result = $this->insert('admin_log', $data);
     }		
+
+	//-------------------------------------------------------------------------
+	// rf_runner
+	function get_runner($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('runner', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+    }
+
+	function insert_runner($data) 
+	{
+		return $this->insert('runner', $data);
+	}
+
+	function update_runner($data, $where) 
+	{
+		return $this->update('runner', $data, $where);
+	}
+
+	function delete_runner($where) 
+	{
+		return $this->delete('runner', $where);
+	}
+
+	function get_runner_by_id($runner_id) 
+	{
+		$result = $this->get_runner(array('runner_id' => $runner_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+	
+	function get_runner_count($where = null) {
+		// do a sql count instead of row count
+		$query = $this->fetch('runner', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}	
+	// ========================================================================
+	//-------------------------------------------------------------------------
+	// rf_runner_view
+	function get_runner_view($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('runner_view', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+    }
+
+	
+	function get_runner_view_by_id_number($id_number) 
+	{
+		$result = $this->get_runner_view(array('id_number' => $id_number));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+
+	function get_runner_view_by_id($runner_id) 
+	{
+		$result = $this->get_runner_view(array('runner_id' => $runner_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+	
+	function get_runner_view_count($where = null) {
+		// do a sql count instead of row count
+		$query = $this->fetch('runner_view', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}	
+	// ========================================================================	
+	//-------------------------------------------------------------------------
+	// rf_warehouse_view
+	function get_warehouse_view($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('warehouse_view', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+    }
+
+	function get_warehouse_view_count($where = null) {
+		// do a sql count instead of row count
+		$query = $this->fetch('warehouse_view', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}	
+	// ========================================================================	
+	// ===========================================================================	
+	// is_warehouse_transaction
+	function get_warehouse_transaction($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('warehouse_transaction', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+    }
+
+	function insert_warehouse_transaction($data) 
+	{
+		return $this->insert('warehouse_transaction', $data);
+	}
+
+	function update_warehouse_transaction($data, $where) 
+	{
+		return $this->update('warehouse_transaction', $data, $where);
+	}
+
+	function delete_warehouse_transaction($where) 
+	{
+		return $this->delete('warehouse_transaction', $where);
+	}
+
+	function get_warehouse_transaction_by_id($warehouse_transaction_id) 
+	{
+		$result = $this->get_warehouse_transaction(array('warehouse_transaction_id' => $warehouse_transaction_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+	
+	function get_warehouse_transaction_count($where = null) {
+		// do a sql count instead of row count
+		$query = $this->fetch('warehouse_transaction', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}	
+	// ----------------------------------------------------
 }

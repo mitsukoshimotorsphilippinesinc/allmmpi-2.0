@@ -304,14 +304,25 @@ class Spare_parts extends Admin_Controller {
 			else
 				$is_employed = "NO";
 
+			$image_display = "";
+			if ((empty($mem->image_filename)) || ($mem->image_filename == NULL) || (trim($mem->image_filename) == "")) {
+				$image_display = "ni_". strtolower($mem->gender) .".png";
+			} else {
+				$image_display = $mem->image_filename;
+			}
+
+
 			$employees[$mem->employment_information_id] = array(
 				"employment_information_id" => $mem->employment_information_id,
+				"image_filename" => $image_display,
 				"id_number" => $mem->id_number,
 				"complete_name" => strtoupper($mem->complete_name),
 				"company_email_address" => $mem->company_email_address,
 				"department_name" => $department_name,
 				"position" => $position_name,
+				"gender" => $mem->gender,
 				"is_employed" => $is_employed,
+				"upload_url" => $upload_url = $this->config->item("media_url") . "/employees",
 			);
 		}
 
@@ -387,11 +398,19 @@ class Spare_parts extends Admin_Controller {
 			$this->return_json("error","Not found.", array('items' => $return_items, 'keys' => $keys));
 			return;
 		}
+
+		$image_display = "";
+			if ((empty($itm->image_filename)) || ($itm->image_filename == NULL) || (trim($itm->image_filename) == "")) {
+				$image_display = "ni_spare_part.png";
+			} else {
+				$image_display = $r->image_filename;
+			}
 		
 		foreach ($tmp_items as $itm)
 		{
 			$return_items[$itm->item_id] = array(
 				"item_id" => $itm->item_id,
+				"image_filename" => $image_display,
 				"sku" => $itm->sku,
 				"brand_model" => $itm->brand_name . ' / ' . $itm->model_name,
 				"description" => strtoupper($itm->description),
@@ -400,6 +419,7 @@ class Spare_parts extends Admin_Controller {
 				"rack_location" => strtoupper($itm->rack_location),
 				"bad_quantity" => $itm->bad_quantity,
 				"good_quantity" => $itm->good_quantity,
+				"upload_url" => $upload_url = $this->config->item("media_url") . "/spare_parts",
 
 			);
 		}
