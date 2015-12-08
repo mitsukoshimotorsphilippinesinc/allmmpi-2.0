@@ -37,8 +37,10 @@ if (is_object($salary_deduction_details))
 {
 	$isAdd = false;
 	$titlePrefix = "Edit&nbsp;";
-	$submitURL = "/spare_parts/" . $department_module_details->segment_name . "/edit/" . $salary_deduction_details->salary_deduction_id;
-	$_id = $salary_deduction_details->salary_deduction_id;
+	//$submitURL = "/spare_parts/" . $department_module_details->segment_name . "/edit/" . $salary_deduction_details->salary_deduction_id;
+	//$_id = $salary_deduction_details->salary_deduction_id;
+	$submitURL = "/spare_parts/" . $department_module_details->segment_name . "/edit/" . $salary_deduction_details->request_summary_id;
+	$_id = $salary_deduction_details->request_summary_id;
 	$show_approval = false;
 }
 else
@@ -343,7 +345,7 @@ else
 						<td class="discount_price"><?=number_format(set_value('discount_price['.$i.']',$temp[$i]['discount_amount']),2)?></td>
 						<td class="price"><?=number_format(set_value('item_total_amount['.$i.']',$temp[$i]['total_amount']),2)?></td>
 						<td class="remark"><?=set_value('item_remarks['.$i.']',$temp[$i]['remarks'])?></td>
-						<td id="<?= $temp[$i]['salary_deduction_detail_id'] ?>" data="<?= $temp[$i]['salary_deduction_detail_id'] ?>"><a class="btn btn-danger rmv_wr_item"><i class="icon-white icon-minus"></i></a></td>
+						<td id="<?= $temp[$i]['request_detail_id'] ?>" data="<?= $temp[$i]['request_detail_id'] ?>"><a class="btn btn-danger rmv_wr_item"><i class="icon-white icon-minus"></i></a></td>
 						<td class="hidden_values">
 							<input type="hidden" name="item_good_qty[]" id="item_good_qty[]" value="<?=set_value('item_good_qty['.$i.']',$temp[$i]['good_quantity'])?>">
 							<input type="hidden" name="item_bad_qty[]" id="item_bad_qty[]" value="<?=set_value('item_bad_qty['.$i.']',$temp[$i]['bad_quantity'])?>">
@@ -532,7 +534,7 @@ else
 	var search_item = function() {
 		document.search_item_modal = b.modal.create({
 			title: "Search Item",
-			width: 700,
+			width: 900,
 			html: _.template($("#search-item-template").html(),{}),
 		});
 		

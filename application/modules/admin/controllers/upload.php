@@ -21,7 +21,7 @@ class Upload extends Base_Controller {
 
 		$width = abs($this->input->get('width'));
 		$height = abs($this->input->get('height'));
-		
+
 		$upload_type = trim($this->input->get('type'));
 		
 		if ($width<=0) $width = 200;
@@ -54,8 +54,12 @@ class Upload extends Base_Controller {
 
 				$filename = $this->input->get('filename');
 				if ($filename == "") $filename = str_replace(".".$ext,'',$fileName);
-                
-				echo $this->_saveImage($filename, $fileName, $target_path.$fileName, $location, $width, $height,$gallery_id, false);
+
+				if ($ext == 'pdf') {
+					echo $this->_saveContent($filename, $fileName, $target_path.$fileName, $location, $width, $height,$gallery_id, false);
+				} else {
+					echo $this->_saveImage($filename, $fileName, $target_path.$fileName, $location, $width, $height,$gallery_id, false);
+				}	
 
 			} else { echo('{"success":false, "details": "Maximum file size: '.get_byte_size($maxFileSize).'."}'); };
 			} else {
@@ -362,11 +366,276 @@ class Upload extends Base_Controller {
 	}
 	
 
+	private function _saveContent($filename, $uploading_filename, $tmp_filename, $location, $width, $height, $gallery_id = 0, $using_file = true) {
+		
+		$format = 'invalid';
+
+		$_uploading_filename = $uploading_filename; //$_FILES['Filedata']['name'];
+		
+		//check if gif
+	    if(stristr(strtolower($_uploading_filename),'.pdf')) $format = 'pdf';
+	    
+		$temp_file = $tmp_filename; //$_FILES['file']['tmp_name'];
+		
+		$_hash = substr(md5(date('Y-m-d H:i:s')),0,8);
+		
+		//$filename = $filename . "." . $format;
+		$filename = $filename . ".pdf"; // Force all file to be saved as JPEG
+
+		$target_filename = $filename;
+		
+		$location = substr($location,1,strlen($location));
+		
+		$target_fullpath = FCPATH . $location;
+		$target_thumb_fullpath = FCPATH . $location. "/thumb_filenameail";
+		$fullpath = FCPATH . $location . "/". $filename;
+		
+		$_ret = true;
+		
+		if ($using_file) {			
+			$_ret = move_uploaded_file($temp_file, $fullpath);
+			chmod($fullpath, 777);
+			chown($fullpath, 'dante');
+		} else {			
+			$_ret = copy($temp_file, $fullpath);
+			chmod($fullpath, 777);
+			chown($fullpath, 'dante');
+			if ($_ret) unlink($temp_file);
+		}
+		
+		if(!$_ret) {
+			return json_encode(array('success' => false, 'details' => 'move_uploaded_file failed'));
+		} else {
+
+			// resize
+			$_width = $width;
+			$_height = $height;		
+			
+			if ($format != 'invalid') {
+				// Load image
+		        $image = null;
+		        switch($format) {
+		            case 'pdf':
+		                $image = ContentCreateFromPdf($fullpath);
+		                break;		            
+		        }
+
+		        if ($image === null) {
+		            echo 'Unable to open image';
+					exit;
+		        }
+
+				// Get original width and height
+		        list($width,$height)=getimagesize($fullpath);
+
+				
+				
+				// serve as default image
+		        $image_resized = $image;
+				$image_thumb = null;
+				if(strcmp($gallery_id, "general") == 0)
+				{
+					
+					$image_thumb = $image;
+					
+					// New width with aspect ratio
+					$newWidth = 100;
+					$newHeight = $height * ($newWidth / $width);
+
+					$pad_x = 0;
+					$pad_y = 0;
+					
+
+					$image_thumb = imagecreatetruecolor($newWidth,$newHeight);
+					if ($format == 'png') // png we can actually preserve transparency
+					{
+						imagecolortransparent($image_thumb, imagecolorallocatealpha($image_thumb, 0, 0, 0, 127));
+						imagealphablending($image_thumb, FALSE);
+						imagesavealpha($image_thumb, TRUE);
+					}	
+					imagecopyresampled($image_thumb, $image, 0, 0, $pad_x, $pad_y, $newWidth, $newHeight, $width, $height);
+					
+					$target_fullpath = $target_fullpath;
+					
+					$target_thumb_fullpath = $target_thumb_fullpath;
+					
+				}
+				elseif($gallery_id == 0)
+				{
+					
+					// New width with aspect ratio
+					$newWidth= $_width;
+					$newHeight = $_height;
+					$pad_x = 0;
+					$pad_y = 0;
+
+					//old
+					/*if ($width > $height) {
+						$newWidth=($width/$height)* $_height;
+						//$pad_x = ($width - $height) / 2;
+					} else {
+						$newHeight=($height/$width)* $_width;
+						//$pad_y = ($height - $width) / 2;
+					}*/
+					
+					if ($width > $height) {
+						$newHeight=($height/$width)* $_width;
+					} else {
+						$newWidth=($width/$height)* $_height;
+					}
+
+					$image_resized = imagecreatetruecolor($newWidth,$newHeight);
+					if ($format == 'png') // png we can actually preserve transparency
+					{
+						imagecolortransparent($image_resized, imagecolorallocatealpha($image_resized, 0, 0, 0, 127));
+						imagealphablending($image_resized, FALSE);
+						imagesavealpha($image_resized, TRUE);
+					}					
+					imagecopyresampled($image_resized, $image, 0, 0, $pad_x, $pad_y, $newWidth, $newHeight, $width, $height);
+				}
+				else
+				{
+					
+					$image_thumb = $image;
+					
+					// New width with aspect ratio
+					$newWidth = 100;
+					$newHeight = $height * ($newWidth / $width);
+
+					$pad_x = 0;
+					$pad_y = 0;
+					
+					// New width with aspect ratio
+					$newWidth= $_width;
+					$newHeight = $_height;
+					$pad_x = 0;
+					$pad_y = 0;
 
 
+					if ($width > $height) {
+						$newHeight=($height/$width)* 200;
+					} else {
+						$newWidth=($width/$height)* 200;
+					}
+					
+					$image_thumb = imagecreatetruecolor($newWidth,$newHeight);
+					
+					if ($format == 'png') // png we can actually preserve transparency
+					{
+						imagecolortransparent($image_thumb, imagecolorallocatealpha($image_thumb, 0, 0, 0, 127));
+						imagealphablending($image_thumb, FALSE);
+						imagesavealpha($image_thumb, TRUE);
+					}
+					
+					imagecopyresampled($image_thumb, $image, 0, 0, $pad_x, $pad_y, $newWidth, $newHeight, $width, $height);
+					
+					$target_fullpath = $target_fullpath . "/gallery_" . $gallery_id;
+					
+					if(!is_dir($target_fullpath))
+						mkdir($target_fullpath);
+					
+					$target_thumb_fullpath = $target_thumb_fullpath . "/gallery_" . $gallery_id;
+					
+					if(!is_dir($target_thumb_fullpath))
+						mkdir($target_thumb_fullpath);
+					
+				}
+				
+		        $target_fullpath = $target_fullpath . "/". $target_filename;
+				$target_thumb_fullpath = $target_thumb_fullpath . "/". $target_filename;
+				
+				// Display resized image
+		        $thumb_filename = "";
+				 unlink($fullpath); // commented WINDOWS TEST
+				//imagejpeg($image_resized, $target_fullpath);
+				
+		      	switch($format) {
+		            case 'gif':
+		                imagegif($image_resized, $target_fullpath);
+		                break;
+		            case 'jpg':
+		                imagejpeg($image_resized, $target_fullpath);
+		                break;
+		            case 'png':
+		                imagepng($image_resized, $target_fullpath);
+		                break;
+		        }
+				
+				
+				if(!is_null($image_thumb) && !empty($image_thumb)) 
+				{
+					imagejpeg($image_thumb, $target_thumb_fullpath);
+					
+					switch($format) {
+		            case 'gif':
+		                imagegif($image_thumb, $target_thumb_fullpath);
+		                break;
+		            case 'jpg':
+		                imagejpeg($image_thumb, $target_thumb_fullpath);
+		                break;
+		            case 'png':
+		                imagepng($image_thumb, $target_thumb_fullpath);
+		                break;
+		        	}
+				}
 
+				if(strcmp($gallery_id, "general") == 0)
+				{
+					$this->load->model("contents_model");
+					$data = array(
+						"image_filename" => $filename,
+						"user_id" => $this->user->user_id
+					);
+					$this->contents_model->insert_image_uploads($data);
+					
+					$insert_id = $this->contents_model->insert_id();
+					
+					/*//logging of action
+					$details_after = array('id' => $insert_id, 'details' => $data);
+					$details_after = json_encode($details_after);
+					$add_upload_log_data = array(
+						'user_id' => $this->user->user_id,
+						'module_name' => 'IMAGE UPLOADS',
+						'table_name' => 'sm_image_uploads',
+						'action' => 'ADD',
+						'details_after' => $details_after,
+						'remarks' => "",
+					);
 
+					$this->tracking_model->insert_logs('admin', $add_upload_log_data);*/
+				}
+				elseif($gallery_id != 0)
+				{
+					$this->load->model("contents_model");
+					$data = array(
+						"gallery_id" => $gallery_id,
+						"image_filename" => $filename,
+						"user_id" => $this->user->user_id
+					);
+					$this->contents_model->insert_gallery_pictures($data);
+					
+					$insert_id = $this->contents_model->insert_id();
+					
+					/*//logging of action
+					$details_after = array('id' => $insert_id, 'details' => $data);
+					$details_after = json_encode($details_after);
+					$add_gallery_log_data = array(
+						'user_id' => $this->user->user_id,
+						'module_name' => 'GALLERY PICTURES',
+						'table_name' => 'sm_gallery_pictures',
+						'action' => 'ADD',
+						'details_after' => $details_after,
+						'remarks' => "",
+					);
 
+					$this->tracking_model->insert_logs('admin', $add_gallery_log_data);*/
+				}
+				return json_encode(array('success' => true, 'file' => $filename));				
+			}
+		
+		}
+		
+	}
 
 
 

@@ -88,7 +88,7 @@
 
 			// get requestor details
 			$id = str_pad($t->id_number, 7, '0', STR_PAD_LEFT);
-			$requestor_details = $this->human_relations_model->get_employment_information_by_id($id);			
+			$requestor_details = $this->human_relations_model->get_employment_information_view_by_id($id);			
 
 			if (count($requestor_details) == 0) {
 				echo "<td>N/A</td>";
@@ -105,8 +105,10 @@
 			}				
 
 			// number of items
-			$where = "salary_deduction_id = " . $t->salary_deduction_id . " AND status IN ('PENDING', 'COMPLETED')";
-			$salary_deduction_detail_info = $this->spare_parts_model->get_salary_deduction_detail($where);
+			//$where = "salary_deduction_id = " . $t->salary_deduction_id . " AND status IN ('PENDING', 'COMPLETED')";
+			//$salary_deduction_detail_info = $this->spare_parts_model->get_salary_deduction_detail($where);
+			$where = "request_summary_id = " . $t->request_summary_id . " AND status IN ('PENDING', 'COMPLETED')";
+			$salary_deduction_detail_info = $this->spare_parts_model->get_request_detail($where);
 
 			$total_items = 0;
 			foreach ($salary_deduction_detail_info as $wrdi) {
@@ -125,13 +127,13 @@
 				echo "<td>{$warehouse_details->warehouse_name}</td>"; 
 			}
 
-			if (($t->warehouse_approved_by == 0) || ($t->warehouse_approved_by == '0')) {
+			//if (($t->warehouse_approved_by == 0) || ($t->warehouse_approved_by == '0')) {
 				echo "<td>N/A</td>";
-			} else {
-				$id = str_pad($t->warehouse_approved_by, 7, '0', STR_PAD_LEFT);
-				$warehouse_signatory_details = $this->human_relations_model->get_employment_information_view_by_id($id);
-				echo "<td>{$warehouse_signatory_details->complete_name}</td>";
-			}
+			//} else {
+			//	$id = str_pad($t->warehouse_approved_by, 7, '0', STR_PAD_LEFT);
+			//	$warehouse_signatory_details = $this->human_relations_model->get_employment_information_view_by_id($id);
+			//	echo "<td>{$warehouse_signatory_details->complete_name}</td>";
+			//}
 
 			?>	
 			
@@ -139,7 +141,7 @@
 
 			
 
-			<td data1="<?= $t->salary_deduction_id ?>" data2="<?= $t->request_code ?>">				
+			<td data1="<?= $t->request_summary_id ?>" data2="<?= $t->request_code ?>">				
 				<a class='btn btn-small btn-info view-details' data='info' title="View Details"><i class="icon-white icon-list"></i></a>	
 				<?php
 				if (($t->status == 'FOR APPROVAL') || ($t->status == 'CANCELLATION-FOR APPROVAL')) {

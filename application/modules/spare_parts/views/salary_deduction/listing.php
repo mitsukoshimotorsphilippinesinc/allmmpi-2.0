@@ -102,7 +102,7 @@
 
 			// get requestor details
 			$id = str_pad($t->id_number, 7, '0', STR_PAD_LEFT);
-			$requestor_details = $this->human_relations_model->get_employment_information_by_id($id);
+			$requestor_details = $this->human_relations_model->get_employment_information_view_by_id($id);
 
 			if (count($requestor_details) == 0) {
 				echo "<td>N/A</td>";

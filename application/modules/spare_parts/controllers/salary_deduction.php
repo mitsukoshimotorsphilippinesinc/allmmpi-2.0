@@ -97,8 +97,7 @@ class Salary_deduction extends Admin_Controller {
 
 		// set pagination data
 		$config = array(
-				'pagination_url' => "/spare_parts/salary_deduction/approval/",
-				//'total_items' => $this->spare_parts_model->get_salary_deduction_count($where),
+				'pagination_url' => "/spare_parts/salary_deduction/approval/",				
 				'total_items' => $this->spare_parts_model->get_request_summary_count($where),
 				'per_page' => 10,
 				'uri_segment' => 4,
@@ -107,7 +106,7 @@ class Salary_deduction extends Admin_Controller {
 		$this->pager->set_config($config);
 
 		$transfers = $this->spare_parts_model->get_request_summary($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");			
-		
+
 		// search vars
 		$this->template->search_status = $search_status;
 		$this->template->search_by = $search_by;
@@ -124,8 +123,8 @@ class Salary_deduction extends Admin_Controller {
 		$salary_deduction_id = $this->input->post("salary_deduction_id");
 		$salary_deduction_code = $this->input->post("salary_deduction_code");
 		$is_approved = $this->input->post("is_approved");
-
-		$salary_deduction = $this->spare_parts_model->get_salary_deduction_by_id($salary_deduction_id);
+	
+		$salary_deduction = $this->spare_parts_model->get_request_summary_by_id($salary_deduction_id);
 
 		if (empty($salary_deduction)) {		
 			$html = "<p>There is something wrong with this transaction [Request Code: {$salary_deduction_code}].</p>";
@@ -169,8 +168,8 @@ class Salary_deduction extends Admin_Controller {
 		$salary_deduction_code = $this->input->post("salary_deduction_code");
 		$is_approved = $this->input->post("is_approved");
 		$remarks =  $this->input->post("remarks");
-		
-		$salary_deduction = $this->spare_parts_model->get_salary_deduction_by_id($salary_deduction_id);		
+			
+		$salary_deduction = $this->spare_parts_model->get_request_summary_by_id($salary_deduction_id);		
 
 		if (empty($salary_deduction)) {		
 			$html = "<p>There is something wrong with this transaction [Request Code: {$salary_deduction_code}].</p>";
@@ -225,8 +224,10 @@ class Salary_deduction extends Admin_Controller {
 				$title = "Request Approved :: " . $salary_deduction_code;
 			}
 			
-			$where = "salary_deduction_id = " . $salary_deduction_id;
-			$this->spare_parts_model->update_salary_deduction($data, $where);
+			//$where = "salary_deduction_id = " . $salary_deduction_id;
+			//$this->spare_parts_model->update_salary_deduction($data, $where);
+			$where = "request_summary_id = " . $salary_deduction_id;
+			$this->spare_parts_model->update_request_summary($data, $where);
 
 			$this->return_json("1","Successful Approval/Disapproval of Salary Deduction.",array("html" => $html, "title" => $title));
 						
@@ -241,7 +242,7 @@ class Salary_deduction extends Admin_Controller {
 		$salary_deduction_code = $this->input->post("salary_deduction_code");
 		$listing_action = $this->input->post("listing_action");
 		
-		$salary_deduction = $this->spare_parts_model->get_salary_deduction_by_id($salary_deduction_id);		
+		$salary_deduction = $this->spare_parts_model->get_request_summary_by_id($salary_deduction_id);		
 
 		if (empty($salary_deduction)) {		
 			$html = "<p>There is something wrong with this transaction [Request Code: {$salary_deduction_code}].</p>";
@@ -250,9 +251,9 @@ class Salary_deduction extends Admin_Controller {
 			$this->return_json("0","Salary Deduction Code not found in DB", array("html" => $html, "title" => $title));	
 			
 		} else {
-
-			$where = "salary_deduction_id = {$salary_deduction_id}";
-			$salary_deduction_details = $this->spare_parts_model->get_salary_deduction_detail($where);
+			
+			$where = "request_summary_id = {$salary_deduction_id}";
+			$salary_deduction_details = $this->spare_parts_model->get_request_detail($where);
 			
 			$department_module_details = $this->spare_parts_model->get_department_module_by_segment_name($this->segment_name);	
 
@@ -271,7 +272,7 @@ class Salary_deduction extends Admin_Controller {
 				'department_module_details' => $department_module_details,
 			);
 
-			$html = $this->load->view("template_view_details",$data,true);
+			$html = $this->load->view("template_view_details",$data, true);
 			 
 			$title = "View Details :: " . $salary_deduction_code;
 			$this->return_json("1","View Details Salary Deduction", array("html" => $html, "title" => $title, "request_status" => $salary_deduction->status));
@@ -353,16 +354,14 @@ class Salary_deduction extends Admin_Controller {
 
 		// set pagination data
 		$config = array(
-				'pagination_url' => "/spare_parts/salary_deduction/listing/",
-				//'total_items' => $this->spare_parts_model->get_salary_deduction_count($where),
+				'pagination_url' => "/spare_parts/salary_deduction/listing/",				
 				'total_items' => $this->spare_parts_model->get_request_summary_count($where),
 				'per_page' => 10,
 				'uri_segment' => 4,
 		);
 
 		$this->pager->set_config($config);
-
-		//$transfers = $this->spare_parts_model->get_salary_deduction($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");			
+		
 		$transfers = $this->spare_parts_model->get_request_summary($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");			
 		
 		// search vars
@@ -381,8 +380,8 @@ class Salary_deduction extends Admin_Controller {
 		$salary_deduction_id = $this->input->post("salary_deduction_id");
 		$salary_deduction_code = $this->input->post("salary_deduction_code");
 		$listing_action = $this->input->post("listing_action");
-
-		$salary_deduction = $this->spare_parts_model->get_salary_deduction_by_id($salary_deduction_id);
+		
+		$salary_deduction = $this->spare_parts_model->get_request_summary_by_id($salary_deduction_id);
 
 		if (empty($salary_deduction)) {		
 			$html = "<p>There is something wrong with this transaction [Request Code: {$salary_deduction_code}].</p>";
@@ -453,8 +452,8 @@ class Salary_deduction extends Admin_Controller {
 		$listing_action = $this->input->post("listing_action");
 		$remarks =  $this->input->post("remarks");
 		$mtr_number =  abs($this->input->post("mtr_number"));
-		
-		$salary_deduction = $this->spare_parts_model->get_salary_deduction_by_id($salary_deduction_id);		
+				
+		$salary_deduction = $this->spare_parts_model->get_request_summary_by_id($salary_deduction_id);		
 
 		if (empty($salary_deduction)) {		
 			$html = "<p>There is something wrong with this transaction [Request Code: {$salary_deduction_code}].</p>";
@@ -566,8 +565,10 @@ class Salary_deduction extends Admin_Controller {
 				$title = "For Approval - Cancel Completed Request :: " . $salary_deduction_code;
 			}
 			
-			$where = "salary_deduction_id = " . $salary_deduction_id;
-			$this->spare_parts_model->update_salary_deduction($data, $where);
+			//$where = "salary_deduction_id = " . $salary_deduction_id;
+			//$this->spare_parts_model->update_salary_deduction($data, $where);
+			$where = "request_summary_id = " . $salary_deduction_id;
+			$this->spare_parts_model->update_request_summary($data, $where);
 	
 		}	
 
@@ -625,9 +626,9 @@ class Salary_deduction extends Admin_Controller {
 		$proper_end_date = date('F d, Y', strtotime($end_date));
 
 		// check if query will return records to execute
-		$where = "insert_timestamp BETWEEN '$start_date' AND '$end_date'";
-
-		$pending_count = $this->spare_parts_model->get_salary_deduction($where);
+		$where = "insert_timestamp BETWEEN '$start_date' AND '$end_date' AND request_code LIKE 'SD%'";
+		
+		$pending_count = $this->spare_parts_model->get_request_summary($where);
 
 		if (empty($pending_count))
 		{
@@ -729,9 +730,9 @@ class Salary_deduction extends Admin_Controller {
 				} 	
 			}	
 
-			$where .= " AND insert_timestamp BETWEEN '{$start_date}' AND '{$end_date}'";
+			$where .= " AND insert_timestamp BETWEEN '{$start_date}' AND '{$end_date}' AND request_code LIKE 'SD%'";
 
-			$salary_deduction_count = $this->spare_parts_model->get_salary_deduction_count($where);
+			$salary_deduction_count = $this->spare_parts_model->get_request_summary_count($where);
 
 			$filename = "salary_deductions_" . str_replace("-", "", $start_date) . "-" . str_replace("-", "", $end_date) . ".xls";
 
@@ -777,7 +778,7 @@ class Salary_deduction extends Admin_Controller {
 
 			for($prow = 0;$prow < ceil($salary_deduction_count/$allowed_rows)+1; $prow++)
 			{
-				$salary_deductions = $this->spare_parts_model->get_salary_deduction($where, array('rows' => $allowed_rows, 'offset' => $prow*$allowed_rows), 'insert_timestamp ASC');
+				$salary_deductions = $this->spare_parts_model->get_request_summary($where, array('rows' => $allowed_rows, 'offset' => $prow*$allowed_rows), 'insert_timestamp ASC');
 
 				foreach ($salary_deductions as $dr)
 				{
@@ -826,8 +827,7 @@ class Salary_deduction extends Admin_Controller {
 	{
 
 		$department_module_details = $this->spare_parts_model->get_department_module_by_segment_name($this->segment_name);
-		
-		//$salary_deduction_details = $this->spare_parts_model->get_salary_deduction_by_id($salary_deduction_id);
+				
 		$salary_deduction_details = $this->spare_parts_model->get_request_summary_by_id($salary_deduction_id);
 
 		if (!empty($salary_deduction_details)) {
@@ -843,16 +843,15 @@ class Salary_deduction extends Admin_Controller {
 			$request_item_amount_total = get_items_total_amount($salary_deduction_details->request_code);		
 			$this->template->request_item_amount_total = $request_item_amount_total;
 			
-			// get request items
-			//$where = "status NOT IN ('CANCELLED', 'DELETED') AND salary_deduction_id = " . $salary_deduction_id;
-			//$salary_deduction_detail_details = $this->spare_parts_model->get_salary_deduction_detail($where);
+			// get request items			
 			$where = "status NOT IN ('CANCELLED', 'DELETED') AND request_summary_id = " . $salary_deduction_id;			
 			$salary_deduction_detail_details = $this->spare_parts_model->get_request_detail($where);
 
 			$json_items = array();
 			for($k = 0;$k<count($salary_deduction_detail_details);$k++)
 			{
-				$salary_deduction_detail_id = $salary_deduction_detail_details[$k]->salary_deduction_detail_id;
+				//$salary_deduction_detail_id = $salary_deduction_detail_details[$k]->salary_deduction_detail_id;
+				$salary_deduction_detail_id = $salary_deduction_detail_details[$k]->request_detail_id;
 				
 				//$total_amount = $total_amount + ($item_qty[$k]*$item_price[$k]);
 				$po_items = array(
@@ -1148,36 +1147,6 @@ class Salary_deduction extends Admin_Controller {
 			}
 
 			$current_datetime = date('Y-m-d H:i:s');						
-
-			/*$sql = "INSERT INTO 
-						is_salary_deduction 
-						(
-							`request_series`, 
-							`request_number`, 
-							`id_number`, 
-							`warehouse_approved_by`, 
-							`warehouse_id`, 
-							`motorcycle_brand_model_id`, 
-							`engine`, 
-							`chassis`
-						)
-                    	(
-                    	SELECT 
-                    		'{$request_series}', 
-                    		IFNULL(MAX(request_number) + 1, 1) AS request_number, 
-                    		'{$requester_id}', 
-                    		'{$manager_id_number}',
-                            '{$warehouse_id}', 
-                            '{$brandmodel_id}', 
-                            '{$engine}', 
-                            '{$chassis}'                            
-                    	FROM 
-                    		is_salary_deduction
-                    	WHERE 
-                    		request_series = '{$request_series}' 
-	                    ORDER BY 
-	                    	request_number DESC
-                    	)";*/
 			
 			// get module_id
 			$module_id = get_department_module_id();
@@ -1280,8 +1249,7 @@ class Salary_deduction extends Admin_Controller {
          	$this->spare_parts_model->insert_warehouse_reservation($data_insert);
 
 		} else {
-
-			//$active_salary_deduction_details = $this->spare_parts_model->get_salary_deduction_by_code($request_code);
+			
 			$active_salary_deduction_details = $this->spare_parts_model->get_request_summary_by_code($request_code);
 			$active_salary_deduction_id = $active_salary_deduction_details->request_summary_id;
 		}	
@@ -1385,7 +1353,7 @@ class Salary_deduction extends Admin_Controller {
 
 		$department_module_details = $this->spare_parts_model->get_department_module_by_segment_name($this->segment_name);
 
-		$salary_deduction_detail_details = $this->spare_parts_model->get_salary_deduction_detail_by_id($request_detail_id);
+		$salary_deduction_detail_details = $this->spare_parts_model->get_request_detail_by_id($request_detail_id);
 
 		// get remaining number of items available
 		$where = "request_detail_id = {$request_detail_id} AND department_module_id = {$department_module_details->department_module_id}
@@ -1554,9 +1522,6 @@ class Salary_deduction extends Admin_Controller {
 		$salary_deduction_detail_id = $this->input->post("salary_deduction_detail_id");
 		$remarks = $this->input->post("remarks");		
 
-		//$where = "salary_deduction_id = '{$salary_deduction_id}' AND item_id = '{$item_id}'";
-		//$salary_deduction_detail = $this->spare_parts_model->get_salary_deduction_detail($where);
-
 		$salary_deduction_details = $this->spare_parts_model->get_request_summary_by_id($salary_deduction_id);
 
 		$where = "salary_deduction_detail_id = " . $salary_deduction_detail_id;		
@@ -1659,8 +1624,8 @@ class Salary_deduction extends Admin_Controller {
 
 
 		$department_module_details = $this->spare_parts_model->get_department_module_by_segment_name($this->segment_name);
-		
-		$salary_deduction_details = $this->spare_parts_model->get_salary_deduction_by_id($salary_deduction_id);
+				
+		$salary_deduction_details = $this->spare_parts_model->get_request_summary_by_id($salary_deduction_id);
 
 		if (!empty($salary_deduction_details)) {
 			$requester_details = $this->human_relations_model->get_employment_information_view_by_id($salary_deduction_details->id_number);
@@ -1675,9 +1640,9 @@ class Salary_deduction extends Admin_Controller {
 			$request_item_amount_total = get_items_total_amount($salary_deduction_details->request_code);		
 			$this->template->request_item_amount_total = $request_item_amount_total;
 
-			// get request items
-			$where = "status NOT IN ('CANCELLED', 'DELETED') AND salary_deduction_id = " . $salary_deduction_id;
-			$salary_deduction_detail_details = $this->spare_parts_model->get_salary_deduction_detail($where);
+			// get request items			
+			$where = "status NOT IN ('CANCELLED', 'DELETED') AND request_summary_id = " . $salary_deduction_id;
+			$salary_deduction_detail_details = $this->spare_parts_model->get_request_detail($where);
 
 			$json_items = array();
 			for($k = 0;$k<count($salary_deduction_detail_details);$k++)
@@ -1710,8 +1675,8 @@ class Salary_deduction extends Admin_Controller {
 
 			for($l = 0;$l<count($reprocessed_item_details);$l++)
 			{				
-
-				$salary_deduction_detail_details = $this->spare_parts_model->get_salary_deduction_detail_by_id($reprocessed_item_details[$l]->request_detail_id);
+				
+				$salary_deduction_detail_details = $this->spare_parts_model->get_request_detail_by_id($reprocessed_item_details[$l]->request_detail_id);
 
 				$ri_items = array(
 						'request_item_id' => $reprocessed_item_details[$l]->reprocessed_item_id,
@@ -1835,7 +1800,7 @@ class Salary_deduction extends Admin_Controller {
 	    $where = $data->where;
 	    $current_date = date('Y-m-d');
     
-		$total_records = $this->spare_parts_model->get_salary_deduction_count($where);
+		$total_records = $this->spare_parts_model->get_request_summary_count($where);
 
 		$config = array(
 			'pagination_url' => '/spare_parts/salary_deduction/generate_report',
@@ -1844,7 +1809,7 @@ class Salary_deduction extends Admin_Controller {
 			'uri_segment' => 4,
 		);
 		$this->pager->set_config($config);
-		$salary_deduction_details = $this->spare_parts_model->get_salary_deduction($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");
+		$salary_deduction_details = $this->spare_parts_model->get_request_summary($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");
 
 		$html = "<table class='table table-bordered table-condensed'>
 			<thead>
@@ -1904,7 +1869,7 @@ class Salary_deduction extends Admin_Controller {
 	    $this->load->library('PHPExcel/IOFactory');
 	    $objPHPExcel = new PHPExcel();
 
-	    $salary_deduction_details = $this->spare_parts_model->get_salary_deduction($where, null, "insert_timestamp DESC");
+	    $salary_deduction_details = $this->spare_parts_model->get_request_summary($where, null, "insert_timestamp DESC");
 
 	    if (!empty($salary_deduction_details))
 	    {

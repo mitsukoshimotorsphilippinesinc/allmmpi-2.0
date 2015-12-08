@@ -16,187 +16,112 @@ class Synchronization extends  Base_Controller
 		echo "Sync DBs.";
 	}
 
-	
-	
 	public function update_portal_db()
 	{
 		// get date time
 		$date_time = date('Ymd_His');
 
 		// check if human_relations.personal_information_diff table exists
-		$sql = "SHOW TABLES LIKE 'Personal_Information_diff'";		
+		$sql = "SHOW TABLES LIKE 'hris_employment_information_diff'";		
 		$query = $this->db_human_relations->query($sql);
 		$table_exists = $query->first_row();
 
-		/*
+		
 		if (!(empty($table_exists))) {
 			// backup personal_information_diff to personal_information_diff_<date>
-			$sql = "RENAME TABLE `Personal_Information_diff` TO Personal_Information_diff_{$date_time}";
+			$sql = "RENAME TABLE `hris_employment_information_diff` TO hris_employment_information_diff_{$date_time}";
 			$this->db_human_relations->query($sql);
 		} else {
 			// TODO: Log error 
-			echo "Personal_Information_diff does not exists." . "<br/>";
+			echo "hris_employment_information_diff does not exists." . "<br/>";
 		}
-		*/	
-
-		// check if human_relations.Personal_Information table exists
-		$sql = "SHOW TABLES LIKE 'Personal_Information'";		
+			
+		$sql = "SHOW TABLES LIKE 'hris_employment_information'";		
 		$query = $this->db_human_relations->query($sql);
 		$table_exists = $query->first_row();
 
 		if (!(empty($table_exists))) {
+			// check if table to compare to exists
+			$sql = "SHOW TABLES LIKE 'hris_employment_information_last'";		
+			$query = $this->db_human_relations->query($sql);
+			$has_last_table = $query->first_row();
 
-			/*
+			if (empty($has_last_table)) {
+				$sql = "CREATE TABLE hris_employment_information_last LIKE `hris_employment_information`";
+				$this->db_human_relations->query($sql);			
+				echo $sql . "</br>";
+			} 
 
-			// drop human_relations.Personal_Information_last table	
-			$sql = "DROP TABLE IF EXISTS `Personal_Information_last`";
-			echo $sql . "</br>";
-			$this->db_human_relations->query($sql);
-
-			// rename old human_relations.Personal_Information to Personal_Information_last
-			$sql = "RENAME TABLE `Personal_Information` TO `Personal_Information_last`";
-			echo $sql . "</br>";
-			$this->db_human_relations->query($sql);	
-
-			// create Personal_Information table
-			$sql = "CREATE TABLE Personal_Information LIKE `Personal_Information_last`";
-			$this->db_human_relations->query($sql);			
-			echo $sql . "</br>";
-			
-
-			// get all employed records
-			$sql = "SELECT 
-						*
-					FROM
-						Personal_Information
-					WHERE 
-						Employed = 'YES'";
-			
-			echo $sql . "</br>";
-			$query = $this->db->query($sql);
-			$active_employees = $query->result();			
-			
-			if (count($active_employees) == 0) {
-				// TODO: Log error 
-				echo "Personal_Information from HRIS has no active record." . "<br/>";
-				return;
-			} else {
-				foreach ($active_employees as $ae) {
-					// insert $ae to Portal's Personal_Information table
-					$sql = "
-						INSERT INTO Personal_Information
-						(
-						  `HO_Branch`,
-						  `Company`,
-						  `DeptBranch`,
-						  `Agency`,
-						  `IDNo`,
-						  `SurName`,
-						  `FirstName`,
-						  `MiddleName`,
-						  `CompleteName`,
-						  `CellNo`,
-						  `JobGradeLevel`,
-						  `EmpPosition`,
-						  `EmploymentStatus`,
-						  `DateEff`,
-						  `SalDateEff`,
-						  `DateStarted`,
-						  `DateRegular`,
-						  `DateBeg`,
-						  `DateEnd`,
-						  `DateBegPromotion`,
-						  `DateEndPromotion`,
-						  `ScheduledDO`,
-						  `SchedBegL`,
-						  `SchedEndL`,
-						  `SchedBegC`,
-						  `SchedEndC`,
-						  `Picture`,
-						  `Employed`,
-						  `TypeOfFinishied`,
-						  `DateEnded`
-						) 
-						VALUES 
-						(
-						  '{$ae->HO_Branch}',
-						  '{$ae->Company}',
-						  '{$ae->DeptBranch}',
-						  '{$ae->Agency}',
-						  '{$ae->IDNo}',
-						  '{$ae->SurName}',
-						  '{$ae->FirstName}',
-						  '{$ae->MiddleName}',
-						  '{$ae->CompleteName}',
-						  '{$ae->CellNo}',
-						  '{$ae->JobGradeLevel}',
-						  '{$ae->EmpPosition}',
-						  '{$ae->EmploymentStatus}',
-						  '{$ae->DateEff}',
-						  '{$ae->SalDateEff}',
-						  '{$ae->DateStarted}',
-						  '{$ae->DateRegular}',
-						  '{$ae->DateBeg}',
-						  '{$ae->DateEnd}',
-						  '{$ae->DateBegPromotion}',
-						  '{$ae->DateEndPromotion}',
-						  '{$ae->ScheduledDO}',
-						  '{$ae->SchedBegL}',
-						  '{$ae->SchedEndL}',
-						  '{$ae->SchedBegC}',
-						  '{$ae->SchedEndC}',
-						  '{$ae->Picture}',
-						  '{$ae->Employed}',
-						  '{$ae->TypeOfFinishied}',
-						  '{$ae->DateEnded}'
-						)";
-
-					echo $sql . "</br>";
-					$query = $this->db_human_relations->query($sql);
-
-				}
-			}
-	
-			// create personal_information_diff table to handle the result of comparing Personal_Information_last to Personal_Information
-			$sql = "CREATE TABLE `Personal_Information_diff` AS 
+			// COMPARE			
+			$sql = "CREATE TABLE `hris_employment_information_diff` AS 
 					(
 					SELECT 
-						State, IDNo, HO_Branch, Company, DeptBranch, Agency, FirstName, MiddleName, Surname, CellNo, JobGradeLevel, EmpPosition, EmploymentStatus, Employed
+						state,
+						id_number,
+						company,
+						department,
+						branch,
+						job_grade_level,
+						position,
+						employment_status
 					FROM 
 						(
-							SELECT 
-								'OLD' as State, IDNo, HO_Branch, Company, DeptBranch, Agency, FirstName, MiddleName, Surname, CellNo, JobGradeLevel, EmpPosition, EmploymentStatus, Employed 
-							FROM 
-								Personal_Information_last
-							UNION ALL
-							SELECT 
-								'NEW' as State, IDNo, HO_Branch, Company, DeptBranch, Agency, FirstName, MiddleName, Surname, CellNo, JobGradeLevel, EmpPosition, EmploymentStatus, Employed 
-							FROM 
-								Personal_Information
+						SELECT 
+							'OLD' as state, 
+							LPAD(id_number, 7, '0') AS id_number,
+							company,
+							department,
+							branch,
+							job_grade_level,
+							position,
+							employment_status
+						FROM 
+							hris_employment_information_last
+						UNION ALL
+						SELECT 
+							'NEW' as state,
+							LPAD(id_number, 7, '0') AS id_number,
+							company,
+							department,
+							branch,
+							job_grade_level,
+							position,
+							employment_status 
+						FROM 
+							hris_employment_information
 						) tbl
 					GROUP BY 
-						IDNo, HO_Branch, Company, DeptBranch, Agency, FirstName, MiddleName, Surname, CellNo, JobGradeLevel, EmpPosition, EmploymentStatus, Employed
+						id_number,
+						company,
+						department,
+						branch,
+						job_grade_level,
+						position,
+						employment_status
 					HAVING 
 						count(*) = 1
 					ORDER BY 
-						IDNo
+						id_number
 					)";
 			
 			echo $sql . "</br>";
 			$this->db_human_relations->query($sql);
-			*/
 
+			if (!(empty($has_last_table))) {	
+				$sql = "RENAME TABLE `hris_employment_information` TO `hris_employment_information_last`";
+				echo $sql . "</br>";
+				$this->db_human_relations->query($sql);	
+			}	
 
-			// process records for DEACTIVATION
-			// check all State = OLD with no NEW partner - means that it is an old record
+			// process OLD only
 			$sql = "SELECT 
-					IDNo 
+					id_number 
 				FROM 
-					`Personal_Information_diff` 
+					`hris_employment_information_diff` 
 				WHERE 
-					State = 'OLD'
+					state = 'OLD'
 				AND 
-					IDNo NOT IN (SELECT IDNo FROM `Personal_Information_diff` WHERE State = 'NEW')";
+					id_number NOT IN (SELECT id_number FROM `hris_employment_information_diff` WHERE State = 'NEW')";
 						
 			$query = $this->db_human_relations->query($sql);
 			$wold_wonew = $query->result();
@@ -206,25 +131,23 @@ class Synchronization extends  Base_Controller
 
 				foreach ($wold_wonew as $ww) {									
 					// cross check to human_relations.pm_employment_information and set is_employed = 0
-					$sql = "UPDATE pm_employment_information SET is_employed = 0 WHERE id_number = '{$ww->IdNo}'";
-					$this->db_human_relations->query($sql);
+					$sql = "UPDATE pm_employment_information SET is_employed = 0 WHERE id_number = LPAD('{$ww->id_number}', 7, '0')";
+					//$this->db_human_relations->query($sql);
 
-					$sql = "UPDATE sa_user SET is_active = 0 WHERE id_number = '{$ww->IdNo}'";					
-					$this->db->query($sql);
+					$sql = "UPDATE sa_user SET is_active = 0 WHERE id_number = LPAD('{$ww->id_number}', 7, '0')";
+					//$this->db->query($sql);
 				}	
 			}
 
-
-			// process records for UPDATE
-			// 	chack id numbers with OLD and NEW entries - means that system needs to update
+			// process BOTH
 			$sql = "SELECT
 						* 
 					FROM 
-						`Personal_Information_diff` 
+						`hris_employment_information_diff` 
 					WHERE 
-						State = 'NEW'
+						state = 'NEW'
 					AND 
-						IDNo IN (SELECT IDNo FROM `Personal_Information_diff` where State = 'OLD')";
+						id_number IN (SELECT id_number FROM `hris_employment_information_diff` where state = 'OLD')";
 		
 			$query = $this->db_human_relations->query($sql);
 			$wold_wnew = $query->result();			
@@ -235,62 +158,55 @@ class Synchronization extends  Base_Controller
 
 				foreach ($wold_wnew as $ww) {									
 
-					// Company 
-					$company_id = $this->get_company_id($ww->Company);
-
-					// DeptBranch
-					if ($ww->HO_Branch == "Branch") {
-						$branch_id = $this->get_branch_id($ww->DeptBranch);
-						$department_id = 0;
-					} else {
-						$branch_id = 0;
-						$department_id = $this->get_department_id($ww->DeptBranch);
-					}
-
-					//// Agency
-					$agency_id = $this->get_agency_id($ww->Agency);
-
+					$company_id = $this->get_company_id($ww->company);
+					
+					// department					
+					$department_id = $this->get_department_id($ww->department);
+					
+					// branch
+					$branch_id = $this->get_branch_id($ww->branch);
+					
 					// JobGradeLevel
-					$job_grade_level_id = $this->get_job_grade_level_id($ww->JobGradeLevel);
+					$job_grade_level_id = $this->get_job_grade_level_id($ww->job_grade_level);
 
 					// EmpPosition
-					$position_id = $this->get_position_id($ww->EmpPosition);
+					$position_id = $this->get_position_id($ww->position);
 
 					// EmploymentStatus
-					$employment_status_id = $this->get_employment_status_id($ww->EmploymentStatus);
+					$employment_status_id = $this->get_employment_status_id($ww->employment_status);
 
 					$sql = "UPDATE 
 								pm_employment_information
 							SET	
 								company_id = {$company_id},
 								branch_id = {$branch_id}, 
-								department_id = {$department_id}, 
-								agency_id = {$agency_id}, 
+								department_id = {$department_id}, 								
 								job_grade_level_id = {$job_grade_level_id}, 
 								position_id = {$position_id}, 
 								employment_status_id = {$employment_status_id}
 							WHERE
-								id_number = '{$ww->IDNo}'
+								id_number = LPAD('{$ww->id_number}', 7, '0')
 							AND
 								is_employed = 1	
 					";
 
 					echo $sql . "</br>";
-					$query = $this->db_human_relations->query($sql);
+					//$query = $this->db_human_relations->query($sql);
 
 				}	
 			}
-			
-			// process records for UPDATE			
-			// check all State = NEW
+
+			// process NEW
 			$sql = "SELECT 
 						* 
 					FROM 
-						personal_information_diff 
+						hris_employment_information_diff 
 					WHERE 
-						State = 'NEW'
+						state = 'NEW'
 					AND 
-						IDNo NOT IN (SELECT IDNo FROM personal_information_diff WHERE State = 'OLD')";	
+						id_number NOT IN (SELECT id_number FROM hris_employment_information_diff WHERE state = 'OLD')";	
+
+			echo $sql . "</br>";
 
 			$query = $this->db_human_relations->query($sql);
 			$woold_wnew = $query->result();			
@@ -300,29 +216,22 @@ class Synchronization extends  Base_Controller
 
 				foreach ($woold_wnew as $ww) {			
 
-					// Company 
-					$company_id = $this->get_company_id($ww->Company);
-
-					// DeptBranch
-					if ($ww->HO_Branch == "Branch") {
-						$branch_id = $this->get_branch_id($ww->DeptBranch);
-						$department_id = 0;
-					} else {
-						$branch_id = 0;
-						$department_id = $this->get_department_id($ww->DeptBranch);
-					}
-
-					//// Agency
-					$agency_id = $this->get_agency_id($ww->Agency);
-
+					$company_id = $this->get_company_id($ww->company);
+					
+					// department					
+					$department_id = $this->get_department_id($ww->department);
+					
+					// branch
+					$branch_id = $this->get_branch_id($ww->branch);
+					
 					// JobGradeLevel
-					$job_grade_level_id = $this->get_job_grade_level_id($ww->JobGradeLevel);
+					$job_grade_level_id = $this->get_job_grade_level_id($ww->job_grade_level);
 
 					// EmpPosition
-					$position_id = $this->get_position_id($ww->EmpPosition);
+					$position_id = $this->get_position_id($ww->position);
 
 					// EmploymentStatus
-					$employment_status_id = $this->get_employment_status_id($ww->EmploymentStatus);
+					$employment_status_id = $this->get_employment_status_id($ww->employment_status);
 
 					// check if already existing in pm_employment_information
 					$sql = "SELECT
@@ -330,32 +239,12 @@ class Synchronization extends  Base_Controller
 							FROM
 								pm_employment_information
 							WHERE
-								id_number = '{$ww->IDNo}'";
+								id_number = LPAD('{$ww->id_number}', 7, '0')";
 					
 					$query = $this->db_human_relations->query($sql);
 					$employment_info_details = $query->result();
 
 					if (empty($employment_info_details)) {
-
-						// insert to pm_personal_information
-						$sql = "INSERT INTO 
-									pm_personal_information
-									(
-										complete_name, 
-										last_name, 
-										first_name, 
-										middle_name, 
-										mobile_number,
-										job_grade_level_id,
-										position_id,
-										employment_status_id,
-										is_employed
-									)
-								VALUES 
-									(
-									)";
-							
-
 						
 						// insert to pm_employment_information
 						$sql = "INSERT INTO 
@@ -364,8 +253,7 @@ class Synchronization extends  Base_Controller
 										id_number, 
 										company_id, 
 										branch_id, 
-										department_id, 
-										agency_id,
+										department_id, 										
 										job_grade_level_id,
 										position_id,
 										employment_status_id,
@@ -373,10 +261,16 @@ class Synchronization extends  Base_Controller
 									)
 								VALUES 
 									(
+										LPAD('{$ww->id_number}', 7, '0'),
+										'{$company_id}',
+										'{$branch_id}',
+										'{$department_id}',
+										'{$job_grade_level_id}',
+										'{$position_id}',
+										'{$employment_status_id}',
+										'1',
 									)";
 						
-						
-
 					} else {
 						// update
 						$sql = "UPDATE 
@@ -384,30 +278,26 @@ class Synchronization extends  Base_Controller
 							SET	
 								company_id = {$company_id},
 								branch_id = {$branch_id}, 
-								department_id = {$department_id}, 
-								agency_id = {$agency_id}, 
+								department_id = {$department_id}, 								
 								job_grade_level_id = {$job_grade_level_id}, 
 								position_id = {$position_id}, 
 								employment_status_id = {$employment_status_id},								
 								is_employed = 1
 							WHERE
-								id_number = '{$ww->IDNo}'							
+								id_number = LPAD('{$ww->id_number}', 7, '0')
 						";												
 					}	
 
 					echo $sql . "</br>";
-					$query = $this->db_human_relations->query($sql);
+					//$query = $this->db_human_relations->query($sql);
 
 				}	
 			}
 
-
-
-			
 		} else {
 
 			// TODO: Log missing table
-			echo "Personal_Information does not exists.";
+			echo "hris_employment_information does not exists.";
 			return;
 		}
 	}
@@ -528,6 +418,5 @@ class Synchronization extends  Base_Controller
 
 		return $employment_status_id;
 	}
-		
-    
+   
 }

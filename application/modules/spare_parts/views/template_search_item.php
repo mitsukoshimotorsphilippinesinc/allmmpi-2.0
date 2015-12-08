@@ -13,6 +13,7 @@
 	<table class="table table-striped table-condensed assign-customer-list">
 		<thead>
 			<tr>
+				<th style="width: 70px;">Image</th>
 				<th style="width: 280px;">SKU</th>
 				<th style="width: 280px;">Description</th>
 				<th style="width: 280px;">Brand/Model</th>
@@ -38,6 +39,7 @@
 		$.each(items, function(index, item) { 
 	%>
 			<tr id='item_<%= item.item_id %>'>
+				<td style="width: 70px;"><a target="_blank" href="#"><img id="" src="<%= item.upload_url %>/<%= item.image_filename %>" alt="" style="width:50px; height:50px;"></img></a></td>
 				<td style="width: 280px;"><%= item.sku %></td>
 				<td style="width: 280px;"><%= item.description %></td>
 				<td style="width: 280px;"><%= item.brand_model %></td>
