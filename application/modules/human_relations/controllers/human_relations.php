@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Hr extends Admin_Controller {
+class Human_relations extends Admin_Controller {
 
 	function __construct()
 	{

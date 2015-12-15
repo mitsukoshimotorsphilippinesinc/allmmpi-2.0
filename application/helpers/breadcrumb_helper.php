@@ -3,7 +3,7 @@
 function assemble_breadcrumb () {
 
 	$ci = ci();
-	
+
 	$ci->db_human_relations = $ci->load->database("human_relations", TRUE);
 	$ci->db_current = $ci->load->database($ci->uri->segment(1), TRUE);
 
@@ -12,6 +12,7 @@ function assemble_breadcrumb () {
 	//$ci->load->model('human_relations_model');
 
 	$html = "";
+
 
 	if ($ci->uri->segment(1)) {	
 
