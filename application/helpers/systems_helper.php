@@ -55,3 +55,66 @@ function log_to_db($model_name, $id_number, $module_name, $table_name, $action, 
 	$ci->db_database->query($sql_insert);	
 
 }
+
+function get_requester_details($id_number, $requester_type, $is_object = 0)
+{
+	$ci = ci();		
+	$ci->load->model('human_relations_model');
+
+	if ($requester_type == 'employee') {
+		$requester_details = $ci->human_relations_model->get_employment_information_view_by_id($id_number);
+
+		$is_employed = ($requester_details->is_employed == 1) ? 'Yes' : 'No';
+		$email_address = ($requester_details->company_email_address == NULL) ? $requester_details->personal_email_address : $requester_details->company_email_address;
+		$contact_number = ($requester_details->mobile_number == NULL) ? $requester_details->phone_number : $requester_details->mobile_number;
+
+		$position_details = $ci->human_relations_model->get_position_by_id($requester_details->position_id);
+
+		$department_details = $ci->human_relations_model->get_department_by_id($requester_details->department_id);
+
+		$department_name = "N/A";
+		if (!empty($department_details)) {
+			$department_name = $department_details->department_name;
+		}
+
+		if ($is_object == 0) {
+			$requester_details = "NAME: {$requester_details->complete_name}\nID NUMBER: {$id_number}\nDEPARTMENT: {$department_name}\nPOSITION: {$position_details->position_name}\nIS EMPLOYED: {$is_employed}\nEMAIL: {$email_address}\nCONTACT NUMBER: {$contact_number}\n";
+		} else {
+			$requester_details = array(
+					'complete_name' => $requester_details->complete_name,
+					'id_number' => $id_number,
+					'department_name' => $department_name,
+					'position_name' => $position_details->position_name,
+					'is_employed' => $is_employed,
+					'email_address' => $email_address,
+					'contact_number' => $contact_number,
+				);
+
+			$requester_details = (object) ($requester_details);
+		}
+	} else if ($requester_type == 'branch') {
+
+		$requester_details = $ci->human_relations_model->get_branch_by_id($id_number);
+
+		$is_active = ($requester_details->is_active == 1) ? 'Yes' : 'No';
+		
+		$company_details = $ci->human_relations_model->get_company_by_id($requester_details->company_id);
+
+		if ($is_object == 0) {
+			$requester_details = "NAME: {$requester_details->branch_name}\nBRANCH ID: {$id_number}\nCOMPANY NAME: {$company_details->company_name}\nIS ACTIVE: {$is_active}\n";
+		} else {
+			$requester_details = array(
+					'complete_name' => $requester_details->branch_name,
+					'branch_id' => $id_number,					
+					'company_name' => $company_details->company_name,
+					'is_active' => $is_active,					
+				);
+
+			$requester_details = (object) ($requester_details);
+		}
+
+	}	
+
+	return $requester_details;	
+}
+

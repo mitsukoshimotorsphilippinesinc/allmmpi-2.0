@@ -223,7 +223,7 @@ function get_reprocessed_item_total_amount($request_code) {
 	return $request_item_amount_total;
 }
 
-
+/*
 function get_requester_details($id_number, $requester_type, $is_object = 0)
 {
 	$ci = ci();		
@@ -263,7 +263,7 @@ function get_requester_details($id_number, $requester_type, $is_object = 0)
 	}	
 
 	return $requester_details;	
-}
+}*/
 
 
 function check_mtr($request_code, $mtr_number)
