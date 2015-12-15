@@ -10,6 +10,7 @@ class Spare_parts extends Admin_Controller {
 		$this->load->model('human_relations_model');	
 		$this->load->model('warehouse_model');
 		$this->load->helper('spare_parts_helper');
+		$this->load->helper('systems_helper');
 
 		$this->db_spare_parts = $this->load->database('spare_parts', TRUE);	
 	}

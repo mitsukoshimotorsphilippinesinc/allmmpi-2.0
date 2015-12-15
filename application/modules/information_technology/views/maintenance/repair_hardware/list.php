@@ -4,14 +4,14 @@
 ?>
 
 <?= $breadcrumb_container; ?>
-<h2>Repair - Hardwares <a href='/information_technology/maintenance/add_agent' class='btn btn-small'  style='float:right;'><i class="icon-plus"></i><span> Add New</span></a></h2>
+<h2>Repair - Hardwares <a href='/information_technology/maintenance/add_repair_hardware' class='btn btn-small'  style='float:right;'><i class="icon-plus"></i><span> Add New</span></a></h2>
 <hr/>
 
 <form id='search_details' method='get' action =''>
 
 	<strong>Search By:&nbsp;</strong>
 	<select name="search_option" id="search_option" style="width:150px;" value="<?= $search_by ?>">		
-		<option value="repair_hardware_namee">Hardware Name</option>		
+		<option value="repair_hardware_name">Hardware Name</option>		
 	</select>                 
 
 	<input title="Search" class="input-large search-query" style="margin-top:-10px;margin-left:5px;" type="text" id="search_string" name="search_string" value="" maxlength='25' autofocus="">	
@@ -59,9 +59,9 @@
 			<td><?= $r->description ?></td>
 			<td><?= $r->insert_timestamp ?></td>					
 			<td>
-				<a href='/information_technology/maintenance/view_agent/<?= $r->repair_hardware_id ?>' class='btn btn-small btn-info' title="View"><i class="icon-search icon-white"></i></a>				
-				<a href='/information_technology/maintenance/edit_agent/<?= $r->repair_hardware_id ?>' class='btn btn-small btn-primary' title="Edit"><i class="icon-pencil icon-white"></i></a>
-				<a href='/information_technology/maintenance/delete_agent/<?= $r->repair_hardware_id ?>' class='btn btn-small btn-danger' title="Delete"><i class="icon-remove icon-white"></i></a>
+				<a href='/information_technology/maintenance/view_repair_hardware/<?= $r->repair_hardware_id ?>' class='btn btn-small btn-info' title="View"><i class="icon-search icon-white"></i></a>				
+				<a href='/information_technology/maintenance/edit_repair_hardware/<?= $r->repair_hardware_id ?>' class='btn btn-small btn-primary' title="Edit"><i class="icon-pencil icon-white"></i></a>
+				<a href='/information_technology/maintenance/delete_repair_hardware/<?= $r->repair_hardware_id ?>' class='btn btn-small btn-danger' title="Delete"><i class="icon-remove icon-white"></i></a>
 			</td>
 		</tr>
 	<?php endforeach; ?>

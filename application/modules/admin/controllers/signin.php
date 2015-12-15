@@ -7,6 +7,9 @@ class SignIn extends Admin_Controller
 	{
   		parent::__construct();
 		$this->template->name = 'basic';
+		$this->load->model('human_relations_model');		
+		$this->load->model('user_model');		
+		$this->load->helper('systems');
 	}
 	
 	public function index() 
@@ -34,29 +37,63 @@ class SignIn extends Admin_Controller
 		$this->form_validation->set_error_delimiters('<span>', '</span>');
 		
 		$invalid_login = false;
-		
-		if ($this->form_validation->run()) 
-		{
+		$active_member = 1;
+
+		// get member status
+		$employee_account_details = $this->user_model->get_user_by_username($username);
+
+		if (empty($employee_account_details)) {
+			$active_member == 0;
+			$invalid_login = true;
+		} else {
 			
-			if ($this->authenticate->login($username, $password))
-			{	
-				// check the default user page
-				//$user_details = $this->user_model->get_user("username = '{$username}' OR email = '{$username}'");
-				$user_details = $this->user_model->get_user("username = '{$username}'");
-				
-				$redirect_url = $user_details[0]->default_page;
-							
-				redirect($redirect_url);				
-				return;
-			}
-			else
+			$active_member = $employee_account_details->is_active;
+		
+			if ($this->form_validation->run()) 
 			{
-				$invalid_login = true;
+				
+				if ($this->authenticate->login($username, $password))
+				{	
+					if ($active_member == 1) {
+
+						// check the default user page					
+						$user_details = $this->user_model->get_user("username = '{$username}'");
+
+						//logging of action
+						$details_before = "";
+						
+						$data = array(
+							"username" => $username,
+							"password" => $password,
+							);
+						
+						$details_after = array('id_number' => $user_details[0]->id_number, 'details' => $data);
+						$id_number = $user_details[0]->id_number;
+						
+						log_to_db("default", $id_number, "SIGNIN", "sa_user", "LOGIN", $details_before, $details_after, "ADMIN");
+
+						$redirect_url = $user_details[0]->default_page;
+									
+						redirect($redirect_url);				
+						return;
+					}
+					else
+					{
+						$this->authenticate->logout();
+						$invalid_login = true;
+					}
+					
+				}
+				else
+				{
+					$invalid_login = true;
+				}
 			}
-		}
+		}	
 		
 		// assign data to be sent to view
 		$this->template->invalid_login = $invalid_login;
+		$this->template->active_member = $active_member;
 		$this->template->view('signin');
 		
 	}
