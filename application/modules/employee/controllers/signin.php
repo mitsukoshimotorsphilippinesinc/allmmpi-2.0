@@ -25,6 +25,47 @@ class SignIn extends Base_Controller
 	public function authenticate()
 	{
 
+		$ldaprdn  = 'cn=ryan.rosaldo,ou=h.o,dc=mitsukoshimotors,dc=com';     // ldap rdn or dn
+		$ldappass = 'rootpass';  // associated password
+
+		echo "<h3>LDAP query test</h3>";
+		echo "Connecting ...";
+		$ds=ldap_connect("195.100.100.77");  // must be a valid LDAP server!
+		echo "connect result is " . $ds . "<br />";
+
+		if ($ds) { 
+		    echo "Binding ..."; 
+		    $r=ldap_bind($ds, $ldaprdn, $ldappass);
+		                           // read-only access
+		    echo "Bind result is " . $r . "<br />";
+
+		    echo "Searching for (sn=S*) ...";
+		    // Search surname entry
+		    $sr=ldap_search($ds, "o=My Company, c=US", "sn=S*");  
+		    echo "Search result is " . $sr . "<br />";
+
+		    echo "Number of entries returned is " . ldap_count_entries($ds, $sr) . "<br />";
+
+		    echo "Getting entries ...<p>";
+		    $info = ldap_get_entries($ds, $sr);
+		    echo "Data for " . $info["count"] . " items returned:<p>";
+
+		    for ($i=0; $i<$info["count"]; $i++) {
+		        echo "dn is: " . $info[$i]["dn"] . "<br />";
+		        echo "first cn entry is: " . $info[$i]["cn"][0] . "<br />";
+		        echo "first email entry is: " . $info[$i]["mail"][0] . "<br /><hr />";
+		    }
+
+		    echo "Closing connection";
+		    ldap_close($ds);
+
+		} else {
+		    echo "<h4>Unable to connect to LDAP server</h4>";
+		}
+
+
+		/*
+
 		if ($this->authenticate->e_is_logged_in())
 		{
 			
@@ -96,7 +137,7 @@ class SignIn extends Base_Controller
 		// assign data to be sent to view
 		$this->template->invalid_login = $invalid_login;
 		$this->template->active_member = $active_member;
-		
+		*/
 		$this->template->view('signin');
 		
 	}

@@ -21,17 +21,17 @@ class Ldap_test extends Base_Controller {
 
 		if ($ldapconn) {
 
-			    // binding to ldap server
-			    $ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
+		    // binding to ldap server
+		    $ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
 
-			    // verify binding
-			    if ($ldapbind) {
-			        echo "LDAP bind successful...";
-			    } else {
-			        echo "LDAP bind failed...";
-			    }
+		    // verify binding
+		    if ($ldapbind) {
+		        echo "LDAP bind successful...";
+		    } else {
+		        echo "LDAP bind failed...";
+		    }
 
-			}
+		}
 	}
 
 }
