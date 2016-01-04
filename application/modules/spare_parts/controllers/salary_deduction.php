@@ -501,7 +501,7 @@ class Salary_deduction extends Admin_Controller {
 					'status' => "FORWARDED",
 					'approved_by' => $this->user->user_id,					
 					'approve_timestamp' => $current_datetime,
-					'mtr_number' =>	 $mtr_number
+					//'mtr_number' =>	 $mtr_number
 				);
 
 				$html = "You have successfully forwaded the request to warehouse with Request Code: <strong>{$salary_deduction_code}</strong>.";
@@ -523,7 +523,7 @@ class Salary_deduction extends Admin_Controller {
 					'status' => "CANCELLATION-FORWARDED",
 					'approved_by' => $this->user->user_id,					
 					'approve_timestamp' => $current_datetime,
-					'mtr_number' =>	 $mtr_number
+					//'mtr_number' =>	 $mtr_number
 				);
 
 				$html = "You have successfully forwaded the request to warehouse with Request Code: <strong>{$salary_deduction_code}</strong>.";

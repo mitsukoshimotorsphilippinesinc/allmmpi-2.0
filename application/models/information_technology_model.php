@@ -18,6 +18,9 @@ class Information_technology_model extends Base_Model
 			'department_module_submodule' => 'rf_department_module_submodule',
 			'repair_status' => 'rf_repair_status',
 			'repair_remark' => 'rs_repair_remark',
+			'expense' => 'es_expense',
+			'expense_signatory' => 'es_expense_signatory',
+			'expense_view' => 'es_expense_view',
 		);
 
 	}
@@ -428,6 +431,120 @@ class Information_technology_model extends Base_Model
 		return $row->cnt;
 	}
 	
+	// ----------------------------------------------------
+	// ----------------------------------------------------
+	// es_expense
+	function get_expense($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('expense', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+    }
+
+	function insert_expense($data) 
+	{
+		return $this->insert('expense', $data);
+	}
+
+	function update_expense($data, $where) 
+	{
+		return $this->update('expense', $data, $where);
+	}
+
+	function delete_expense($where) 
+	{
+		return $this->delete('expense', $where);
+	}
+
+	function get_expense_by_id($expense_id) 
+	{
+		$result = $this->get_expense(array('expense_id' => $expense_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+
+	function get_expense_count($where = null) {
+		// do a sql count instead of row count
+		$query = $this->fetch('expense', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+	// ----------------------------------------------------
+	// ----------------------------------------------------
+	// es_expense_signatory
+	function get_expense_signatory($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('expense_signatory', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+    }
+
+	function insert_expense_signatory($data) 
+	{
+		return $this->insert('expense_signatory', $data);
+	}
+
+	function update_expense_signatory($data, $where) 
+	{
+		return $this->update('expense_signatory', $data, $where);
+	}
+
+	function delete_expense_signatory($where) 
+	{
+		return $this->delete('expense_signatory', $where);
+	}
+
+	function get_expense_signatory_by_id($expense_signatory_id) 
+	{
+		$result = $this->get_expense_signatory(array('expense_signatory_id' => $expense_signatory_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+
+	function get_expense_signatory_count($where = null) {
+		// do a sql count instead of row count
+		$query = $this->fetch('expense_signatory', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+	// ----------------------------------------------------
+	// ----------------------------------------------------
+	// es_expense_view
+	function get_expense_view($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('expense_view', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+    }
+
+	function get_expense_view_by_id($expense_id) 
+	{
+		$result = $this->get_expense_view(array('expense_id' => $expense_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+
+	function get_expense_view_count($where = null) {
+		// do a sql count instead of row count
+		$query = $this->fetch('expense_view', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
 	// ----------------------------------------------------
 }
 	

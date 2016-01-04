@@ -45,7 +45,7 @@
 
 	$repair_status_options = array();
 	
-	$repair_status_details = $this->information_technology_model->get_repair_status();
+	$repair_status_details = $this->information_technology_model->get_repair_status(NULL,NULL, "priority_order");
 
 	$repair_status_tag = "<select class='add_status' id='add_status_{$repair_detail->repair_detail_id}' style='width:13em;height:100%;' data='{$repair_detail->repair_detail_id}'>";
 	
@@ -58,13 +58,20 @@
 
 <?=$repair_status_tag?>
 
+<input id="add_tr_number_in_<?= $repair_detail->repair_detail_id ?>" style="width:143px; display:none;" placeholder="TR Number (IN)"/>
 <input id="add_tr_number_out_<?= $repair_detail->repair_detail_id ?>" style="width:143px; display:none;" placeholder="TR Number (OUT)"/>
-<input id="add_po_price_<?= $repair_detail->repair_detail_id ?>" style="width:143px; display:none;" placeholder="Price"/>
+<input class="number" id="add_proposed_price_<?= $repair_detail->repair_detail_id ?>" style="width:143px; display:none;text-align:right;" placeholder="Proposed Amt"/>
+<input class="number" id="add_po_price_<?= $repair_detail->repair_detail_id ?>" style="width:100px; display:none;text-align:right;" placeholder="Approved Amt"/>
+<input class="" id="add_approval_number_<?= $repair_detail->repair_detail_id ?>" style="width:85px; display:none;text-align:right;" placeholder="Approval#"/>
+<input class="" id="add_authority_number_<?= $repair_detail->repair_detail_id ?>" style="width:85px; display:none;text-align:right;" placeholder="Authority#"/>
 <textarea maxlength="255" name="add_remark_<?= $repair_detail->repair_detail_id ?>" id ="add_remark_<?= $repair_detail->repair_detail_id ?>" class="span9" placeholder="Put Remarks Here..." style="height:50px;resize:none;"></textarea>
 <a class="btn btn-primary post_to_history" data="<?= $repair_detail->repair_detail_id ?>">Post Remarks</a>
+<div id="is_branch_expense_container_<?= $repair_detail->repair_detail_id ?>" style="margin-top:-30px;display:none;">
+	<input id="is_branch_expense_<?= $repair_detail->repair_detail_id ?>" name="is_branch_expense_<?= $repair_detail->repair_detail_id ?>" type="checkbox" value="is_branch_expense" name="is_branch_expense">
+	<strong>Is Branch Expense</strong>
+</div>	
 <div class="control-group error">
-	<p id="input_errors" class="help-block">
-		
+	<p id="input_errors_<?= $repair_detail->repair_detail_id ?>" class="help-block">		
 	</p>
 </div>							
 <br/>

@@ -60,38 +60,62 @@
 		var _addRemarkVal = $("#add_remark_" +_repairDetailId ).val();
 		var _addStatusVal = $("#add_status_" +_repairDetailId ).val();
 
-		var $_hasError = 0;
+		var _hasError = 0;
 		var input_errors = "";
+
+		var _isBranchEspense = 0;
+
+		if (_addStatusVal == 1) {
+			var _trNumberIn = $("#add_tr_number_in_" +_repairDetailId ).val();
+
+			if ($.trim(_trNumberIn) == "") {				
+				_hasError = 1;
+				input_errors += "The TR Number (IN) field is required. ";				
+			}
+		}
 
 		if (_addStatusVal == 9) {
 			var _trNumberOut = $("#add_tr_number_out_" +_repairDetailId ).val();
 
 			if ($.trim(_trNumberOut) == "") {				
-				$_hasError = 1;
-				input_errors += "The TR Number (Out) field is required. ";				
+				_hasError = 1;
+				input_errors += "The TR Number (OUT) field is required. ";				
 			}
 		}
 
 		if (_addStatusVal == 6) {
-			var _poPrice = $("#add_po_price" +_repairDetailId ).val();
+			var _poPrice = $("#add_po_price_" +_repairDetailId ).val();
 
 			if ($.trim(_poPrice) == "") {				
-				$_hasError = 1;			
-				input_errors += "The P.O. Price field is required. ";
+				_hasError = 1;			
+				input_errors += "The Approved Amount field is required. ";
+			}
+		}
+
+		if (_addStatusVal == 5) {
+			var _proposedPrice = $("#add_proposed_price_" +_repairDetailId ).val();
+
+			if ($.trim(_proposedPrice) == "") {				
+				_hasError = 1;					
+				input_errors += "The Proposed Amount field is required. ";
 			}
 		}
 
 		if ($.trim(_addRemarkVal) == "") {		
-			$_hasError = 1;
+			_hasError = 1;
 			input_errors += "The Remarks field is required. ";
 		}
 		
-
-		if ($_hasError == 1) {
-			$('#input_errors').html('<p>'+input_errors+'</p>');
+		if (_hasError == 1) {
+			$('#input_errors_' +_repairDetailId ).html('<p>'+input_errors+'</p>');
 			return;
 		}
 
+		if (document.getElementById('is_branch_expense_' + _repairDetailId).checked) {
+			_isBranchEspense = 1;
+		} else {
+			_isBranchEspense = 0;
+		}
 
 		b.request({
 			url: "/information_technology/repairs/add_remark",
@@ -99,8 +123,14 @@
 				"repair_status_id": $("#add_status_" +_repairDetailId ).val(),
 				"remarks" : $("#add_remark_" +_repairDetailId ).val(),
 				"repair_detail_id" : _repairDetailId,
+				"tr_number_in" : $("#add_tr_number_in_" +_repairDetailId ).val(),
 				"tr_number_out" : $("#add_tr_number_out_" +_repairDetailId ).val(),
 				"po_price" : $("#add_po_price_" +_repairDetailId ).val(),
+				"approval_number" : $("#add_approval_number_" +_repairDetailId ).val(),
+				"authority_number" : $("#add_authority_number_" +_repairDetailId ).val(),
+				"proposed_price" : $("#add_proposed_price_" +_repairDetailId ).val(),
+				"is_branch_expense" : _isBranchEspense,
+
 
 			},
 			on_success: function(data) {
@@ -122,6 +152,9 @@
 				$("#body_remarks_" + _repairDetailId).html(data.data.remarks_html);
 				$("#add_tr_number_out_" + _repairDetailId).val("");
 				$("#add_po_price_" + _repairDetailId).val("");
+				$("#add_proposed_price_" + _repairDetailId).val("");
+				$("#add_approval_number_" + _repairDetailId).val("");
+				$("#add_authority_number_" + _repairDetailId).val("");
 
 				$("#overall_status_caption").html(data.data.overall_status);
 
@@ -142,22 +175,82 @@
 
 		$('#input_errors').html('');
 
-		if ($(this).val() == '9') {
-			
+		$("#is_branch_expense_" + _detailId).prop('checked', false);
+		if ($(this).val() == '1') {			
+			// RECEIVE FROM BRANCH
+			$("#add_tr_number_in_" + _detailId).show();
+			$("#add_tr_number_out_" + _detailId).hide();
+			$("#add_po_price_" + _detailId).hide();
+			$("#add_po_price_" + _detailId).val("");
+			$("#add_approval_number_" + _detailId).hide();
+			$("#add_approval_number_" + _detailId).val("");
+			$("#add_authority_number_" + _detailId).hide();
+			$("#add_authority_number_" + _detailId).val("");
+			$("#add_proposed_price_" + _detailId).hide();
+			$("#add_proposed_price_" + _detailId).val("");						
+			$('#add_remark_' + _detailId).addClass('span7').removeClass('span9');
+		} else if ($(this).val() == '9') {			
 			// FOR DELIVERY
+			$("#add_tr_number_in_" + _detailId).hide();
 			$("#add_tr_number_out_" + _detailId).show();
 			$("#add_po_price_" + _detailId).hide();
+			$("#add_po_price_" + _detailId).val("");
+			$("#add_approval_number_" + _detailId).hide();
+			$("#add_approval_number_" + _detailId).val("");
+			$("#add_authority_number_" + _detailId).hide();
+			$("#add_authority_number_" + _detailId).val("");
+			$("#add_proposed_price_" + _detailId).hide();
+			$("#add_proposed_price_" + _detailId).val("");						
 			$('#add_remark_' + _detailId).addClass('span7').removeClass('span9');
 		} else if ($(this).val() == '6') {
+			// FOR P.O.
+			$("#add_tr_number_in_" + _detailId).hide();
 			$("#add_tr_number_out_" + _detailId).hide();
 			$("#add_po_price_" + _detailId).show();
-			$('#add_remark_' + _detailId).addClass('span7').removeClass('span9');
-		} else {
+			$("#add_approval_number_" + _detailId).show();
+			$("#add_authority_number_" + _detailId).show();
+			$("#add_proposed_price_" + _detailId).hide();
+			$("#add_proposed_price_" + _detailId).val("");
+			$("#is_branch_expense_container_" + _detailId).show();			
+			$('#add_remark_' + _detailId).addClass('span5').removeClass('span7').removeClass('span9');
+		} else if ($(this).val() == '5') {
+			$("#add_tr_number_in_" + _detailId).hide();
 			$("#add_tr_number_out_" + _detailId).hide();
 			$("#add_po_price_" + _detailId).hide();
+			$("#add_po_price_" + _detailId).val("");
+			$("#add_approval_number_" + _detailId).hide();
+			$("#add_approval_number_" + _detailId).val("");
+			$("#add_authority_number_" + _detailId).hide();
+			$("#add_authority_number_" + _detailId).val("");
+			$("#add_proposed_price_" + _detailId).show();
+			$("#is_branch_expense_container_" + _detailId).hide();
+			$('#add_remark_' + _detailId).addClass('span7').removeClass('span9');	
+		} else {
+			$("#add_tr_number_in_" + _detailId).hide();
+			$("#add_tr_number_out_" + _detailId).hide();			
+			$("#add_po_price_" + _detailId).hide();
+			$("#add_po_price_" + _detailId).val("");
+			$("#add_approval_number_" + _detailId).hide();
+			$("#add_approval_number_" + _detailId).val("");
+			$("#add_authority_number_" + _detailId).hide();
+			$("#add_authority_number_" + _detailId).val("");
+			$("#add_proposed_price_" + _detailId).hide();
+			$("#add_proposed_price_" + _detailId).val("");
+			$("#is_branch_expense_container_" + _detailId).hide();
 			$('#add_remark_' + _detailId).addClass('span9').removeClass('span7');
 		}
 
+	});
+
+	$('.number').keypress(function(event) {
+		if ((event.which != 0) && (event.which != 8) && (event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+        	event.preventDefault();
+    	}
+    
+    	/*var text = $(this).val();
+	    if ((text.indexOf('.') != -1) && (text.substring(text.indexOf('.')).length > 2)) {
+	        event.preventDefault();
+	    }*/
 	});
 
 </script>

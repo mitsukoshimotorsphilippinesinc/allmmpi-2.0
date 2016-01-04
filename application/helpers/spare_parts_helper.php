@@ -276,21 +276,31 @@ function check_mtr($request_code, $mtr_number)
 	$module_code = substr($request_code, 0, 2);
 	$department_module_details = $ci->spare_parts_model->get_department_module_by_code($module_code);
 
+	//// request_summary
+	//$request_summary_sql = "SELECT a." . $department_module_details->segment_name . "_id as id, a.* FROM
+	//						is_" . $department_module_details->segment_name . " a
+	//					WHERE
+	//					a.request_code = '" . $request_code . "'";
+
 	// request_summary
-	$request_summary_sql = "SELECT a." . $department_module_details->segment_name . "_id as id, a.* FROM
-							is_" . $department_module_details->segment_name . " a
-						WHERE
-						a.request_code = '" . $request_code . "'";
+	$request_summary_sql = "SELECT 
+								a.request_summary_id as id, a.* 
+							FROM
+								is_request_summary a
+							WHERE
+								a.request_code = '" . $request_code . "'";
 
 	$request_summary = $ci->db_spare_parts->query($request_summary_sql);
 	$request_summary = $request_summary->result();		
 	$request_summary = $request_summary[0];				
 
 	// check if mtr_number is already used
-	$count_mtr_sql = "SELECT request_code FROM
-							is_" . $department_module_details->segment_name . "
-						WHERE
-						mtr_number = '" . $mtr_number . "'";
+	$count_mtr_sql = "SELECT 
+						request_code 
+					FROM
+						is_request_summary
+					WHERE
+						cross_reference_number = '" . $mtr_number . "'";
 
 	$count_mtr = $ci->db_spare_parts->query($count_mtr_sql);
 	$count_mtr = $count_mtr->result();		
@@ -312,12 +322,12 @@ function assign_mtr($request_id, $request_code, $mtr_number)
 	$current_datetime = date("Y-m-d H:i:s");
 
 	$update_sql = "UPDATE 
-						is_". $department_module_details->segment_name ." 
+						is_request_summary 
 					SET 
 						update_timestamp = '{$current_datetime}', 
-						mtr_number = '{$mtr_number}' 
+						cross_reference_number = '{$mtr_number}' 
 					WHERE 
-						". $department_module_details->segment_name ."_id = {$request_id}";
+						request_summary_id = {$request_id}";
 
 	$ci->db_spare_parts->query($update_sql);
 	

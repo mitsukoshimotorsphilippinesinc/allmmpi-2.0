@@ -63,28 +63,31 @@ else
 			</h4></div>
 		</div>
 		
-		<?php
-		if(!$isAdd) {
-			if ($repair_summary_details->branch_id <> 0) {
-		?>					
-				<?= form_checkbox('is_branch', 'is_branch', TRUE, 'id="is_branch" disabled="disabled"') ?> <strong>Is Branch Repair?</strong>
-			<?php 
-			} else { 
-			?>
-				<?= form_checkbox('is_branch', 'is_branch', FALSE, 'id="is_branch" disabled="disabled"') ?> <strong>Is Branch Repair?</strong>
-		<?php 
-			}
-		} else { 
-		?>
-			<?= form_checkbox('is_branch', 'is_branch', FALSE, 'id="is_branch"') ?> <strong>Is Branch Repair?</strong>
-		<?php 
-		} 
-		?>
-
-		<br/><br/>
+		
 
 		<div class="row-fluid">
 			<div class="span6">
+
+				<?php
+				if(!$isAdd) {
+					if ($repair_summary_details->branch_id <> 0) {
+				?>					
+						<?= form_checkbox('is_branch', 'is_branch', TRUE, 'id="is_branch" disabled="disabled"') ?> <strong>Is Branch Repair?</strong>
+					<?php 
+					} else { 
+					?>
+						<?= form_checkbox('is_branch', 'is_branch', FALSE, 'id="is_branch" disabled="disabled"') ?> <strong>Is Branch Repair?</strong>
+				<?php 
+					}
+				} else { 
+				?>
+					<?= form_checkbox('is_branch', 'is_branch', FALSE, 'id="is_branch"') ?> <strong>Is Branch Repair?</strong>
+				<?php 
+				} 
+				?>
+
+				<br/><br/>
+
 				<label><strong>Requester:</strong></label>
 				<br/>
 				<?php if(!$isAdd): ?>
@@ -132,16 +135,15 @@ else
 			</div>
 			<div class="span5">
 
-				<label style=""><strong>TR Number (In):</strong></label>
+				<label style=""><strong>Transaction Type:</strong></label>
+				<br/>
+				<?php 
+				$qty_options = array("head_office"=>"Via Head Office", "branch"=>"Within Branch");
+				echo form_dropdown('transaction_type', $qty_options, NULL, 'id="transaction_type"');
+				?>
+				<br/>				
 				<br/>
 
-				<?php if(!$isAdd): ?>
-				<input name="tr_number_in" id="tr_number_in" class="" placeholder="TR Number (IN)" value="<?= $repair_summary_details->tr_number_in ?>" />
-				<?php elseif($isAdd): ?>
-				<input name="tr_number_in" id="tr_number_in" class="" placeholder="Enter TR Number (IN)" />
-				<?php endif; ?>
-
-				<br/><br/>
 				<div class="row-fluid">					
 					<div class="control-group <?= $this->form_validation->error_class('remarks') ?>">
 						<label class="control-label" for="remarks"><strong>Reported Concern:</strong></label>
@@ -156,14 +158,27 @@ else
 						</div>
 					</div>					
 				</div>
-
-				<div class="row-fluid">
-					<label class="control-label" for="remarks"><strong>Date Received:</strong></label>
+				<br/>
+				
+				<div id="via_ho_fields">
+					<label style=""><strong>TR Number (In):</strong></label>
 					<br/>
-					<input type="text" class="input-medium" id="date_received" name='date_received' readonly='readonly' style='cursor:pointer;' />
-					<span id='date_received_icon' class="add-on" style='cursor:pointer;'><i class="icon-calendar"></i></span>
-				</div>
 
+					<?php if(!$isAdd): ?>
+					<input name="tr_number_in" id="tr_number_in" class="" placeholder="TR Number (IN)" value="<?= $repair_summary_details->tr_number_in ?>" />
+					<?php elseif($isAdd): ?>
+					<input name="tr_number_in" id="tr_number_in" class="" placeholder="Enter TR Number (IN)" />
+					<?php endif; ?>
+
+					<br/><br/>
+
+					<div class="row-fluid">
+						<label class="control-label" for="remarks"><strong>Date Received:</strong></label>
+						<br/>
+						<input type="text" class="input-medium" id="date_received" name='date_received' readonly='readonly' style='cursor:pointer;' />
+						<span id='date_received_icon' class="add-on" style='cursor:pointer;'><i class="icon-calendar"></i></span>
+					</div>
+				</div>
 			</div>
 		</div>
 		
@@ -511,7 +526,7 @@ else
 	
 	$('#clear_requester').click(function(){
 
-		alert($("#date_received").val());
+		//alert($("#date_received").val());
 
 		$('#requester_details').html('');
 		$('#id_number').val('');
@@ -740,6 +755,14 @@ else
 	$(".add-close").live('click',function(){
 		window.location.href = '/information_technology/repairs/listing';
 		return false;
-	})
+	});
+
+	$("#transaction_type").live('click',function(){
+		if ($(this).val() == "head_office") {
+			$("#via_ho_fields").show();
+		} else {
+			$("#via_ho_fields").hide();
+		}
+	});
 	
 </script>
