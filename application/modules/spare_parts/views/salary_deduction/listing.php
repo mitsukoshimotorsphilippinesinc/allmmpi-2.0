@@ -167,7 +167,7 @@
 				}
 
 				if ($t->status == 'COMPLETED') {
-					if (($t->mtr_number == 0) || ($t->mtr_number == NULL)) {
+					if (($t->cross_reference_number == 0) || ($t->cross_reference_number == NULL)) {
 						echo "<a class='btn btn-small btn-primary assign-mtr' data='assign mtr' title='Assign MTR Number'><i class='icon-white icon-pencil'></i></a>
 								<a class='btn btn-small btn-primary process-btn' data='cancel completed' title='Cancel Override'><i class='icon-white icon-remove'></i></a>";
 					} else {

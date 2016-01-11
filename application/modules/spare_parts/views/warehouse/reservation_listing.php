@@ -170,15 +170,32 @@
 							},
 							'Proceed' : function() {
 
-								$("#error-runner").hide();
+								if (process_action == "assign_runner") {								
+
+									$("#error-runner").hide();
 									
-								if ($("#runner_name").val() == 0) {
-									$("#error-runner").show();
-									return;
-								}
+									if ($("#runner_name").val() == 0) {
+										$("#error-runner").show();
+										return;
+									}
 
-								$("#error-reasonremarks").hide();
+									$("#error-reasonremarks").hide();
+								}	
+	
+								var _trNumber = 0;
 
+								if (process_action == "set_completed") {
+
+									$("#error-tr-number").hide();
+
+									if (($.trim($("#tr_number").val()) == "")) {
+										$("#error-tr-number").show();
+										return;
+									} else {
+										_trNumber = $("#tr_number").val();
+									}
+								} 
+								
 								// ajax request
 								b.request({
 									url : '/spare_parts/warehouse/proceed_request',
@@ -186,13 +203,15 @@
 										'request_summary_id' : request_summary_id,
 										'request_code' : request_code,
 										'process_action' : process_action,
-										'runner_id' : $("#runner_name").val(),										
+										'runner_id' : $("#runner_name").val(),
+										'tr_number' : _trNumber,
 									},
 									on_success : function(data) {
 										
 										if (data.status == "1")	{
-											approveRequestModal.hide();
 											
+											approveRequestModal.hide();
+										
 											// show add form modal					
 											proceedApproveRequestModal = b.modal.new({
 												title: data.data.title,
@@ -207,7 +226,6 @@
 												}
 											});
 											proceedApproveRequestModal.show();
-
 											
 										} else {
 											// show add form modal
@@ -229,6 +247,17 @@
 						}
 					});
 					approveRequestModal.show();
+
+					$('#tr_number').keypress(function (e) {						
+						if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+      		         		return false;
+    					}
+
+    					// other method
+						//if (this.value != this.value.replace(/[^0-9\.]/g, '')) { 
+    					//	this.value = this.value.replace(/[^0-9\.]/g,'');
+    					//}	
+					});
 					
 				} else {
 					// show add form modal					

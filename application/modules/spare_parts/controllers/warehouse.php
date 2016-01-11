@@ -144,7 +144,10 @@ class Warehouse extends Admin_Controller {
 		
 		} else if ($process_action == "set_completed") {
 
-			$html = "<p>You are about to set this request with Request Code <strong>{$request_code}</strong> as COMPLETED.</p><p>Are you sure you want to continue?</p>";
+			$html = "<p>You are about to set this request with Request Code <strong>{$request_code}</strong> as COMPLETED.</p>
+					<p><strong>TR NUMBER:</strong> <input id='tr_number' style='margin-top:5px' placeholder='TR Number Here...'/></p>
+					<span id='error-tr-number' style='color:red;display:none;'>TR Number is required.</span>
+					<p>Are you sure you want to continue?</p>";
 
 			$title = "Set As Completed :: Process Request";
 		
@@ -165,6 +168,7 @@ class Warehouse extends Admin_Controller {
 		$request_code = $this->input->post("request_code");
 		$process_action = $this->input->post("process_action");
 		$runner_id = $this->input->post("runner_id");
+		$tr_number = $this->input->post("tr_number");
 
 		$current_datetime = date("Y-m-d H:i:s");
 
@@ -202,21 +206,29 @@ class Warehouse extends Admin_Controller {
 			
 			$data = array(
 					"status" => 'COMPLETED',
-					"update_timestamp" => $current_datetime
+					"update_timestamp" => $current_datetime,
+					"tr_number" => $tr_number,
 				);
 
 			$where = "transaction_number = '{$request_code}'";
-
 			$this->spare_parts_model->update_warehouse_reservation($data, $where);
 
-			// insert to is_warehouse_transaction
-			$data = array(					
-					"status" => 'COMPLETED'
-				);	
+			$data = array(
+					"status" => 'COMPLETED',
+					"update_timestamp" => $current_datetime,
+				);
+
+			$where = "request_summary_id = '{$request_summary_id}'";
+			$this->spare_parts_model->update_request_summary($data, $where);
+
+			$data = array(
+					"reference_number" => $tr_number,
+					"status" => 'COMPLETED',
+				);
 
 			$where_data = array(
 					"warehouse_id" => 1, // DEFAULT MUNA
-					"warehouse_reservation_id" => $warehouse_reservation_details->warehouse_reservation_id,
+					"warehouse_reservation_id" => $warehouse_reservation_details->warehouse_reservation_id,					
 				);
 
 			$this->spare_parts_model->update_warehouse_transaction($data, $where_data);
@@ -228,6 +240,8 @@ class Warehouse extends Admin_Controller {
 			$title = "Set As Completed :: Process Request";
 
 		} else {
+			// considered as cancelled
+			// TODO: CANCELLED
 
 		}
 

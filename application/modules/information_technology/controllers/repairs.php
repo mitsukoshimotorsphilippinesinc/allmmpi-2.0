@@ -162,7 +162,7 @@ class Repairs extends Admin_Controller {
 			$this->template->department_details = $department_details;
 			$this->template->position_details = $position_details;
 
-			// get request items			
+			/*// get request items			
 			$where = "status NOT IN ('CANCELLED', 'DELETED') AND request_summary_id = " . $repair_summary_id;			
 			$repair_summary_detail_details = $this->spare_parts_model->get_request_detail($where);
 
@@ -191,18 +191,18 @@ class Repairs extends Admin_Controller {
 
 			}
 
-			$this->template->json_items = json_encode($json_items);
+			$this->template->json_items = json_encode($json_items);*/
 
 		}
 
 
-		$items = $this->spare_parts_model->get_item(null,null,"sku ASC");
+		/*$items = $this->spare_parts_model->get_item(null,null,"sku ASC");*/
 		$items_array = array();
 		
-		foreach($items as $i)
-		{
-			$items_array[$i->item_id] = $i;
-		}
+		//foreach($items as $i)
+		//{
+		//	$items_array[$i->item_id] = $i;
+		//}
 
 		//$this->template->return_url = $return_url;
 		$this->template->items = $items_array;
@@ -220,6 +220,7 @@ class Repairs extends Admin_Controller {
 		$description = trim($this->input->post("description"));
 		$peripherals = trim($this->input->post("peripherals"));
 		$requester_id = trim($this->input->post("requester_id"));
+		$repair_status = abs($this->input->post("repair_status"));
 		$reported_concern = trim($this->input->post("reported_concern"));
 		$tr_number_in = trim($this->input->post("tr_number_in"));
 		$requester_type = trim($this->input->post("requester_type"));
@@ -342,7 +343,19 @@ class Repairs extends Admin_Controller {
 				'quantity' => $quantity + 1,
 			);
 	
-		$this->information_technology_model->insert_repair_detail($data_insert);		
+		$this->information_technology_model->insert_repair_detail($data_insert);	
+
+		$insert_id = $this->information_technology_model->insert_id();
+
+		// insert initial remark
+		 $data_remark = array(
+				'repair_detail_id' => $insert_id,
+				'repair_status_id' => $repair_status,				
+				'remarks' => $reported_concern,
+				'created_by' => $this->user->id_number,
+			);	
+
+		$this->information_technology_model->insert_repair_remark($data_remark);	
 
 		// get all details
 		$where = "repair_summary_id = '{$active_repair_summary_id}'";
@@ -399,11 +412,30 @@ class Repairs extends Admin_Controller {
 		$repair_status_id = $this->input->post("repair_status_id");
 		$remarks = $this->input->post("remarks");
 		$repair_detail_id = $this->input->post("repair_detail_id");
+		$tr_number_in = $this->input->post("tr_number_in");
 		$tr_number_out = $this->input->post("tr_number_out");
+		$po_price = $this->input->post("po_price");
+		$approval_number = $this->input->post("approval_number");
+		$authority_number = $this->input->post("authority_number");
+		$proposed_price = $this->input->post("proposed_price");
+		$is_branch_expense = $this->input->post("is_branch_expense");
 
-		if ($repair_status_id == 9) {
+		if ($repair_status_id == 2) {
+			// for delivery
+			$remarks = $remarks . " <strong>#TR_NUMBER_IN: " . $tr_number_in . "</strong>";
+		} else if ($repair_status_id == 10) {
 			// for delivery
 			$remarks = $remarks . " <strong>#TR_NUMBER_OUT: " . $tr_number_out . "</strong>";
+		} else if ($repair_status_id == 7) {
+			// for delivery
+			$remarks = $remarks . " <br/><strong>
+										#APPROVED_AMOUNT: " . $po_price . "<br/>
+										#APPROVAL_NUMBER: " . $approval_number . "<br/>
+										#AUTHORITY_NUMBER: " . $authority_number . "
+									</strong>";
+		} else if ($repair_status_id == 6) {
+			// for delivery
+			$remarks = $remarks . " <strong>#PROPOSED_AMOUNT: " . $proposed_price . "</strong>";
 		} 
 
 		$data = array(
@@ -411,6 +443,9 @@ class Repairs extends Admin_Controller {
 				"remarks" => $remarks,
 				"repair_status_id" => $repair_status_id,
 				"created_by" => $this->user->id_number,			
+				"proposed_amount" => $proposed_price,
+				"approved_amount" => $po_price,
+				"is_branch_expense" => $is_branch_expense,
 			);
 
 		$this->information_technology_model->insert_repair_remark($data);
@@ -440,11 +475,11 @@ class Repairs extends Admin_Controller {
 		$total_detail_count = $this->information_technology_model->get_repair_detail_count($where);
 
 		// completed
-		$where = "repair_summary_id = {$repair_detail_details->repair_summary_id} AND current_status_id = 8";
+		$where = "repair_summary_id = {$repair_detail_details->repair_summary_id} AND current_status_id = 9";
 		$total_completed_count = $this->information_technology_model->get_repair_detail_count($where);
 
 		// received from h.o.
-		$where = "repair_summary_id = {$repair_detail_details->repair_summary_id} AND current_status_id = 11";
+		$where = "repair_summary_id = {$repair_detail_details->repair_summary_id} AND current_status_id = 14";
 		$total_closed_count = $this->information_technology_model->get_repair_detail_count($where);
 
 		$overall_status =  "OPEN";
@@ -471,10 +506,12 @@ class Repairs extends Admin_Controller {
 			$this->information_technology_model->update_repair_summary($data, $where);
 		}
 
+		$repair_summary = $this->information_technology_model->get_repair_summary_by_id($repair_detail_details->repair_summary_id);
+
 		$html = "<p>Remarks posted successfully!</p>";
 		$title = "Add Remarks :: Repairs";
 
-		$this->return_json("1", "Remarks posted sucessfully", array("html" => $html, "title" => $title, "remarks_html" => $remarks_html, "overall_status" => $overall_status));
+		$this->return_json("1", "Remarks posted sucessfully", array("html" => $html, "title" => $title, "remarks_html" => $remarks_html, "overall_status" => $repair_summary->overall_status));
 		return;
 
 	}
@@ -488,7 +525,7 @@ class Repairs extends Admin_Controller {
 		//logging of action
 		$details_before = array('id' => $repair_detail_id, 'details' => array("repair_details"=>$repair_detail_details));
 		$details_after = array('id' => $repair_detail_id, 'details' => array());		
-		log_to_db("information_techmology", $this->user->id_number, "REPAIRS-DEALERS", "rs_repair_detail", "DELETE", $details_before, $details_after);
+		log_to_db("information_technology", $this->user->id_number, "REPAIRS-DEALERS", "rs_repair_detail", "DELETE", $details_before, $details_after);
 
 		$this->information_technology_model->delete_repair_detail($repair_detail_id);		
 
@@ -516,8 +553,408 @@ class Repairs extends Admin_Controller {
 
 		$html_items = $this->load->view("repairs/item_details_view", $data, true);
 
-		$this->return_json("1", "Item Successfully Removed", array("html_items" => $html_items));
+		$this->return_json("1", "Items", array("html_items" => $html_items));
 		return;
+	}
+
+	public function reports()
+	{
+		$this->generate_report();
+	}	
+
+	public function generate_report()
+	{
+		
+		$from_date = trim($this->input->get_post('from_date'));
+	    $to_date = trim($this->input->get_post('to_date'));
+		$filter = trim($this->input->get_post('filter'));
+		$branch_id = trim($this->input->get_post('branch_id'));
+		
+	    $export = $this->input->get_post('export');
+	    $where = "";
+		$where_conjuction = "";
+	    if (empty($from_date)) $from_date = date('Y-m-d');
+	    if (empty($to_date)) $to_date = date('Y-m-d');
+    
+	    //date set
+	    $from_dt = $from_date;
+	    $to_dt = $to_date;
+	    $from_single = "";
+	    $from_t = strtotime($from_date);
+	    $to_t = strtotime($to_date);
+	    if ($from_t !== false) $from_dt = date('Y-m-d', $from_t); 
+	    if ($to_t !== false) $to_dt = date('Y-m-d', $to_t); 
+       
+	    if ($from_t !== false && $to_t !== false)
+	      $where .= "WHERE (DATE(c.insert_timestamp) BETWEEN '{$from_dt}' AND '{$to_dt}') ";
+	    else if ($from_t !== false && $to_t === false)
+	      $where .= "WHERE c.insert_timestamp >= '{$from_dt}'";
+	    else if ($from_t === false && $to_t !== false)
+	      $where .= "WHERE c.insert_timestamp <= '{$to_dt}'";
+	
+			
+	  	if ($branch_id == -1) {
+	  		$where .= " AND branch_id = 0";
+	  	} else if ($branch_id > 0){
+	  		$where .= " AND branch_id = '{$branch_id}'";
+	  	}
+
+
+	    $data = new ArrayClass(array(
+	      'from_date' => $from_date,
+	      'to_date' => $to_date,
+	      'where' => $where,
+	    ));
+    
+	    // check if to export
+	    if ($export == 'excel')
+	    {
+	      $this->_export($data);
+	    }
+	    else
+	    {
+			$display_data = "";
+			if($filter == 'yes') {
+	      		$display_data = $this->repair_result_view($data);														
+			}
+
+			$this->template->search_url = strlen($_SERVER['QUERY_STRING']) > 0 ? '?'.$_SERVER['QUERY_STRING'] : '';
+	      	$this->template->from_date = $from_date;
+	      	$this->template->to_date = $to_date;
+	      	$this->template->display_data = $display_data;			
+	      	$this->template->view('repairs/reports/dashboard');
+	    }
+	}
+
+	public function repair_result_view($data)
+	  {
+	    $from_date = slugify($data->from_date);
+	    $to_date = slugify($data->to_date);
+	    $where = $data->where;
+	    $current_date = date('Y-m-d');    
+
+	    $sql = "SELECT 
+					a.repair_code,
+					a.branch_id,
+					a.id_number,
+					a.received_by,
+					a.overall_status,
+					a.date_received,
+					b.repair_hardware_id,
+					b.quantity,
+					b.description,
+					b.peripherals,
+					a.tr_number_in,
+					b.tr_number_out,
+					c.repair_status_id,
+					c.proposed_amount,
+					c.approved_amount,
+					c.is_branch_expense,
+					c.remarks,
+					c.created_by,
+					c.insert_timestamp
+				FROM 
+					rs_repair_summary a
+				LEFT JOIN 
+					rs_repair_detail b on a.repair_summary_id = b.repair_summary_id
+				LEFT JOIN 
+					rs_repair_remark c on c.repair_detail_id = b.repair_detail_id
+				{$where}	
+				ORDER BY 
+					a.repair_code, b.repair_hardware_id, c.insert_timestamp";
+
+		$query = $this->db_information_technology->query($sql);
+		$report_result = $query->result();		
+
+
+		$total_records = count($report_result);
+
+		$config = array(
+			'pagination_url' => '/information_technology/repairs/generate_report',
+			'total_items' => $total_records,
+			'per_page' => 30,
+			'uri_segment' => 4,
+		);
+		$this->pager->set_config($config);
+		
+		//$html = "";
+		$html = "<table class='table table-bordered table-condensed'>
+			<thead>
+				<th>Repair Code</th>
+				<th>Requested_By</th>
+				<th>Overall Status</th>
+				<th>Date Received</th>
+				<th>TR Number (IN)</th>	
+				<th>Details</th>
+				<th>Insert Timestamp</th>
+			</thead>
+			<tbody>";
+		
+
+		//if(empty($new_members))
+		//{
+		//	$html .= "<tr><td colspan='7' style='text-align:center'>No records found.</td></tr>";
+		//}
+		//foreach($new_members as $m)
+		/*{
+			$name = $m->first_name . ' ' . $m->middle_name . ' ' . $m->last_name;
+			$email = ($m->email == NULL ? 'None' : $m->email);
+			$rfid = ($m->rf_id == NULL ? 'None' : $m->rf_id);
+			$rfid_verified = ($m->is_rf_id_verified == 0 ? 'No' : 'Yes');
+			$paycard = ($m->metrobank_paycard_number == NULL ? 'None' : $m->metrobank_paycard_number);
+			$paycard_verified = ($m->is_paycard_verified == 0 ? 'No' : 'Yes');
+			
+			$html .= "<tr>
+				<td>{$name}</td>
+				<td>{$email}</td>
+				<td>{$rfid}</td>
+				<td>{$rfid_verified}</td>
+				<td>{$paycard}</td>
+				<td>{$paycard_verified}</td>
+				<td>{$m->insert_timestamp}</td>
+			</tr>";
+		}*/
+
+	    $html .= "</tbody></table>";
+	    $html .= $this->pager->create_links(strlen($_SERVER['QUERY_STRING']) > 0 ? '?'.$_SERVER['QUERY_STRING'] : '');
+        
+	    return $html; 
+	  }
+
+
+	 public function _export($data)
+	  {
+		$from_date = slugify($data->from_date);
+	    $to_date = slugify($data->to_date);
+	    $where = $data->where;
+	    $current_date = date('Y-m-d');
+    
+	    $current_year = date('Y');
+	    $current_month = date('m');
+	    $current_day = date('d');
+	    $date = $current_month . '-' . $current_day . '-' . $current_year;
+	    
+	    $this->load->library('PHPExcel');
+	    $this->load->library('PHPExcel/IOFactory');
+	    $objPHPExcel = new PHPExcel();
+	    
+	     $sql = "SELECT 
+					a.repair_code,
+					a.branch_id,
+					a.id_number,
+					a.received_by,
+					a.overall_status,
+					a.date_received,
+					b.repair_detail_id,
+					b.repair_hardware_id,
+					b.quantity,
+					b.description,
+					b.peripherals,
+					a.tr_number_in,
+					b.tr_number_out,
+					c.repair_status_id,
+					c.proposed_amount,
+					c.approved_amount,
+					c.is_branch_expense,
+					c.remarks,
+					c.created_by,
+					c.insert_timestamp
+				FROM 
+					rs_repair_summary a
+				LEFT JOIN 
+					rs_repair_detail b on a.repair_summary_id = b.repair_summary_id
+				LEFT JOIN 
+					rs_repair_remark c on c.repair_detail_id = b.repair_detail_id
+				{$where}	
+				ORDER BY 
+					a.repair_code, b.repair_hardware_id, c.insert_timestamp";
+
+		$query = $this->db_information_technology->query($sql);
+		$report_result = $query->result();		
+
+	    if (!empty($report_result))
+	    {
+	      	$objPHPExcel->getProperties()->setTitle("export")->setDescription("none");
+	      	$start_column_num = 5;
+      	
+	      	$objPHPExcel->setActiveSheetIndex(0);
+	      	$objPHPExcel->getActiveSheet()->setTitle("I.T. REPAIRS");
+      
+	      	// auto resize columns
+	      	$objPHPExcel->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+	      	$objPHPExcel->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+	      	$objPHPExcel->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
+			$objPHPExcel->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
+			$objPHPExcel->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
+			$objPHPExcel->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
+			$objPHPExcel->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
+			$objPHPExcel->getActiveSheet()->getColumnDimension('H')->setAutoSize(true);
+			$objPHPExcel->getActiveSheet()->getColumnDimension('I')->setAutoSize(true);
+			$objPHPExcel->getActiveSheet()->getColumnDimension('J')->setAutoSize(true);
+			$objPHPExcel->getActiveSheet()->getColumnDimension('K')->setAutoSize(true);
+			$objPHPExcel->getActiveSheet()->getColumnDimension('L')->setAutoSize(true);
+			$objPHPExcel->getActiveSheet()->getColumnDimension('M')->setAutoSize(true);
+			$objPHPExcel->getActiveSheet()->getColumnDimension('N')->setAutoSize(true);
+			$objPHPExcel->getActiveSheet()->getColumnDimension('O')->setAutoSize(true);
+			$objPHPExcel->getActiveSheet()->getColumnDimension('P')->setAutoSize(true);
+			$objPHPExcel->getActiveSheet()->getColumnDimension('Q')->setAutoSize(true);			
+			$objPHPExcel->getActiveSheet()->getColumnDimension('R')->setAutoSize(true);			
+      
+	      	// set column header to bold    
+	      	$objPHPExcel->getActiveSheet()->getStyle('A' . $start_column_num . ':R' . $start_column_num)->getFont()->setBold(true);
+        
+	      	//center column names
+	      	$objPHPExcel->getActiveSheet()->getStyle('A' . $start_column_num . ':R' . $start_column_num)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+      
+	      	$header = "MITSUKOSHI MOTORS PHILIPPINES INC.";
+			$header2 = "I.T. Repairs";
+			$header3 = "From " . $from_date . " to " . $to_date;
+			$print_date = date('M d, Y H:i:s');
+			$print_date_header = " (Printed On: {$print_date})";
+			$header3 .= $print_date_header;
+	      	$objPHPExcel->getActiveSheet()->getStyle('A' . 1)->getFont()->setBold(true);
+	      	$objPHPExcel->getActiveSheet()->getStyle('A' . 1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		    $objPHPExcel->getActiveSheet()->mergeCells('A1:R1');
+		    $objPHPExcel->getActiveSheet()->setCellValue('A' . 1, $header);
+			
+			$objPHPExcel->getActiveSheet()->getStyle('A' . 2)->getFont()->setBold(true);
+	      	$objPHPExcel->getActiveSheet()->getStyle('A' . 2)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		    $objPHPExcel->getActiveSheet()->mergeCells('A2:R2');
+		    $objPHPExcel->getActiveSheet()->setCellValue('A' . 2, $header2);
+		
+			$objPHPExcel->getActiveSheet()->getStyle('A' . 3)->getFont()->setBold(true);
+	      	$objPHPExcel->getActiveSheet()->getStyle('A' . 3)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		    $objPHPExcel->getActiveSheet()->mergeCells('A3:R3');
+		    $objPHPExcel->getActiveSheet()->setCellValue('A' . 3, $header3);
+        
+	      	//set column names
+	      	$objPHPExcel->getActiveSheet()->setCellValue('A' . $start_column_num, 'REPAIR CODE');
+	      	$objPHPExcel->getActiveSheet()->setCellValue('B' . $start_column_num, 'REQUESTED BY');
+	      	$objPHPExcel->getActiveSheet()->setCellValue('C' . $start_column_num, 'OVERALL STATUS');
+			$objPHPExcel->getActiveSheet()->setCellValue('D' . $start_column_num, 'RECEIVED BY');
+			$objPHPExcel->getActiveSheet()->setCellValue('E' . $start_column_num, 'DATE RECEIVED');
+			$objPHPExcel->getActiveSheet()->setCellValue('F' . $start_column_num, 'HARDWARE NAME');
+			$objPHPExcel->getActiveSheet()->setCellValue('G' . $start_column_num, 'QUANTITY');
+			$objPHPExcel->getActiveSheet()->setCellValue('H' . $start_column_num, 'DESCRIPTION');
+			$objPHPExcel->getActiveSheet()->setCellValue('I' . $start_column_num, 'PERIPHERALS');
+			$objPHPExcel->getActiveSheet()->setCellValue('J' . $start_column_num, 'TR NUMBER (IN)');
+			$objPHPExcel->getActiveSheet()->setCellValue('K' . $start_column_num, 'TR NUMBER (OUT)');
+			$objPHPExcel->getActiveSheet()->setCellValue('L' . $start_column_num, 'STATUS');
+			$objPHPExcel->getActiveSheet()->setCellValue('M' . $start_column_num, 'PROPOSED AMOUNT');
+			$objPHPExcel->getActiveSheet()->setCellValue('N' . $start_column_num, 'APPROVED AMOUNT');
+			$objPHPExcel->getActiveSheet()->setCellValue('O' . $start_column_num, 'IS BRANCH EXPENSE');
+			$objPHPExcel->getActiveSheet()->setCellValue('P' . $start_column_num, 'REMARKS');
+			$objPHPExcel->getActiveSheet()->setCellValue('Q' . $start_column_num, 'CREATED BY');
+			$objPHPExcel->getActiveSheet()->setCellValue('R' . $start_column_num, 'INSERT TIMESTAMP');
+        
+	      	$objPHPExcel->getActiveSheet()->freezePane('A5');
+      
+	      	$row = $start_column_num + 1;	      	
+	      	$current_repair_code = "";	      	
+	      	$switch = 0;
+	      	$cell_bgcolor = "FFFF99";
+	      	$is_bold = false;
+	      	$last_detail_id = "";
+
+	      	foreach ($report_result as $m)
+	      	{	        	
+
+	      		if ($m->branch_id == 0) {
+	      			$requested_by_details = $this->human_relations_model->get_employment_information_view_by_id($m->id_number);
+	      			$requested_by = $requested_by_details->complete_name;
+	      		} else {
+	      			$requested_by_details = $this->human_relations_model->get_branch_by_id($m->branch_id);
+	      			$requested_by = $requested_by_details->branch_name;
+	      		}	      	
+
+	        	// received_by
+	      		$received_by_details = $this->human_relations_model->get_employment_information_view_by_id($m->received_by);
+	      		
+	      		// repair_hardware
+	      		$repair_hardware_details = $this->information_technology_model->get_repair_hardware_by_id($m->repair_hardware_id);
+
+	        	// repair_status
+	      		$repair_status_details = $this->information_technology_model->get_repair_status_by_id($m->repair_status_id);
+
+	        	// is_branch_expense
+	      		if ($m->is_branch_expense == 1)
+	      			$is_branch_expense = "YES";
+	      		else
+	      			$is_branch_expense = "NO";
+
+	      		// created_by
+	      		$created_by_details = $this->human_relations_model->get_employment_information_view_by_id($m->created_by);
+
+
+	      		if ($current_repair_code <> $m->repair_code) {
+	      			$switch = 1;
+	      			if ($cell_bgcolor == "FFFF99") {
+	      				$cell_bgcolor = "FFFFFF";	      				
+	      			} else 	{
+	      				$cell_bgcolor = "FFFF99";	      				
+	      			}	      			
+	      		} else {
+	      			$switch = 0;	      			      			
+	      		}
+
+	      		if ($last_detail_id <> $m->repair_detail_id) {
+	      			$is_bold = true;
+	      		} else {
+	      			$is_bold = false;
+	      		}
+
+				$last_detail_id = $m->repair_detail_id;
+	      		$current_repair_code = $m->repair_code;
+
+	        	$objPHPExcel->getActiveSheet()->getStyle('A' . $row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+	        	$objPHPExcel->getActiveSheet()->getStyle('B' . $row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+	        	$objPHPExcel->getActiveSheet()->getStyle('C' . $row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+				
+				$objPHPExcel->getActiveSheet()
+						    ->getStyle('A' . $row . ':R' . $row)
+						    ->getFill()
+						    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+						    ->getStartColor()
+						    ->setARGB($cell_bgcolor);
+
+				$objPHPExcel->getActiveSheet()->getStyle('A' . $row . ':R' . $row)->getFont()->setBold($is_bold);		    
+
+				$objPHPExcel->getActiveSheet()->setCellValue('A' . $row, $m->repair_code);
+				$objPHPExcel->getActiveSheet()->setCellValue('B' . $row, $requested_by);
+				$objPHPExcel->getActiveSheet()->setCellValue('C' . $row, $m->overall_status);
+				$objPHPExcel->getActiveSheet()->setCellValue('D' . $row, $received_by_details->complete_name);
+				$objPHPExcel->getActiveSheet()->setCellValue('E' . $row, $m->date_received);
+				$objPHPExcel->getActiveSheet()->setCellValueExplicit('F'. $row, $repair_hardware_details->repair_hardware_name, PHPExcel_Cell_DataType::TYPE_STRING);
+				$objPHPExcel->getActiveSheet()->setCellValue('G' . $row, $m->quantity);
+				$objPHPExcel->getActiveSheet()->setCellValue('H' . $row, $m->description);
+				$objPHPExcel->getActiveSheet()->setCellValue('I' . $row, $m->peripherals);
+				$objPHPExcel->getActiveSheet()->setCellValue('J' . $row, $m->tr_number_in);
+				$objPHPExcel->getActiveSheet()->setCellValue('K' . $row, $m->tr_number_out);
+				$objPHPExcel->getActiveSheet()->setCellValue('L' . $row, $repair_status_details->repair_status);
+				$objPHPExcel->getActiveSheet()->setCellValue('M' . $row, $m->proposed_amount);
+				$objPHPExcel->getActiveSheet()->setCellValue('N' . $row, $m->approved_amount);
+				$objPHPExcel->getActiveSheet()->setCellValue('O' . $row, $is_branch_expense);
+				$objPHPExcel->getActiveSheet()->setCellValue('P' . $row, $m->remarks);
+				$objPHPExcel->getActiveSheet()->setCellValue('Q' . $row, $created_by_details->complete_name);
+				$objPHPExcel->getActiveSheet()->setCellValue('R' . $row, $m->insert_timestamp);
+
+	        	$row++;
+	      	}
+	    }else {
+    
+	    }
+
+  		$objPHPExcel->setActiveSheetIndex(0);   
+		if($from_date == $to_date)
+			$filename_date = $from_date;
+		else
+	    	$filename_date = $from_date . '_to_' . $to_date;
+    
+	    header('Content-Type: application/vnd.ms-excel');
+	    header('Content-Disposition: attachment;filename="it_repairs_'.$filename_date.'.xls"');
+	    header('Cache-Control: max-age=0');   
+	    $objWriter = IOFactory::createWriter($objPHPExcel, 'Excel5');
+	    $objWriter->save('php://output');   
 	}
 
 }

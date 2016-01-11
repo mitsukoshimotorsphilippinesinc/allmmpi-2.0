@@ -170,7 +170,7 @@
 				<?php 
 				if ($status_class == 'open') {
 				?>
-				<a href='/information_technology/repairs/edit/<?= $t->repair_summary_id ?>' class='btn btn-small btn-warning' data='edit' title='Edit'><i class='icon-white icon-file'></i></a>
+				<a href='/information_technology/repairs/edit/<?= $t->repair_summary_id ?>' class='btn btn-small btn-primary' data='edit' title='Edit'><i class='icon-white icon-pencil'></i></a>
 				<!--a href='/information_technology/repairs/delete/<?= $t->repair_summary_id ?>' class='btn btn-small btn-danger' data='delete' title='Delete'><i class='icon-white icon-remove'></i></a-->
 				<?php
 				}

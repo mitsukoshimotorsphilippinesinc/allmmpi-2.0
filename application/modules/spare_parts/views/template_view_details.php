@@ -19,7 +19,7 @@
 					if ($module_code == 'DL') {
 						$requestor_details = $this->spare_parts_model->get_dealer_by_id($segment_request_summary->dealer_id);
 					} else {	
-						$requestor_details = $this->human_relations_model->get_employment_information_by_id($segment_request_summary->id_number);
+						$requestor_details = $this->human_relations_model->get_employment_information_view_by_id($segment_request_summary->id_number);
 					}
 
 					if (count($requestor_details) == 0) {

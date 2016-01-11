@@ -63,28 +63,31 @@ else
 			</h4></div>
 		</div>
 		
-		<?php
-		if(!$isAdd) {
-			if ($repair_summary_details->branch_id <> 0) {
-		?>					
-				<?= form_checkbox('is_branch', 'is_branch', TRUE, 'id="is_branch" disabled="disabled"') ?> <strong>Is Branch Repair?</strong>
-			<?php 
-			} else { 
-			?>
-				<?= form_checkbox('is_branch', 'is_branch', FALSE, 'id="is_branch" disabled="disabled"') ?> <strong>Is Branch Repair?</strong>
-		<?php 
-			}
-		} else { 
-		?>
-			<?= form_checkbox('is_branch', 'is_branch', FALSE, 'id="is_branch"') ?> <strong>Is Branch Repair?</strong>
-		<?php 
-		} 
-		?>
-
-		<br/><br/>
+		
 
 		<div class="row-fluid">
 			<div class="span6">
+
+				<?php
+				if(!$isAdd) {
+					if ($repair_summary_details->branch_id <> 0) {
+				?>					
+						<?= form_checkbox('is_branch', 'is_branch', TRUE, 'id="is_branch" disabled="disabled"') ?> <strong>Is Branch Repair?</strong>
+					<?php 
+					} else { 
+					?>
+						<?= form_checkbox('is_branch', 'is_branch', FALSE, 'id="is_branch" disabled="disabled"') ?> <strong>Is Branch Repair?</strong>
+				<?php 
+					}
+				} else { 
+				?>
+					<?= form_checkbox('is_branch', 'is_branch', FALSE, 'id="is_branch"') ?> <strong>Is Branch Repair?</strong>
+				<?php 
+				} 
+				?>
+
+				<br/><br/>
+
 				<label><strong>Requester:</strong></label>
 				<br/>
 				<?php if(!$isAdd): ?>
@@ -132,22 +135,30 @@ else
 			</div>
 			<div class="span5">
 
-				<label style=""><strong>TR Number (In):</strong></label>
+				
+				<label style=""><strong>Repair Status:</strong></label>
 				<br/>
+				<?php
+				$repair_status_options = array();
+				$repair_status_options = array('' => 'Select Status...');
 
-				<?php if(!$isAdd): ?>
-				<input name="tr_number_in" id="tr_number_in" class="" placeholder="TR Number (IN)" value="<?= $repair_summary_details->tr_number_in ?>" />
-				<?php elseif($isAdd): ?>
-				<input name="tr_number_in" id="tr_number_in" class="" placeholder="Enter TR Number (IN)" />
-				<?php endif; ?>
+				$repair_status_details = $this->information_technology_model->get_repair_status();
 
-				<br/><br/>
+				foreach ($repair_status_details as $ipd) {
+				 	$repair_status_options[$ipd->repair_status_id] = $ipd->repair_status;
+				}				
+				?>
+
+				<?= form_dropdown('repair_status', $repair_status_options, set_value('repair_status'), 'id="repair_status"') ?>
+				
+				<br/>
+				<br/>
 				<div class="row-fluid">					
 					<div class="control-group <?= $this->form_validation->error_class('remarks') ?>">
-						<label class="control-label" for="remarks"><strong>Reported Concern:</strong></label>
+						<label class="control-label" for="remarks"><strong>Concern:</strong></label>
 						<div class="controls">
 							<?php if(!$isAdd): ?>
-							<textarea class='span12' rows="4" placeholder="" name="current_requester_remarks" id="reported_concern" maxlength="255" style="resize:none;"><?= $repair_summary_details->reported_concern ?></textarea>
+							<textarea class='span12' rows="4" placeholder="" name="reported_concern" id="reported_concern" maxlength="255" style="resize:none;"><?= $repair_summary_details->reported_concern ?></textarea>
 							<br/><br/>							
 							<?php elseif($isAdd): ?>
 							<textarea class='span12' rows="4" placeholder="" name="remarks" id="reported_concern" maxlength="255" style="resize:none;"></textarea>
@@ -156,14 +167,28 @@ else
 						</div>
 					</div>					
 				</div>
+				<br/>
+				
+				<div id="received_from_branch_container" style="display:none;">
+					<label style=""><strong>TR Number (In):</strong></label>
+					<br/>
+
+					<?php if(!$isAdd): ?>
+					<input name="tr_number_in" id="tr_number_in" class="" placeholder="TR Number (IN)" value="<?= $repair_summary_details->tr_number_in ?>" />
+					<?php elseif($isAdd): ?>
+					<input name="tr_number_in" id="tr_number_in" class="" placeholder="Enter TR Number (IN)" />
+					<?php endif; ?>
+
+					<br/><br/>
+				</div>	
 
 				<div class="row-fluid">
-					<label class="control-label" for="remarks"><strong>Date Received:</strong></label>
+					<label class="control-label" for="date_received"><strong>Date:</strong></label>
 					<br/>
 					<input type="text" class="input-medium" id="date_received" name='date_received' readonly='readonly' style='cursor:pointer;' />
 					<span id='date_received_icon' class="add-on" style='cursor:pointer;'><i class="icon-calendar"></i></span>
 				</div>
-
+				
 			</div>
 		</div>
 		
@@ -252,14 +277,13 @@ else
 				</p>
 			</div>
 			<h4 style="margin-bottom:5px;margin-left:10px;">List of Hardware/s</h4>
-			<table class="table inventory-order-items table-bordered table-striped">
+			<table class="table inventory-order-items table-bordered table-striped table-condensed">
 				<thead id="items_header">					
 					<tr>						
 						<th class="item">Item</th>
 						<th class="qty">Quantity</th>
 						<th class="remarks">Description / Remarks</th>
 						<th class="peripherals">Particulars</th>
-						<th></th>
 						<th></th>
 					</tr>
 				</thead>
@@ -511,7 +535,7 @@ else
 	
 	$('#clear_requester').click(function(){
 
-		alert($("#date_received").val());
+		//alert($("#date_received").val());
 
 		$('#requester_details').html('');
 		$('#id_number').val('');
@@ -620,6 +644,8 @@ else
 		} else {
 
 			var item_name = "";
+			var _tr_number_in = "";
+
 			if($('#search_item').val() == 'add[]')
 			{
 				item_name = $('input[name="new_item_name"]').val();
@@ -632,6 +658,10 @@ else
 
 			//alert($("#add_item_qty").val());
 
+			if ($("#repair_status").val() == 2) {
+				_tr_number_in = $("#tr_number_in").val();
+			} 
+
 			// ajax request
 			b.request({
 				url : '/information_technology/repairs/create_request',
@@ -641,9 +671,10 @@ else
 					'quantity' : $("#add_item_qty").val(),
 					'description' : $("#add_item_description").val(),
 					'peripherals' : $("#add_item_peripherals").val(),
+					'repair_status' : $("#repair_status").val(),
 					'reported_concern' : $("#reported_concern").val(),
 					'requester_id' : $("#search_requester").val(),
-					'tr_number_in' : $("#tr_number_in").val(),
+					'tr_number_in' : _tr_number_in,
 					'requester_type' : $("#requester_type").val(),
 					'date_received' : $("#date_received").val(),
 				},
@@ -740,6 +771,14 @@ else
 	$(".add-close").live('click',function(){
 		window.location.href = '/information_technology/repairs/listing';
 		return false;
-	})
+	});
+
+	$("#repair_status").live('click',function(){
+		if ($(this).val() == "2") {
+			$("#received_from_branch_container").show();
+		} else {
+			$("#received_from_branch_container").hide();
+		}
+	});
 	
 </script>
