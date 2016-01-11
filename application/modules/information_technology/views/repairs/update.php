@@ -65,7 +65,7 @@
 
 		var _isBranchEspense = 0;
 
-		if (_addStatusVal == 1) {
+		if (_addStatusVal == 2) {
 			var _trNumberIn = $("#add_tr_number_in_" +_repairDetailId ).val();
 
 			if ($.trim(_trNumberIn) == "") {				
@@ -74,7 +74,7 @@
 			}
 		}
 
-		if (_addStatusVal == 9) {
+		if (_addStatusVal == 10) {
 			var _trNumberOut = $("#add_tr_number_out_" +_repairDetailId ).val();
 
 			if ($.trim(_trNumberOut) == "") {				
@@ -83,7 +83,7 @@
 			}
 		}
 
-		if (_addStatusVal == 6) {
+		if (_addStatusVal == 7) {
 			var _poPrice = $("#add_po_price_" +_repairDetailId ).val();
 
 			if ($.trim(_poPrice) == "") {				
@@ -92,7 +92,7 @@
 			}
 		}
 
-		if (_addStatusVal == 5) {
+		if (_addStatusVal == 6) {
 			var _proposedPrice = $("#add_proposed_price_" +_repairDetailId ).val();
 
 			if ($.trim(_proposedPrice) == "") {				
@@ -176,7 +176,7 @@
 		$('#input_errors').html('');
 
 		$("#is_branch_expense_" + _detailId).prop('checked', false);
-		if ($(this).val() == '1') {			
+		if ($(this).val() == '2') {			
 			// RECEIVE FROM BRANCH
 			$("#add_tr_number_in_" + _detailId).show();
 			$("#add_tr_number_out_" + _detailId).hide();
@@ -189,7 +189,7 @@
 			$("#add_proposed_price_" + _detailId).hide();
 			$("#add_proposed_price_" + _detailId).val("");						
 			$('#add_remark_' + _detailId).addClass('span7').removeClass('span9');
-		} else if ($(this).val() == '9') {			
+		} else if ($(this).val() == '10') {			
 			// FOR DELIVERY
 			$("#add_tr_number_in_" + _detailId).hide();
 			$("#add_tr_number_out_" + _detailId).show();
@@ -202,7 +202,7 @@
 			$("#add_proposed_price_" + _detailId).hide();
 			$("#add_proposed_price_" + _detailId).val("");						
 			$('#add_remark_' + _detailId).addClass('span7').removeClass('span9');
-		} else if ($(this).val() == '6') {
+		} else if ($(this).val() == '7') {
 			// FOR P.O.
 			$("#add_tr_number_in_" + _detailId).hide();
 			$("#add_tr_number_out_" + _detailId).hide();
@@ -213,7 +213,7 @@
 			$("#add_proposed_price_" + _detailId).val("");
 			$("#is_branch_expense_container_" + _detailId).show();			
 			$('#add_remark_' + _detailId).addClass('span5').removeClass('span7').removeClass('span9');
-		} else if ($(this).val() == '5') {
+		} else if ($(this).val() == '6') {
 			$("#add_tr_number_in_" + _detailId).hide();
 			$("#add_tr_number_out_" + _detailId).hide();
 			$("#add_po_price_" + _detailId).hide();

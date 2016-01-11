@@ -19,10 +19,11 @@ class Information_technology_model extends Base_Model
 			'repair_status' => 'rf_repair_status',
 			'repair_remark' => 'rs_repair_remark',
 			'expense' => 'es_expense',
+			'expense_summary' => 'es_expense_summary',
+			'expense_detail' => 'es_expense_detail',
 			'expense_signatory' => 'es_expense_signatory',
 			'expense_view' => 'es_expense_view',
 		);
-
 	}
 
 	// ----------------------------------------------------
@@ -545,6 +546,157 @@ class Information_technology_model extends Base_Model
 		$query->free_result();
 		return $row->cnt;
 	}
+	// ----------------------------------------------------
+	// ====================================================
+	// rs_expense_summary
+	function get_expense_summary($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('expense_summary', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+    }
+
+	function insert_expense_summary($data) 
+	{
+		return $this->insert('expense_summary', $data);
+	}
+
+	function update_expense_summary($data, $where) 
+	{
+		return $this->update('expense_summary', $data, $where);
+	}
+
+	function delete_expense_summary($where) 
+	{
+		return $this->delete('expense_summary', $where);
+	}
+
+	function get_expense_summary_by_id($expense_summary_id) 
+	{
+		$result = $this->get_expense_summary(array('expense_summary_id' => $expense_summary_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+	
+	function get_expense_summary_by_code($expense_code) 
+	{
+		$result = $this->get_expense_summary(array('expense_code' => $expense_code));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+	
+	function get_expense_summary_count($where = null) {
+		// do a sql count instead of row count
+		$query = $this->fetch('expense_summary', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+	
+	function search_expense_summary($search, $query, $limit = null, $orderby = null, $fields = null)
+	{
+		// clear previous get request
+		$this->db->flush_cache();
+
+		$this->db->distinct();
+		$this->db->like($search,$query,'both');
+		
+		// No override function, procede with fetch
+		($fields!=null) ? $this->db->select($fields) : '';
+		($limit!=null) ? $this->db->limit($limit['rows'],$limit['offset']) : '';
+		($orderby!=null) ? $this->db->order_by($orderby) : '';
+
+		// set table to use
+		$this->db->from($this->_TABLES['expense_summary']);
+		$result = $this->db->get();
+
+		$row = $result->result();
+		$result->free_result();
+		return $row;
+	}
+	// ----------------------------------------------------
+	// ----------------------------------------------------
+	// rs_expense_detail
+	function get_expense_detail($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('expense_detail', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+    }
+
+	function insert_expense_detail($data) 
+	{
+		return $this->insert('expense_detail', $data);
+	}
+
+	function update_expense_detail($data, $where) 
+	{
+		return $this->update('expense_detail', $data, $where);
+	}
+
+	function delete_expense_detail($where) 
+	{
+		return $this->delete('expense_detail', $where);
+	}
+
+	function get_expense_detail_by_id($expense_detail_id) 
+	{
+		$result = $this->get_expense_detail(array('expense_detail_id' => $expense_detail_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+	
+	function get_expense_detail_by_expense_summary_id($expense_summary_id) 
+	{
+		$result = $this->get_salary_expense_detail(array('expense_summary_id' => $expense_summary_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+	
+	function get_expense_detail_count($where = null) {
+		// do a sql count instead of row count
+		$query = $this->fetch('expense_detail', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+	
+	function search_expense_detail($search, $query, $limit = null, $orderby = null, $fields = null)
+	{
+		// clear previous get request
+		$this->db->flush_cache();
+
+		$this->db->distinct();
+		$this->db->like($search,$query,'both');
+		
+		// No override function, procede with fetch
+		($fields!=null) ? $this->db->select($fields) : '';
+		($limit!=null) ? $this->db->limit($limit['rows'],$limit['offset']) : '';
+		($orderby!=null) ? $this->db->order_by($orderby) : '';
+
+		// set table to use
+		$this->db->from($this->_TABLES['expense_detail']);
+		$result = $this->db->get();
+
+		$row = $result->result();
+		$result->free_result();
+		return $row;
+	}	
+	
 	// ----------------------------------------------------
 }
 	

@@ -162,7 +162,7 @@ class Repairs extends Admin_Controller {
 			$this->template->department_details = $department_details;
 			$this->template->position_details = $position_details;
 
-			// get request items			
+			/*// get request items			
 			$where = "status NOT IN ('CANCELLED', 'DELETED') AND request_summary_id = " . $repair_summary_id;			
 			$repair_summary_detail_details = $this->spare_parts_model->get_request_detail($where);
 
@@ -191,18 +191,18 @@ class Repairs extends Admin_Controller {
 
 			}
 
-			$this->template->json_items = json_encode($json_items);
+			$this->template->json_items = json_encode($json_items);*/
 
 		}
 
 
-		$items = $this->spare_parts_model->get_item(null,null,"sku ASC");
+		/*$items = $this->spare_parts_model->get_item(null,null,"sku ASC");*/
 		$items_array = array();
 		
-		foreach($items as $i)
-		{
-			$items_array[$i->item_id] = $i;
-		}
+		//foreach($items as $i)
+		//{
+		//	$items_array[$i->item_id] = $i;
+		//}
 
 		//$this->template->return_url = $return_url;
 		$this->template->items = $items_array;
@@ -220,6 +220,7 @@ class Repairs extends Admin_Controller {
 		$description = trim($this->input->post("description"));
 		$peripherals = trim($this->input->post("peripherals"));
 		$requester_id = trim($this->input->post("requester_id"));
+		$repair_status = abs($this->input->post("repair_status"));
 		$reported_concern = trim($this->input->post("reported_concern"));
 		$tr_number_in = trim($this->input->post("tr_number_in"));
 		$requester_type = trim($this->input->post("requester_type"));
@@ -347,9 +348,9 @@ class Repairs extends Admin_Controller {
 		$insert_id = $this->information_technology_model->insert_id();
 
 		// insert initial remark
-		$data_remark = array(
+		 $data_remark = array(
 				'repair_detail_id' => $insert_id,
-				'repair_status_id' => 1,				
+				'repair_status_id' => $repair_status,				
 				'remarks' => $reported_concern,
 				'created_by' => $this->user->id_number,
 			);	
@@ -419,20 +420,20 @@ class Repairs extends Admin_Controller {
 		$proposed_price = $this->input->post("proposed_price");
 		$is_branch_expense = $this->input->post("is_branch_expense");
 
-		if ($repair_status_id == 1) {
+		if ($repair_status_id == 2) {
 			// for delivery
 			$remarks = $remarks . " <strong>#TR_NUMBER_IN: " . $tr_number_in . "</strong>";
-		} else if ($repair_status_id == 9) {
+		} else if ($repair_status_id == 10) {
 			// for delivery
 			$remarks = $remarks . " <strong>#TR_NUMBER_OUT: " . $tr_number_out . "</strong>";
-		} else if ($repair_status_id == 6) {
+		} else if ($repair_status_id == 7) {
 			// for delivery
 			$remarks = $remarks . " <br/><strong>
 										#APPROVED_AMOUNT: " . $po_price . "<br/>
 										#APPROVAL_NUMBER: " . $approval_number . "<br/>
 										#AUTHORITY_NUMBER: " . $authority_number . "
 									</strong>";
-		} else if ($repair_status_id == 5) {
+		} else if ($repair_status_id == 6) {
 			// for delivery
 			$remarks = $remarks . " <strong>#PROPOSED_AMOUNT: " . $proposed_price . "</strong>";
 		} 
@@ -474,11 +475,11 @@ class Repairs extends Admin_Controller {
 		$total_detail_count = $this->information_technology_model->get_repair_detail_count($where);
 
 		// completed
-		$where = "repair_summary_id = {$repair_detail_details->repair_summary_id} AND current_status_id = 8";
+		$where = "repair_summary_id = {$repair_detail_details->repair_summary_id} AND current_status_id = 9";
 		$total_completed_count = $this->information_technology_model->get_repair_detail_count($where);
 
 		// received from h.o.
-		$where = "repair_summary_id = {$repair_detail_details->repair_summary_id} AND current_status_id = 11";
+		$where = "repair_summary_id = {$repair_detail_details->repair_summary_id} AND current_status_id = 14";
 		$total_closed_count = $this->information_technology_model->get_repair_detail_count($where);
 
 		$overall_status =  "OPEN";
@@ -505,10 +506,12 @@ class Repairs extends Admin_Controller {
 			$this->information_technology_model->update_repair_summary($data, $where);
 		}
 
+		$repair_summary = $this->information_technology_model->get_repair_summary_by_id($repair_detail_details->repair_summary_id);
+
 		$html = "<p>Remarks posted successfully!</p>";
 		$title = "Add Remarks :: Repairs";
 
-		$this->return_json("1", "Remarks posted sucessfully", array("html" => $html, "title" => $title, "remarks_html" => $remarks_html, "overall_status" => $overall_status));
+		$this->return_json("1", "Remarks posted sucessfully", array("html" => $html, "title" => $title, "remarks_html" => $remarks_html, "overall_status" => $repair_summary->overall_status));
 		return;
 
 	}
@@ -550,7 +553,7 @@ class Repairs extends Admin_Controller {
 
 		$html_items = $this->load->view("repairs/item_details_view", $data, true);
 
-		$this->return_json("1", "Item Successfully Removed", array("html_items" => $html_items));
+		$this->return_json("1", "Items", array("html_items" => $html_items));
 		return;
 	}
 

@@ -9,7 +9,8 @@
 <?php
 foreach ($asset_details as $ad) {
 
-echo "<iframe id='viewer' src='/assets/js/libs/ViewerJS/index.html#../../../uploads/{$ad->asset_filename}' style='width:100%;height:800px;' allowfullscreen webkitallowfullscreen=''></iframe> <br/>";
+echo "<iframe id='viewer' src='/assets/js/libs/ViewerJS/index.html#../../../media/s4s/{$ad->asset_filename}' style='width:100%;height:800px;' allowfullscreen webkitallowfullscreen=''></iframe> <br/>";
+//echo "<iframe id='viewer' src='/assets/js/libs/ViewerJS/index.html#http://portal.mmpi.local/assets/media/s4s/{$ad->asset_filename}' style='width:100%;height:800px;' allowfullscreen webkitallowfullscreen=''></iframe> <br/>";
 
 }
 ?>

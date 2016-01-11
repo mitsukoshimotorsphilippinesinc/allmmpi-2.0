@@ -75,140 +75,423 @@ class Expenses extends Admin_Controller {
 		//$this->expenses();
 	}
 
-	// expenseS
-	// ------------------------------------------
 	public function listing()
 	{
+
+		$search_status = trim($this->input->get("search_status"));
 		$search_by = trim($this->input->get("search_option"));
 		$search_text = trim($this->input->get("search_string"));
 
-
 		$search_url = "";
 
-		if (($search_text == "") || empty($search_text)) {
-			$where = NULL;			
+		if (($search_text == "") || (empty($search_text)) || ($search_text == NULL)) {
+			//$where = NULL;	
+
+			if (($search_status == 'ALL') || (strlen(trim($search_status)) == 0) || ($search_status == NULL)) {
+				$where = NULL;
+			} else {				
+				$where = "overall_status = '{$search_status}'";
+			}
+
 		} else {
-			$where = "{$search_by} LIKE LOWER('%{$search_text}%')";
+
+			$sub_where = "{$search_by} LIKE LOWER('%{$search_text}%')";
+
+			$in_list = "";
+				$i = 0;
+
+			if ($search_by == "branch_name") {				
+				$branch_details = $this->human_relations_model->get_branch($sub_where);
+				
+				$branch_count = count($branch_details);
+				
+				if ($i >= $branch_count) {
+					$in_list .= "-1";
+				} else {					
+					while ($i < $branch_count) {
+						$in_list .= $branch_details[$i]->branch_id . ", ";
+						$i++;
+					}
+					$in_list .= "-1";
+				
+				}
+
+				$where = "branch_id IN ({$in_list})";
+			}
+
+			if ($search_by == "department_name") {				
+				$department_details = $this->human_relations_model->get_department($sub_where);
+				
+				$department_count = count($department_details);
+				
+				if ($i >= $department_count) {
+					$in_list .= "-1";
+				} else {					
+					while ($i < $department_count) {
+						$in_list .= $department_details[$i]->department_id . ", ";
+						$i++;
+					}
+					$in_list .= "-1";
+				
+				}
+
+				$where = "department_id IN ({$in_list})";
+			}
+
+			if ($search_by == "approved_by") {				
+				$sub_where = "complete_name LIKE LOWER('%{$search_text}%')";
+
+				$expense_signatory_details = $this->information_technology_model->get_expense_signatory($sub_where);
+				
+				$expense_signatory_count = count($expense_signatory_details);
+				
+				if ($i >= $expense_signatory_count) {
+					$in_list .= "-1";
+				} else {					
+					while ($i < $expense_signatory_count) {
+						$in_list .= $expense_signatory_details[$i]->expense_signatory_id . ", ";
+						$i++;
+					}
+					$in_list .= "-1";
+				
+				}
+
+				$where = "approved_by IN ({$in_list})";
+			}
+
+			if ($search_by == "requested_by") {				
+				$sub_where = "complete_name LIKE LOWER('%{$search_text}%')";
+
+				$requested_by_details = $this->human_relations_model->get_employment_information_view($sub_where);
+				
+				$requested_by_count = count($requested_by_details);
+				
+				if ($i >= $requested_by_count) {
+					$in_list .= "-1";
+				} else {					
+					while ($i < $requested_by_count) {
+						$in_list .= "'" . $requested_by_details[$i]->id_number . "', ";
+						$i++;
+					}
+					$in_list .= "-1";
+				
+				}
+
+				$where = "requested_by IN ({$in_list})";
+			}
+
+			if (($search_status == 'ALL') || (strlen(trim($search_status)) == 0) || ($search_status == NULL)) {
+				$where .= "";
+			} else {				
+				$where .= " AND overall_status = '{$search_status}'";
+			}
+
 			$search_url = "?search_option=" . $search_by . "&search_string=" . $search_text;
 		}	
 
-
 		// set pagination data
 		$config = array(
-		    'pagination_url' => '/information_technology/expenses',
-		    'total_items' => $this->information_technology_model->get_expense_view_count($where),
-		    'per_page' => 5,
-		    'uri_segment' => 4,
+				'pagination_url' => "/information_technology/expenses/listing/",				
+				'total_items' => $this->information_technology_model->get_expense_summary_count($where),
+				'per_page' => 10,
+				'uri_segment' => 4,
 		);
 
+		$this->pager->set_config($config);
+		
+		$transfers = $this->information_technology_model->get_expense_summary($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");			
+		
 		// search vars
+		$this->template->search_status = $search_status;
 		$this->template->search_by = $search_by;
 		$this->template->search_text = $search_text;
 		$this->template->search_url = $search_url;
+		$this->template->transfers = $transfers;
 		
-		$this->pager->set_config($config);
-		$this->template->expenses = $this->information_technology_model->get_expense_view($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), 'date_approved');
-		$this->template->view('expenses/listing');
+		$this->template->view('expenses/listing');	
+		
+	}	
+
+	public function edit($expense_summary_id = 0)
+	{
+		$this->add($expense_summary_id);
 	}
 
-	public function add_expense()
+	public function add($expense_summary_id = 0) 
 	{
-		if ($_POST)
-		{
-			// post done here
-			$this->form_validation->set_rules($this->_expenses_validation_rule);
-			if ($this->form_validation->run())
-			{				
-				if (set_value('branch_dept_type') == "branch") {
-					$branch_name = set_value('branch_name');
-					$department_name = 0;
-				} else {
-					$branch_name = 0;
-					$department_name = set_value('department_name');
-				}
 
-				// insert the new results
-				$data = array(
-					'particulars' => strtoupper(set_value('particulars')),	
-					'branch_id' => $branch_name,
-					'department_id' => $department_name,
-					'amount' => set_value('amount'),
-					'expense_signatory_id' => set_value('expense_signatory_name'),
-					'authority_number' => strtoupper(set_value('authority_number')),
-					'approval_number' => strtoupper(set_value('approval_number')),
-					'date_approved' => set_value('date_approved'),
-					'requested_by' => set_value('requested_by'),
-					'created_by' => $this->user->id_number,					
+		$department_module_details = $this->information_technology_model->get_department_module_by_segment_name($this->segment_name);
+				
+		$expense_summary_details = $this->information_technology_model->get_expense_summary_by_id($expense_summary_id);
+
+		$requester_details = "";
+		$department_details = "";
+		$position_details = "";
+
+		if (!empty($expense_summary_details)) {
+
+			if ($expense_summary_details->branch_id <> 0) {
+
+			} else if (($expense_summary_details->id_number == NULL) || ($expense_summary_details->id_number == "")) {
+
+				$requester_details = $this->human_relations_model->get_employment_information_view_by_id($expense_summary_details->id_number);
+			
+				$department_details = $this->human_relations_model->get_department_by_id($requester_details->department_id);
+				$position_details = $this->human_relations_model->get_position_by_id($requester_details->position_id);			
+			}	
+
+			$this->template->requester_details = $requester_details;
+			$this->template->department_details = $department_details;
+			$this->template->position_details = $position_details;
+
+			/*// get request items			
+			$where = "expense_summary_id = " . $expense_summary_id;			
+			$expense_summary_detail_details = $this->information_technology_model->get_expense_detail($where);
+
+			$json_items = array();
+			for($k = 0;$k<count($expense_summary_detail_details);$k++)
+			{
+				//$expense_summary_detail_id = $expense_summary_detail_details[$k]->expense_summary_detail_id;
+				$expense_summary_detail_id = $expense_summary_detail_details[$k]->expense_detail_id;
+				
+				//$total_amount = $total_amount + ($item_qty[$k]*$item_price[$k]);
+				$po_items = array(
+						//'expense_summary_detail_id' => $expense_summary_detail_id,
+						'request_detail_id' => $expense_summary_detail_id,
+						'item_id' => $expense_summary_detail_details[$k]->item_id,
+						'srp' => $expense_summary_detail_details[$k]->srp,
+						'discount' => $expense_summary_detail_details[$k]->discount,
+						'discount_amount' => $expense_summary_detail_details[$k]->discount_amount,
+						'good_quantity' => $expense_summary_detail_details[$k]->good_quantity,
+						'bad_quantity' => $expense_summary_detail_details[$k]->bad_quantity,
+						'total_amount' => $expense_summary_detail_details[$k]->total_amount,
+						'remarks' => $expense_summary_detail_details[$k]->remarks,
 
 				);
+				//creates an array of the items that will be json encoded later
+				array_push($json_items, $po_items);
 
-				$this->information_technology_model->insert_expense($data);
-				
-				//$insert_id = $this->information_technology_model->insert_id();
-				
-				//logging of action
-				// TODO				
-
-				
-				redirect('/information_technology/expenses/listing');
-				return;
 			}
+
+			$this->template->json_items = json_encode($json_items);*/
+
 		}
-		$this->template->view('information_technology/expenses/add');
+
+
+		/*$items = $this->spare_parts_model->get_item(null,null,"sku ASC");*/
+		$items_array = array();
+		
+		//foreach($items as $i)
+		//{
+	//		$items_array[$i->item_id] = $i;
+	//	}
+
+		//$this->template->return_url = $return_url;
+		$this->template->items = $items_array;
+		$this->template->expense_summary_details = $expense_summary_details;
+		$this->template->department_module_details = $department_module_details;		
+		$this->template->view('expenses/add');
 	}
 
-	public function edit_expense($expense_id = 0)
+
+	public function create_request()
 	{
-		$expense_details = $this->information_technology_model->get_expense_by_id($expense_id);
+		
+		$expense_code = trim($this->input->post("request_code"));
+		$item_id = abs($this->input->post("item_id"));
+		$quantity = abs($this->input->post("quantity"));
+		$amount = $this->input->post("amount");
+		$description = trim($this->input->post("description"));		
+		$approved_by = abs($this->input->post("approved_by"));
+		$requested_by = abs($this->input->post("requested_by"));		
+		$approval_number = trim($this->input->post("approval_number"));
+		$authority_number = trim($this->input->post("authority_number"));		
+		$requester_type = trim($this->input->post("requester_type"));
+		$requester_id = trim($this->input->post("requester_id"));
+		$date_approved = trim($this->input->post("date_approved"));
 
-
-		if ($_POST and !empty($expense_details))
+		if ($expense_code == '00-00000')
 		{
-			// post done here
-			$this->form_validation->set_rules($this->_expenses_validation_rule);
+			$dateyear = date("Y");
+			$expense_series = substr($dateyear, 2, 2);
+			
+			$current_datetime = date('Y-m-d H:i:s');						
+			
+			if ($requester_type == "employee") {
 
-			if ($this->form_validation->run())
-			{				
-				if (set_value('branch_dept_type') == "branch") {
-					$branch_name = set_value('branch_name');
-					$department_name = 0;
-				} else {
-					$branch_name = 0;
-					$department_name = set_value('department_name');
-				}
+				$employee_details = $this->human_relations_model->get_employment_information_view_by_id($requester_id);
 
-				// insert the new results
-				$data = array(
-					'particulars' => strtoupper(set_value('particulars')),	
-					'branch_id' => $branch_name,
-					'department_id' => $department_name,
-					'amount' => set_value('amount'),
-					'expense_signatory_id' => set_value('expense_signatory_name'),
-					'authority_number' => strtoupper(set_value('authority_number')),
-					'approval_number' => strtoupper(set_value('approval_number')),
-					'date_approved' => set_value('date_approved'),
-					'requested_by' => set_value('requested_by'),
-					'created_by' => $this->user->id_number,					
+				$sql = "INSERT INTO 
+							es_expense_summary 
+							(
+								`expense_series`, 
+								`expense_number`, 
+								`branch_id`, 
+								`id_number`, 
+								`department_id`, 
+								`approved_by`, 
+								`requested_by`, 
+								`approval_number`,
+								`authority_number`,
+								`date_approved`,
+								`created_by`
+							)
+		                	(
+		                	SELECT 
+		                		'{$expense_series}', 
+		                		IFNULL(MAX(expense_number) + 1, 1) AS expense_number, 		                		
+		                		'0',
+		                		'{$requester_id}',
+		                		'{$employee_details->department_id}',
+		                        '{$approved_by}',
+		                        '{$requested_by}',
+		                        '{$approval_number}',
+		                        '{$authority_number}',
+		                        '{$date_approved}',
+		                        '{$this->user->user_id}'
+		                	FROM 
+		                		es_expense_summary
+		                	WHERE 
+		                		expense_series = '{$expense_series}'                 	
+		                    ORDER BY 
+		                    	expense_number DESC
+		                	)";
+			} else {
+				$sql = "INSERT INTO 
+						es_expense_summary 
+						(
+							`expense_series`, 
+							`expense_number`, 
+							`branch_id`, 
+							`id_number`, 
+							`department_id`, 
+							`approved_by`, 
+							`requested_by`, 
+							`approval_number`,
+							`authority_number`,
+							`date_approved`,
+							`created_by`
+						)
+	                	(
+	                	SELECT 
+	                		'{$expense_series}', 
+	                		IFNULL(MAX(expense_number) + 1, 1) AS expense_number, 	                		
+	                		'{$requester_id}',
+	                		NULL,
+	                		'0',
+	                        '{$approved_by}',
+	                        '{$requested_by}',
+	                        '{$approval_number}',
+	                        '{$authority_number}',
+	                        '{$date_approved}',
+	                        '{$this->user->user_id}'
+	                	FROM 
+	                		es_expense_summary
+	                	WHERE 
+	                		expense_series = '{$expense_series}'                 	
+	                    ORDER BY 
+	                    	expense_number DESC
+	                	)";
+			}
 
+			$this->db_information_technology->query($sql);	
+
+
+			$sql = "SELECT 
+						LAST_INSERT_ID() AS last_id 
+					FROM 
+						es_expense_summary";
+
+			$query = $this->db_information_technology->query($sql);
+			$expense_summary = $query->first_row();
+
+			$active_expense_summary_id = $expense_summary->last_id;
+
+	        $sql = "SELECT 
+						CONCAT('{$expense_series}', '-', LPAD(expense_number, 5, 0)) AS gen_code
+					FROM
+						es_expense_summary                    
+	                WHERE
+	                	expense_summary_id = " . $active_expense_summary_id;        	
+
+	        $query = $this->db_information_technology->query($sql);
+			$expense_code_details = $query->first_row();  
+
+			$expense_code = $expense_code_details->gen_code; 		
+
+			// update expense_code
+			$data_update = array(
+					'expense_code' => $expense_code
 				);
 
-				$this->information_technology_model->update_expense($data, array('expense_id' => $expense_id));
-				
-				//logging of action
-				//TODO
-				
-				redirect('/information_technology/expenses/listing');
-				return;
-			}
-		}
+			$where_update = "expense_summary_id = " . $active_expense_summary_id;
+		
+			$this->information_technology_model->update_expense_summary($data_update, $where_update);
 
-		$this->template->expense_details = $expense_details;
-		$this->template->view('information_technology/expenses/edit');
+		} else {	
+			$active_expense_summary_details = $this->information_technology_model->get_expense_summary_by_code($expense_code);
+			$active_expense_summary_id = $active_expense_summary_details->expense_summary_id;
+		}	
+
+		// add item to details table
+		$data_insert = array(				
+				'expense_summary_id' => $active_expense_summary_id,
+				'repair_hardware_id' => $item_id,				
+				'description' => $description,				
+				'quantity' => $quantity + 1,
+				'amount' => $amount,
+			);
+	
+		$this->information_technology_model->insert_expense_detail($data_insert);	
+
+		$insert_id = $this->information_technology_model->insert_id();
+
+
+		// get all details
+		$where = "expense_summary_id = '{$active_expense_summary_id}'";
+		$details = $this->information_technology_model->get_expense_detail($where);
+		
+		$data = array(
+			"details" => $details
+		);
+
+		$html_items = $this->load->view("expenses/item_details_view", $data, true);
+
+		
+		$html = "<p>Item has been added successfully!</p>";
+		$title = "Add Item :: Item Request";
+
+		$this->return_json("1", "Item Successfully Added", array("html" => $html, "title" => $title, "html_items" => $html_items, "expense_code" => $expense_code));
+		return;
 	}
 
-	public function delete_expense($expense_id = 0)
+	public function get_item_details_view()
 	{
-		$expense_details = $this->information_technology_model->get_expense_view_by_id($expense_id);
+
+		$expense_summary_id = $this->input->post("expense_summary_id");
+
+		// get all details
+		$where = "expense_summary_id = '{$expense_summary_id}'";
+		$details = $this->information_technology_model->get_expense_detail($where);
+		
+		$data = array(
+			"details" => $details
+		);
+
+		//var_dump($details);
+
+		$html_items = $this->load->view("expenses/item_details_view", $data, true);
+
+		$this->return_json("1", "Items", array("html_items" => $html_items));
+		return;
+	}
+
+
+
+
+	public function delete($expense_summary_id = 0)
+	{
+		/*$expense_details = $this->information_technology_model->get_expense_view_by_id($expense_id);
 
 		if ($_POST and !empty($expense_details))
 		{
@@ -232,6 +515,6 @@ class Expenses extends Admin_Controller {
 
 		$this->template->expense_details = $expense_details;
 		$this->template->view('information_technology/expenses/delete');
-
+*/
 	}
 }
