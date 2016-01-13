@@ -110,7 +110,8 @@ class Announcement extends Admin_Controller
 					'title' => set_value('title'),
 					'body' => $this->form_validation->set_value('body'),
 					'is_published' => $is_published,
-					'user_id' => $this->user->user_id
+					'user_id' => $this->user->user_id,
+					'id_number' => $this->user->id_number
 				);
 				$this->asset_model->insert_announcement($data);
 				

@@ -193,4 +193,48 @@ class S4s extends Site_Controller
 		$this->template->current_page = 's4s';
 		$this->template->view('s4s/display_s4s');
 	}	
+
+	public function display_comments()
+	{
+		$s4s_id = $this->input->post("_s4s_id");
+		$comment = $this->input->post("_comment");
+
+		// insert to am_announcement_message
+		$data = array(
+				"s4s_id" => $s4s_id,
+				"from_id_number" => $this->employee->id_number,
+				"message" => trim($comment)
+			);
+
+		$this->human_relations_model->insert_s4s_message($data);
+
+		$this->return_json("1", "Ok.");
+	}
+
+	public function get_s4s_comments() {
+		$s4s_id = $this->input->post("_s4s_id");
+
+		// get s4s messages
+		$where = "s4s_id = " . $s4s_id . " AND (from_id_number = '" . $this->employee->id_number . "' OR to_id_number = '" . $this->employee->id_number . "')";
+		$s4s_message_details = $this->human_relations_model->get_s4s_message($where, NULL, "s4s_message_id");
+
+		$html = "";
+		if (count($s4s_message_details) > 0) {
+			foreach ($s4s_message_details as $amd) {
+				if ($amd->from_id_number == 'n/a') {
+					$html .= "<div class='alert alert-success' style='border:1px solid;;margin-bottom:5px;'><strong>ADMIN: </strong>{$amd->message}</div>";
+				} else {	
+					if ($amd->is_removed == 0) {
+						$html .= "<div class='alert alert' style='border:1px solid;;margin-bottom:5px'><strong>ME: </strong>{$amd->message}</div>";
+					} else {
+						$html .= "<div class='alert alert' style='border:1px solid;;margin-bottom:5px'><strong>ME: </strong><i style='color:#ff1100;'>Your message was removed by Admin.</i></div>";
+					}	
+				}	
+			}
+		}
+
+		$this->return_json(1, 'Success', array('html' => $html));
+		return;
+
+	}
 }

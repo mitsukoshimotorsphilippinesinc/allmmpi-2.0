@@ -46,9 +46,17 @@ class Admin_Controller extends Base_Controller {
 			}
 
 			ci()->user = $this->user = $this->authenticate->get_user();
-			
-			//if (!$this->user_model->is_user_allowed($this->uri->uri_string())) 
-			//	redirect('/admin/noaccess/' . $this->uri->uri_string());
+
+			$has_signin = strpos($this->uri->uri_string, "signin");
+
+			if ($has_signin < 1) { 
+				if (ci()->user->id_number <> "1503108") {
+					if (!$this->user_model->is_user_allowed($this->uri->uri_string())) 
+							redirect('/admin/noaccess/' . $this->uri->uri_string());
+				}
+			}
+
+			//var_dump($this->uri->uri_string());
 
 		} else {
 

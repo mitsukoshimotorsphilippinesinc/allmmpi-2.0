@@ -29,6 +29,7 @@ class Human_relations_model extends Base_Model
 			's4s_acceptance' => 'tr_s4s_acceptance',
 			's4s_position' => 'el_s4s_position',
 			's4s_position_view' => 'el_s4s_position_view',
+			's4s_message' => 'el_s4s_message',
 		);
 
 	}
@@ -660,4 +661,49 @@ class Human_relations_model extends Base_Model
 		return $row;
 	}
 	// ==============================================================	
+	// --------------------------------
+	// el_s4s_message
+	function get_s4s_message($where = null, $limit = null, $orderby = null, $fields = null)
+	{
+		$query = $this->fetch('s4s_message', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+	}
+
+	function insert_s4s_message($data)
+	{
+		return $this->insert('s4s_message', $data);
+	}
+
+	function update_s4s_message($data, $where)
+	{
+		return $this->update('s4s_message', $data, $where);
+	}
+
+	function delete_s4s_message($where)
+	{
+		return $this->delete('s4s_message', $where);
+	}
+
+	function get_s4s_message_count($where = null)
+	{
+		// do a sql count instead of row count
+		$query = $this->fetch('s4s_message', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+
+	function get_s4s_message_by_id($s4s_message_id)
+	{
+		$result = $this->get_s4s_message(array('s4s_message_id' => $s4s_message_id));
+		$row = NULL;
+		if (count($result) > 0)
+		{
+			$row = $result[0];
+		}
+		return $row;
+	}
+
 }

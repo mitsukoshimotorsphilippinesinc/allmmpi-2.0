@@ -1,28 +1,28 @@
-<h2>View Announcement With Comments <a href='/operations/announcement/comments' class='btn btn-small' style="float:right; margin-top: 5px; margin-right: -10px;">Back</a></h2>
+<h2>View S4S With Comments <a href='/operations/s4s/comments' class='btn btn-small' style="float:right; margin-top: 5px; margin-right: -10px;">Back</a></h2>
 
 <hr/>
-<?php if (empty($announcement)): ?>
-	<h3>Announcement not found.</h3>
+<?php if (empty($s4s)): ?>
+	<h3>s4s not found.</h3>
 <?php else: ?>
 <form action='' method='post' class='form-horizontal'>
 <fieldset >
-	<input type='hidden' id='announcement_id' name='announcement_id' value='<?= $announcement->announcement_id ?>' />
+	<input type='hidden' id='s4s_id' name='s4s_id' value='<?= $s4s->s4s_id ?>' />
 	<div class="control-group ">
 		<label class="control-label" for="title">Title</label>
 		<div class="controls">
-			<label class='data'><?= $announcement->title ?></label>
+			<label class='data'><?= $s4s->pp_name ?></label>
 		</div>
 	</div>
 	<div class="control-group ">
-		<label class="control-label" for="body">Body</label>
+		<label class="control-label" for="description">Description</label>
 		<div class="controls"  style="width: 797px;">
-			<label class='data'><?= $announcement->body ?></label>
+			<label class='data'><?= $s4s->pp_description ?></label>
 		</div>
 	</div>
 	<div class="control-group ">
-		<label class="control-label" for="is_published">Published?</label>
+		<label class="control-label" for="is_actove">Is Active?</label>
 		<div class="controls">
-			<label class='data'><?= ($announcement->is_published) ? 'Yes' : 'No'  ?></label>
+			<label class='data'><?= ($s4s->is_active) ? 'Yes' : 'No'  ?></label>
 		</div>
 	</div>
 </fieldset>
@@ -42,7 +42,7 @@
 		</thead>
 		<tbody>
 		<?php if(empty($comments)): ?>
-			<tr><td colspan='5' style='text-align:center;'><strong>No Comment for this Announcement yet.</strong></td></tr>
+			<tr><td colspan='5' style='text-align:center;'><strong>No Comment for this s4s yet.</strong></td></tr>
 		<?php else: ?>
 		<?php foreach ($comments as $c): ?>
 			<tr>				
@@ -63,11 +63,11 @@
 				<td><?= ($c->is_removed) ? 'Yes' : 'No'; ?></td>
 				<td>
 
-					<a class='btn btn-small btn-success reply-admin' data='<?= $c->announcement_message_id ?>' data-idnum='<?= $c->from_id_number ?>' data-announcement-id='<?= $announcement->announcement_id ?>' title="Reply as Admin"><i class="icon-pencil icon-white"></i></a>
+					<a class='btn btn-small btn-success reply-admin' data='<?= $c->s4s_message_id ?>' data-idnum='<?= $c->from_id_number ?>' data-s4s-id='<?= $s4s->s4s_id ?>' title="Reply as Admin"><i class="icon-pencil icon-white"></i></a>
 					
 					<?php
 					if ($c->is_removed == 0)
-						echo "<a class='btn btn-small btn-danger remove-admin' data='{$c->announcement_message_id}' data-idnum='<?= $c->from_id_number ?>' data-announcement-id='{$announcement->announcement_id}' title='Delete Comment'><i class='icon-remove icon-white'></i></a>";					
+						echo "<a class='btn btn-small btn-danger remove-admin' data='{$c->s4s_message_id}' data-idnum='<?= $c->from_id_number ?>' data-s4s-id='{$s4s->s4s_id}' title='Delete Comment'><i class='icon-remove icon-white'></i></a>";					
 					?>
 				</td>
 			</tr>
@@ -87,20 +87,20 @@
 <script type="text/javascript">
 
 	$(".reply-admin").click(function(){
-		var _announcement_message_id = $(this).attr('data');
-		var _announcement_id = $(this).attr('data-announcement-id');
+		var _s4s_message_id = $(this).attr('data');
+		var _s4s_id = $(this).attr('data-s4s-id');
 
 		b.request({
-			url : '/operations/announcement/reply_comment',
+			url : '/operations/s4s/reply_comment',
 			data : {
-				'announcement_message_id' : _announcement_message_id
+				's4s_message_id' : _s4s_message_id
 				},										
 			on_success : function(data) {
 				
 				if (data.status == "1")	{
 				
 					var proceedRemoveModal = b.modal.new({
-						title: 'Post Admin Comment :: ' + _announcement_message_id,
+						title: 'Post Admin Comment :: ' + _s4s_message_id,
 						width: 450,						
 						html: data.data.html,
 						buttons: {																
@@ -116,10 +116,10 @@
 									proceedRemoveModal.hide();
 
 									b.request({
-										url : '/operations/announcement/reply_comment_proceed',
+										url : '/operations/s4s/reply_comment_proceed',
 										data : {
-											'announcement_message_id' : _announcement_message_id,
-											'announcement_id' : _announcement_id,
+											's4s_message_id' : _s4s_message_id,
+											's4s_id' : _s4s_id,
 											'admin_message' : _admin_message,
 											},										
 										on_success : function(data) {
@@ -134,7 +134,7 @@
 													buttons: {																
 														'Ok' : function() {
 															proceedRemoveModal.hide();
-															redirect('/operations/announcement/view_with_comments/' + _announcement_id);
+															redirect('/operations/s4s/view_with_comments/' + _s4s_id);
 														}
 													}
 												});
@@ -183,19 +183,19 @@
 	});
 
 	$(".remove-admin").click(function(){
-		var _announcement_message_id = $(this).attr('data');
+		var _s4s_message_id = $(this).attr('data');
 
 		var removeCommentModal = b.modal.new({
-			title: 'Remove Comment :: ' + _announcement_message_id,
+			title: 'Remove Comment :: ' + _s4s_message_id,
 			width:400,			
 			html: "Are your sure you want to remove this message in the thread?",
 			buttons: {								
 				'Proceed' : function() {											
 					removeCommentModal.hide();
 					b.request({
-						url : '/operations/announcement/delete_comment',
+						url : '/operations/s4s/delete_comment',
 						data : {
-							'announcement_message_id' : _announcement_message_id
+							's4s_message_id' : _s4s_message_id
 							},										
 						on_success : function(data) {
 							
@@ -209,7 +209,7 @@
 									buttons: {																
 										'Ok' : function() {
 											proceedRemoveModal.hide();
-											redirect('/operations/announcement/view_with_comments/' + _announcement_id);
+											redirect('/operations/s4s/view_with_comments/' + _s4s_id);
 										}
 									}
 								});

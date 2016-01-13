@@ -124,7 +124,7 @@
 
     });
 
-	var logS4sAcceptance = function(_is_accepted = 0, _s4sId) {
+	var logS4sAcceptance = function(_is_accepted, _s4sId) {
 		
 		beyond.request({
 			url : '/employee/s4s/log_acceptance',
