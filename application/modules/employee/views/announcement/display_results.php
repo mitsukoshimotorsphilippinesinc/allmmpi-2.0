@@ -11,8 +11,8 @@ foreach($announcements as $a) {
 
 	$this->load->view("display_comments", $data, TRUE);
 
-	echo "<textarea class='span12 new-comment-{$a->announcement_id}'></textarea>
-			<button class='button-post btn btn-primary pull-right' style='margin-right: 20px;margin-bottom:10px;' data='{$a->announcement_id}' title='Post'>Post</button>
+	echo "<textarea style='width:67.5em;' class='new-comment-{$a->announcement_id}'></textarea>
+			<button class='button-post btn btn-primary pull-right' style='margin-bottom:10px;' data='{$a->announcement_id}' title='Post'>Post</button>
 			<div class='announcement-comments-{$a->announcement_id}'></div>
 			<div style='width: 100%; height: 2px; background: #F87431; overflow: hidden;''></div>";		
 }

@@ -652,14 +652,17 @@ class Repairs extends Admin_Controller {
 					c.is_branch_expense,
 					c.remarks,
 					c.created_by,
-					c.insert_timestamp
+					c.insert_timestamp,
+					a.repair_summary_id
 				FROM 
 					rs_repair_summary a
 				LEFT JOIN 
 					rs_repair_detail b on a.repair_summary_id = b.repair_summary_id
 				LEFT JOIN 
 					rs_repair_remark c on c.repair_detail_id = b.repair_detail_id
-				{$where}	
+				{$where}
+				GROUP BY
+					a.repair_code	
 				ORDER BY 
 					a.repair_code, b.repair_hardware_id, c.insert_timestamp";
 
@@ -681,39 +684,109 @@ class Repairs extends Admin_Controller {
 		$html = "<table class='table table-bordered table-condensed'>
 			<thead>
 				<th>Repair Code</th>
-				<th>Requested_By</th>
 				<th>Overall Status</th>
-				<th>Date Received</th>
-				<th>TR Number (IN)</th>	
-				<th>Details</th>
-				<th>Insert Timestamp</th>
+				<th>Requested By</th>
+				<th>Items / Person In-Charge</th>
+				<th>Received By</th>	
+				<th>TR Number (IN)</th>
+				<th>Timestamp - Current State</th>
 			</thead>
 			<tbody>";
-		
 
-		//if(empty($new_members))
-		//{
-		//	$html .= "<tr><td colspan='7' style='text-align:center'>No records found.</td></tr>";
-		//}
-		//foreach($new_members as $m)
-		/*{
-			$name = $m->first_name . ' ' . $m->middle_name . ' ' . $m->last_name;
-			$email = ($m->email == NULL ? 'None' : $m->email);
-			$rfid = ($m->rf_id == NULL ? 'None' : $m->rf_id);
-			$rfid_verified = ($m->is_rf_id_verified == 0 ? 'No' : 'Yes');
-			$paycard = ($m->metrobank_paycard_number == NULL ? 'None' : $m->metrobank_paycard_number);
-			$paycard_verified = ($m->is_paycard_verified == 0 ? 'No' : 'Yes');
+		if(empty($report_result))
+		{
+			$html .= "<tr><td colspan='7' style='text-align:center'>No Record found.</td></tr>";
+		}
+		
+		foreach($report_result as $t)
+		{
 			
 			$html .= "<tr>
-				<td>{$name}</td>
-				<td>{$email}</td>
-				<td>{$rfid}</td>
-				<td>{$rfid_verified}</td>
-				<td>{$paycard}</td>
-				<td>{$paycard_verified}</td>
-				<td>{$m->insert_timestamp}</td>
-			</tr>";
-		}*/
+					<td>{$t->repair_code}</td>";
+						
+			$status_class = strtolower(trim($t->overall_status));			
+
+			$status_class = str_replace(" ", "-", $status_class);
+		
+			$html .= "<td><span class='label label-" . $status_class . "' >{$t->overall_status}</span></td>";
+
+			if ($t->branch_id <> 0) {
+				$requestor_details = $this->human_relations_model->get_branch_by_id($t->branch_id);
+
+				if (count($requestor_details) == 0) {
+					$html .= "<td>N/A</td>";
+				} else { 
+					$html .= "<td>{$requestor_details->branch_name}</td>"; 
+				}			
+
+			} else {
+
+				// get requestor details
+				$id = str_pad($t->id_number, 7, '0', STR_PAD_LEFT);
+				$requestor_details = $this->human_relations_model->get_employment_information_view_by_id($id);
+
+				if (count($requestor_details) == 0) {
+					$html .= "<td>N/A</td>";
+				} else { 
+					$html .= "<td>{$requestor_details->complete_name}</td>"; 
+				}			
+			}
+
+			// get number of items
+			$where = "repair_summary_id = " . $t->repair_summary_id . "";
+			$repairs_detail_info = $this->information_technology_model->get_repair_detail($where);
+	
+			$where = "repair_summary_id = " . $t->repair_summary_id;
+			$repairs_details = $this->information_technology_model->get_repair_detail($where);
+
+			$repair_detail_details = $this->information_technology_model->get_repair_detail("repair_summary_id = " . $t->repair_summary_id);				
+
+			$items_html = "<table style='margin-bottom:0px;' class='table table-condensed table-bordered'>
+								<thead>
+								</thead>
+								<tbody>";
+
+			foreach ($repair_detail_details as $rdd) {
+				$repair_hardware_details = $this->information_technology_model->get_repair_hardware_by_id($rdd->repair_hardware_id);
+
+				// get person in charge
+				$repair_hardware_remark_details = $this->information_technology_model->get_repair_remark("repair_detail_id = '{$rdd->repair_detail_id}'", NULL, "insert_timestamp DESC");
+
+				if (empty($repair_hardware_remark_details)) {
+					$repair_summary_details = $this->information_technology_model->get_repair_summary_by_id($rdd->repair_summary_id);
+
+					$pic_details = $this->human_relations_model->get_employment_information_view_by_id($repair_summary_details->received_by);
+				} else {
+					$pic_details = $this->human_relations_model->get_employment_information_view_by_id($repair_hardware_remark_details[0]->created_by);
+				}
+
+
+				$items_html .= "<tr>
+									<td style='width:110px;'>{$repair_hardware_details->repair_hardware_name} x {$rdd->quantity}</td>
+									<td>{$pic_details->complete_name}</td>
+								</tr>";
+										
+			}
+
+			$items_html .= "</tbody>
+						</table>";
+
+			$html .= "<td>{$items_html}</td>";
+
+			$id = str_pad($t->received_by, 7, '0', STR_PAD_LEFT);
+			$received_by_details = $this->human_relations_model->get_employment_information_view_by_id($id);
+
+			if (count($received_by_details) == 0) {
+				$html .= "<td>N/A</td>";
+			} else { 
+				$html .= "<td>{$received_by_details->complete_name}</td>"; 
+			}			
+
+			$html .= "<td>{$t->tr_number_in}</td>	
+				  	  <td>{$t->insert_timestamp}</td>
+				  	</tr>";
+
+		}
 
 	    $html .= "</tbody></table>";
 	    $html .= $this->pager->create_links(strlen($_SERVER['QUERY_STRING']) > 0 ? '?'.$_SERVER['QUERY_STRING'] : '');

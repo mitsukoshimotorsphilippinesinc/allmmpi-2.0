@@ -1,7 +1,7 @@
 <div>	
 <?php
 	// get announcement messages
-	$where = "announcement_id = " . $announcement_id;
+	$where = "announcement_id = " . $announcement_id . " AND (from_id_number = '" . $this->employee->id_number . "' OR to_id_number = '" . $this->employee->id_number . "')";
 	$announcement_message_details = $this->asset_model->get_announcement_message($where, NULL, "announcement_message_id");
 
 	if (count($announcement_message_details) > 0) {

@@ -13,8 +13,10 @@
 	<thead>
 		<tr>
 			<th>Title</th>
-			<th style='width:64px;'>Published?</th>
-			<th style='width:120px;'>&nbsp;</th>	
+			<th style='width:20em;'>Posted By</th>
+			<th style='width:1em;'>Date Posted</th>
+			<th style='width:1em;'>Published?</th>			
+			<th style='width:10em;'>&nbsp;</th>	
 		</tr>
 	</thead>
 	<tbody>
@@ -24,7 +26,12 @@
 	<?php foreach ($announcements as $a): ?>
 		<tr>
 			<td><?= $a->title; ?></td>
-			<td><?= ($a->is_published) ? 'Yes' : 'No'; ?></td>
+			<?php
+				$employment_info_view_details = $this->human_relations_model->get_employment_information_view_by_id($a->id_number);
+			?>
+			<td><?= $employment_info_view_details->complete_name; ?></td>
+			<td><?= $a->insert_timestamp; ?></td>
+			<td><?= ($a->is_published) ? 'Yes' : 'No'; ?></td>		
 			<td>
 				<a href='/operations/announcement/view/<?= $a->announcement_id ?>' class='btn btn-small btn-info' title="View"><i class="icon-search icon-white"></i></a>
 				<a href='/operations/announcement/edit/<?= $a->announcement_id ?>' class='btn btn-small btn-primary' title="Edit"><i class="icon-pencil icon-white"></i></a>

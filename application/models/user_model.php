@@ -148,13 +148,12 @@ class User_model extends Base_Model
 	
 	function is_user_allowed($uri_string)
 	{
-		
-		$privileges = $this->get_user_privilege("user_id  = {$this->user->user_id}");
-		
-		//var_dump($uri_string);
+			
+
+		$privileges = $this->get_user_privilege("id_number  = '{$this->user->id_number}'");
 
 		$result = false;
-		
+
         $uri_strings = array();		
         $privilege_uris = array();		
 	
@@ -190,7 +189,7 @@ class User_model extends Base_Model
 				}
 			}
 		}
-
+		
 		return $result;
 	}
 
