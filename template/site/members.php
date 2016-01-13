@@ -134,6 +134,7 @@
 				</li>	
 				<li class='<?= isset($this->uri->uri_string) ? ($this->uri->uri_string == 'employee/announcement' ? 'active' : '') : '';  ?>'><a href="/employee/announcement" >Announcements</a></li>	
 				<li class='<?= isset($this->uri->uri_string) ? ($this->uri->segment(2) == 's4s' ? 'active' : '') : '';  ?>'><a href="/employee/s4s" >S4S</a></li>	
+				<li class='<?= isset($this->uri->uri_string) ? ($this->uri->segment(2) == 'cod' ? 'active' : '') : '';  ?>'><a href="/employee/cod" >Code of Discipline</a></li>
 				
 			</ul>
 			<hr class='user-nav-divider'/>
