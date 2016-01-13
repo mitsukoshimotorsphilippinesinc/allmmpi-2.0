@@ -10,7 +10,7 @@
 </div>
 <hr />
 <div>
-	<form id='frm_filter' class='form-horizontal' method='get' action ='/information_technology/repairs/_export'>
+	<form id='frm_filter' class='form-horizontal' method='get' action ='/information_technology/repairs/reports'>
 		<fieldset>
 			<input type='hidden' id='filter' name='filter' value='yes' />
 			<div class='row-fluid'>
@@ -117,6 +117,18 @@
 		
 		var dl_url = b.uri.path + (b.uri.query.length > 0 ? '?' + b.uri.query + '&export=excel' : '?export=excel');
 		$('#btn_download').attr('href', dl_url);
+
+		//$('#btn_download').click(function(e) {
+		//	e.preventDefault();
+			
+			//$("#from_date").datepicker('setDate', b.dateFormat('yyyy-mm-dd') + ' 12:00 am');
+			//$("#to_date").datepicker('setDate', b.dateFormat('yyyy-mm-dd h:M:s tt'));
+			
+
+
+			//alert($("#from_date").val());
+
+		//});
 
 	});
 	

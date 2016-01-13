@@ -57,7 +57,7 @@ class Ldap_createfile extends Base_Controller {
 		 				CASE 
 							WHEN b.department_name = 'Treasury (Payables)' THEN 'Treasury-Payables'  
 							WHEN b.department_name = 'Treasury (Receivables)' THEN 'Treasury-Receivables' 
-							ELSE b.department_name 
+							ELSE REPLACE(b.department_name, ' ', '_') 
 					END as department_name
 					from
 						pm_employment_information_view a
