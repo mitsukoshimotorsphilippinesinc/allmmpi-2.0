@@ -24,7 +24,7 @@
 
 @font-face {
     font-family: 'OpenSansCondensedBold';
-    src: url('../fonts/OpenSans-CondBold-webfont.eot');
+    src: url('../fonts/ubuntu-font-family-0.83/OpenSans-CondBold-webfont.eot');
     src: url('../fonts/OpenSans-CondBold-webfont.eot?#iefix') format('embedded-opentype'),
          url('../fonts/OpenSans-CondBold-webfont.woff') format('woff'),
          url('../fonts/OpenSans-CondBold-webfont.ttf') format('truetype'),
@@ -34,3 +34,13 @@
 
 }
 
+
+## Ubuntu
+@font-face {
+    font-family: 'UbuntuBold';
+    src: url('../fonts/ubuntu-font-family-0.83/Ubuntu-L.ttf');
+    font-weight: normal;
+    font-style: normal;
+
+}
+    
