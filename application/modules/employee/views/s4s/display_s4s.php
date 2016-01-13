@@ -48,8 +48,7 @@ echo "<br/>
 			return false;
 		} else { 		
 
-			displayComment(_s4s_id, _comment);
-			loadComments(_s4s_id);
+			displayComment(_s4s_id, _comment);			
 		}
 
 	})
@@ -74,7 +73,8 @@ echo "<br/>
 						html: "You have successfully added a new comment. Thank you!",
 						buttons: {
 							'Ok' : function() {
-								proceedApproveRequestModal.hide();								
+								proceedApproveRequestModal.hide();
+								loadComments(_s4s_id);								
 							}
 						}
 					});
