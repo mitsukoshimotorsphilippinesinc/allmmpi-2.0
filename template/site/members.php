@@ -134,7 +134,29 @@
 				</li>	
 				<li class='<?= isset($this->uri->uri_string) ? ($this->uri->uri_string == 'employee/announcement' ? 'active' : '') : '';  ?>'><a href="/employee/announcement" >Announcements</a></li>	
 				<li class='<?= isset($this->uri->uri_string) ? ($this->uri->segment(2) == 's4s' ? 'active' : '') : '';  ?>'><a href="/employee/s4s" >S4S</a></li>	
-				<li class='<?= isset($this->uri->uri_string) ? ($this->uri->segment(2) == 'cod' ? 'active' : '') : '';  ?>'><a href="/employee/cod" >Code of Discipline</a></li>
+				<?php
+				$cod_access_setting = $this->setting_model->get_setting_by_slug("code_of_discipline_access_position_ids");
+
+				if ($cod_access_setting->value == "ALL") {
+				?>
+					<li class='<?= isset($this->uri->uri_string) ? ($this->uri->segment(2) == 'cod' ? 'active' : '') : '';  ?>'><a href="/employee/cod" >Code of Discipline</a></li>						
+				<?php	
+				} else { 
+
+					// check if employee's position_id is in the list
+					$position_id = explode("|", $cod_access_setting->value);
+
+					foreach ($position_id as $pi) {
+						if ($pi == $this->employee->position_id) {
+				?>
+							<li class='<?= isset($this->uri->uri_string) ? ($this->uri->segment(2) == 'cod' ? 'active' : '') : '';  ?>'><a href="/employee/cod" >Code of Discipline</a></li>								
+				<?php
+							break;							
+						}
+					}				
+				}
+				?>
+				
 				
 			</ul>
 			<hr class='user-nav-divider'/>

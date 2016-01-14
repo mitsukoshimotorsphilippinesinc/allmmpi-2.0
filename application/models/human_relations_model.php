@@ -30,6 +30,8 @@ class Human_relations_model extends Base_Model
 			's4s_position' => 'el_s4s_position',
 			's4s_position_view' => 'el_s4s_position_view',
 			's4s_message' => 'el_s4s_message',
+			'cod' => 'el_cod',
+			'cod_message' => 'el_cod_message',
 		);
 
 	}
@@ -705,5 +707,94 @@ class Human_relations_model extends Base_Model
 		}
 		return $row;
 	}
+	// ==============================================================
+	// ==============================================================
+	// el_cod
+	function get_cod($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('cod', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;	
+	}
+
+	function insert_cod($data) 
+	{
+		return $this->insert('cod', $data);
+	}
+
+	function update_cod($data, $where) 
+	{
+		return $this->update('cod', $data, $where);
+	}
+
+	function delete_cod($where) 
+	{
+		return $this->delete('cod', $where);
+	}
+
+	function get_cod_by_id($s4s_id) 
+	{
+		$result = $this->get_cod(array('s4s_id' => $s4s_id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
+
+	function get_cod_count($where = null) {
+		$query = $this->fetch('cod', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+	// ==============================================================
+	// ==============================================================
+	// el_cod_message
+	function get_cod_message($where = null, $limit = null, $orderby = null, $fields = null)
+	{
+		$query = $this->fetch('cod_message', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+	}
+
+	function insert_cod_message($data)
+	{
+		return $this->insert('cod_message', $data);
+	}
+
+	function update_cod_message($data, $where)
+	{
+		return $this->update('cod_message', $data, $where);
+	}
+
+	function delete_cod_message($where)
+	{
+		return $this->delete('cod_message', $where);
+	}
+
+	function get_cod_message_count($where = null)
+	{
+		// do a sql count instead of row count
+		$query = $this->fetch('cod_message', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+
+	function get_cod_message_by_id($cod_message_id)
+	{
+		$result = $this->get_cod_message(array('cod_message_id' => $cod_message_id));
+		$row = NULL;
+		if (count($result) > 0)
+		{
+			$row = $result[0];
+		}
+		return $row;
+	}
+
+	// ==============================================================
 
 }
