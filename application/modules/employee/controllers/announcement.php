@@ -75,7 +75,7 @@ class Announcement extends Site_Controller
 
 				$html .= $this->load->view("announcement/display_comments", $data, TRUE);
 
-				$html .= "<textarea style='width:67.5em;' class='new-comment-{$a->announcement_id}'></textarea>
+				$html .= "<textarea placeholder='Put your comments here...' style='width:67.5em;' class='new-comment-{$a->announcement_id}'></textarea>
 						<button class='button-post btn btn-primary pull-right' style='margin-bottom:10px;' data='{$a->announcement_id}' title='Post'>Post</button>
 						<div class='announcement-comments-{$a->announcement_id}'></div>
 						<div style='width: 100%; height: 2px; background: #F87431; overflow: hidden;''></div>";		

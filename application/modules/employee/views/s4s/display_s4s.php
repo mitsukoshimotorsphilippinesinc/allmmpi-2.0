@@ -16,7 +16,7 @@ echo "<iframe id='viewer' src='/assets/js/libs/ViewerJS/index.html#../../../medi
 
 echo "<br/>
 	  <div id='s4s-comments'></div>
-	  <textarea class='' style='width:67.5em;' id='new-s4s-comment'></textarea>
+	  <textarea placeholder='Put your comments here...' class='' style='width:67.5em;' id='new-s4s-comment'></textarea>
 	  <button class='button-post btn btn-primary pull-right' style='margin-right:margin-bottom:10px;' data='{$course_details->s4s_id}' title='Post'>Post</button>	  
 	  ";
 

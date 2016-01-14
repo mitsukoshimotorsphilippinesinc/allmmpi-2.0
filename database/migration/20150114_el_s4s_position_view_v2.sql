@@ -1,0 +1,57 @@
+DROP VIEW IF EXISTS `el_s4s_position_view`;
+CREATE VIEW `el_s4s_position_view` AS 
+(select `a`.
+`s4s_id` AS `s4s_id`,
+`a`.`pp_name` AS `pp_name`,
+`a`.`pp_description` AS `pp_description`,
+`a`.`is_active` AS `is_active_s4s`,
+`b`.`position_id` AS `position_id`,
+`b`.`parent_position_id` AS `parent_position_id`,
+`b`.`position_name` AS `position_name`,
+`b`.`is_active` AS `is_active_position`,
+`c`.`priority_order` AS `priority_order`,
+`c`.`is_active` AS `is_active_s4s_position`,
+`c`.`insert_timestamp` AS `insert_timestamp` 
+from ((`el_s4s_position` `c` left join `el_s4s` `a` on((`a`.`s4s_id` = `c`.`s4s_id`))) 
+left join `rf_position` `b` on((`b`.`position_id` = `c`.`position_id`))));
+
+
+
+INSERT INTO mmpi.rf_setting(`slug`, `value`, `default`, `department_id`, `is_locked`)
+VALUES ('s4s_override_id_numbers', '1503108', '1503108' , 5, 1);
+INSERT INTO mmpi.rf_setting(`slug`, `value`, `default`, `department_id`, `is_locked`)
+VALUES ('code_of_discipline_access_position_ids', '6|8|9|10|15|17|18|19|20|21|22|23|24|25|26|32|36|37|43|46|47|48|49|55|56|57|65|76|80|81|89|94|96|97|98|99|100|101|103|104|105|106|107|108|113|114|116|117|119|126|127', 'ALL' , 5, 1);
+
+DROP TABLE IF EXISTS `el_cod_message`;
+CREATE TABLE `el_cod_message` (
+  `cod_message_id` 		int(11) NOT NULL AUTO_INCREMENT,
+  `cod_id` 				int(11) NOT NULL DEFAULT '0',
+  `from_id_number` 		varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'n/a',
+  `to_id_number` 		varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'n/a',
+  `message` 			text COLLATE utf8_unicode_ci,
+  `is_removed` 			tinyint(2) NOT NULL DEFAULT '0',
+  `insert_timestamp` 	timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`cod_message_id`),
+  KEY `id_number` (`from_id_number`),
+  KEY `cod_id` (`cod_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+DROP TABLE IF EXISTS `el_cod`;
+CREATE TABLE `el_cod` (
+  `cod_id` 				int(11) NOT NULL AUTO_INCREMENT,
+  `cod_name` 			varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cod_description` 	varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `asset_filename` 		text COLLATE utf8_unicode_ci,
+  `asset_description` 	varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `file_type` 			varchar(20) COLLATE utf8_unicode_ci DEFAULT 'pdf',
+  `is_active` 			int(11) NOT NULL DEFAULT '0',
+  `insert_timestamp` 	timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_timestamp` 	timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`cod_id`),
+  KEY `cod_name` (`cod_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+INSERT INTO el_cod(`cod_name`, `cod_description`, `asset_filename`, `asset_description`, `is_active`)
+VALUES ('COD-2016 Rev2', 'Date of Effectivity: February 1, 2016', 'MMPI REVISED COD 2016.pdf', 'COD-2016', 1);
