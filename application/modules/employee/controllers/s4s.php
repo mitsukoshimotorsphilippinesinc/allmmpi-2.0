@@ -10,6 +10,8 @@ class S4s extends Site_Controller
 		$this->load->model('asset_model');
 		$this->load->model('setting_model');
 
+		$this->db_human_relations = $this->load->database('human_relations', TRUE);
+
 		$this->load->library('pager2');
 	}
 	
@@ -32,26 +34,50 @@ class S4s extends Site_Controller
 
 		if(empty($page)) $page = 1;
 
+		// list of id number that can override s4s
+		$in_override_list = strpos($this->setting->s4s_override_id_numbers, $this->employee->id_number);
 
+		$where = "is_active_s4s = 1";
 
-		//$where = "company_id IN (0, {$this->employee->company_id}) AND branch_id IN (0, {$this->employee->branch_id}) AND department_id IN (0, {$this->employee->department_id}) AND position_id IN (0, {$this->employee->position_id})";
-		$where = "(position_id = {$this->employee->position_id} OR parent_position_id = {$this->employee->position_id}) AND is_active_s4s = 1";
+		if ($in_override_list === FALSE) {
+		
+			//$where = "company_id IN (0, {$this->employee->company_id}) AND branch_id IN (0, {$this->employee->branch_id}) AND department_id IN (0, {$this->employee->department_id}) AND position_id IN (0, {$this->employee->position_id})";
+			$where .= " AND (position_id = {$this->employee->position_id} OR parent_position_id = {$this->employee->position_id}) AND is_active_s4s_position = 1";
 
-		$add_where = "";
-		if (strlen($search_data) > 0) {
-			$add_where = " AND (pp_name like '%{$search_data}%' OR pp_description LIKE '%{$search_data}%')";
-			$where .= $add_where;
+			$add_where = "";
+			if (strlen($search_data) > 0) {
+				$add_where = " AND (pp_name like '%{$search_data}%' OR pp_description LIKE '%{$search_data}%')";
+				$where .= $add_where;
+			}
+
 		}
+	
+		//$s4s_count = $this->human_relations_model->get_s4s_position_view_count($where);
+		// replacement [start]
+		$sql = "SELECT 
+					*
+				FROM 
+				 	el_s4s_position_view 
+				WHERE	
+					{$where}
+				GROUP BY
+					pp_name
+				ORDER BY 
+				 	priority_order";
 
-		//$s4s_count = $this->human_relations_model->get_s4s_count($where);
-		$s4s_count = $this->human_relations_model->get_s4s_position_view_count($where);
+		$query = $this->db_human_relations->query($sql);
+		$s4s_view_details = $query->result();			
+		$query->free_result();
+
+		$s4s_count = count($s4s_view_details);	
+		// replacement [end]
 
 		$records_per_page = 30;
 		$offset = ($page - 1) * $records_per_page;
-        $offset = ($offset < 0 ? 0 : $offset);
+        $offset = ($offset < 0 ? 0 : $offset);       
 
 		$this->pager2->set_config(array(
-            'total_items' => $s4s_count,
+            'total_items' => $s4s_count,            
             'per_page' => $records_per_page,
             'offset' => $offset,
             'adjacents' => 1,
@@ -61,8 +87,28 @@ class S4s extends Site_Controller
         $pagination = $this->pager2->create_links();
        
 		$limit = array("rows"=>$records_per_page,"offset"=>$offset);
-		//$s4s = $this->human_relations_model->get_s4s($where, $limit,'priority_order');
-		$s4s = $this->human_relations_model->get_s4s_position_view($where, $limit, 'priority_order');
+		
+		//$s4s = $this->human_relations_model->get_s4s_position_view($where, $limit, 'priority_order');
+		// replacement [start]
+		$sql = "SELECT 
+					*
+				FROM 
+				 	el_s4s_position_view 
+				WHERE 	
+				 	{$where}
+				GROUP BY
+					pp_name				
+				ORDER BY 
+				 	priority_order
+				LIMIT 
+					{$this->pager2->per_page} 
+				OFFSET 
+					{$offset}";
+
+		$query = $this->db_human_relations->query($sql);
+		$s4s = $query->result();			
+		$query->free_result();	
+		// replacement [end]
 
 		$html = "";
 
