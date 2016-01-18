@@ -19,6 +19,7 @@
 <script type="text/javascript">
 	
 	var _current_page = "";
+	var _segment = "<?= $segment ?>";
 
 	var loadResults = function(page){
 
@@ -28,6 +29,7 @@
 			url: '/employee/s4s/get_s4s_list',
 			data: {
 				"page": page,
+				"segment": _segment,
 				"search_data" : _search_data
 
 			},
@@ -109,7 +111,8 @@
 
 					} else {
 						// proceed to pdf loading						
-						window.open("s4s/view/" + _s4sId);
+						//window.open("s4s/view/" + _s4sId);
+						window.open("view/" + _s4sId);
 					}
 
 				} else {

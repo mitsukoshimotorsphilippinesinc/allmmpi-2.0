@@ -2,7 +2,7 @@
 	<ul class="nav nav-pills">
 		<li class=""><a href="/human_relations">Human Relations</a><li>
 		<li class=""><a href="/accounting">Accounting</a><li>
-		<li class=""><a href="/customer_service">Customer Service/CSD</a><li>
+		<li class=""><a href="/corporate_services">Corporate Services</a><li>
 		<li  class="dropdown dropdown-auto">
 			<a href="/dpr" class="dropdown-toggle" data-toggle="dropdown">DPR<b class="caret"></b></a>
 			 <ul class="dropdown-menu">

@@ -149,11 +149,12 @@ else
 					foreach ($expense_signatory_details as $es) {
 					 	$expense_signatory_options[$es->expense_signatory_id] = $es->complete_name;
 					}				
-					?>
-
-					<?= form_dropdown('approved_by', $expense_signatory_options, set_value('approved_by',$expense_summary_details->approved_by), 'id="approved_by"') ?>
 					
-					
+					if ($isAdd) {						
+						echo form_dropdown('approved_by',$expense_signatory_options, NULL,'id="approved_by"');
+					} else {
+						echo form_dropdown('approved_by', $expense_signatory_options, set_value('approved_by',$expense_summary_details->approved_by), 'id="approved_by"');
+					} ?>					
 					<p class="help-block"><?= $this->form_validation->error('approved_by'); ?></p>
 				</div>
 				<br/>
@@ -172,11 +173,12 @@ else
 					foreach ($it_personnel_details as $ipd) {
 					 	$it_personnel_options[$ipd->id_number] = $ipd->complete_name;
 					}				
-					?>
-
-					<?= form_dropdown('requested_by', $it_personnel_options, set_value('requested_by',$expense_summary_details->requested_by), 'id="requested_by"') ?>
 					
-					
+					if ($isAdd) {						
+						echo form_dropdown('requested_by', $it_personnel_options, NULL, 'id="requested_by"');
+					} else {
+						echo form_dropdown('requested_by', $it_personnel_options, set_value('requested_by',$expense_summary_details->requested_by), 'id="requested_by"');
+					} ?>	
 					<p class="help-block"><?= $this->form_validation->error('requested_by'); ?></p>
 				</div>
 		
