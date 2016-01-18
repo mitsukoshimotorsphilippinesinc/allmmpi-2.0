@@ -253,4 +253,9 @@
 	    }*/
 	});
 
+	$(".add-close").live('click',function(){
+		window.location.href = '/information_technology/repairs/listing';
+		return false;
+	});
+
 </script>
