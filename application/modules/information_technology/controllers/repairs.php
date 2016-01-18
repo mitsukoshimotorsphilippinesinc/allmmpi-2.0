@@ -264,13 +264,22 @@ class Repairs extends Admin_Controller {
 		                    	repair_number DESC
 		                	)";
 			} else {
+
+				$employment_information_view_details = $this->human_relations_model->get_employment_information_view_by_id($this->user->user_id);
+
+				if (empty($employment_information_view_details))
+					$department_id = 0;
+				else 
+					$department_id = $employment_information_view_details->department_id;
+
 				$sql = "INSERT INTO 
 						rs_repair_summary 
 						(
 							`repair_series`, 
 							`repair_number`, 
 							`branch_id`, 
-							`id_number`, 
+							`id_number`,
+							`department_id`, 
 							`received_by`, 
 							`tr_number_in`, 
 							`reported_concern`, 
@@ -283,6 +292,7 @@ class Repairs extends Admin_Controller {
 	                		'{$requester_id}',
 	                		NULL,
 	                		'{$this->user->id_number}',
+	                		'{$department_id}',
 	                        '{$tr_number_in}',
 	                        '{$reported_concern}',
 	                        '{$date_received}'
@@ -450,6 +460,11 @@ class Repairs extends Admin_Controller {
 				"is_branch_expense" => $is_branch_expense,
 			);
 
+		if ($repair_status_id == 7) {
+			$data["approved_by"] = $approved_by;
+			$data["date_approved"] = $date_approved;			
+		}
+
 		$this->information_technology_model->insert_repair_remark($data);
 
 		$where ="repair_detail_id = {$repair_detail_id}";
@@ -515,7 +530,7 @@ class Repairs extends Admin_Controller {
 		if ($repair_status_id == 7) {
 
 			// check first if repair_summary_id exists
-			$expense_summary_details = $this->information_technology_model->get_expense_summary("repair_summary_id = " . $repair_details->repair_summary_id);
+			$expense_summary_details = $this->information_technology_model->get_expense_summary("repair_summary_id = " . $repair_summary->repair_summary_id);
 
 			if (empty($expense_summary_details)) {
 
@@ -526,7 +541,7 @@ class Repairs extends Admin_Controller {
 				$current_datetime = date('Y-m-d H:i:s');						
 			
 				// check if branch or employee
-				if ($repair_summmary->branch_id > 0) {
+				if ($repair_summary->branch_id > 0) {
 					// BRANCH
 					
 					$sql = "INSERT INTO 
@@ -547,14 +562,14 @@ class Repairs extends Admin_Controller {
 			                	SELECT 
 			                		'{$expense_series}', 
 			                		IFNULL(MAX(expense_number) + 1, 1) AS expense_number, 
-			                		'{$repair_summmary->branch_id}',
-			                		approved_by???,	
+			                		'{$repair_summary->branch_id}',
+			                		'{$approved_by}',	
 			                		'{$authority_number}',	
 			                		'{approval_number}',
 			                		'{$this->user->id_number}',
 			                		'{$this->user->id_number}',			                        			                        
-			                        date_approved???,
-			                        '{$repair_summmary->branch_id}'
+			                        '{date_approved}',
+			                        '{$repair_summary->branch_id}'
 			                	FROM 
 			                		rs_expense_summary
 			                	WHERE 
@@ -570,7 +585,8 @@ class Repairs extends Admin_Controller {
 								(
 									`expense_series`, 
 									`expense_number`, 
-									`branch_id`, 									
+									`id_number`,
+									`department_id`, 				
 									`approved_by`, 
 									`authority_number`, 
 									`approval_number`, 
@@ -583,24 +599,25 @@ class Repairs extends Admin_Controller {
 			                	SELECT 
 			                		'{$expense_series}', 
 			                		IFNULL(MAX(expense_number) + 1, 1) AS expense_number, 
-			                		'{$repair_summmary->branch_id}',
-			                		approved_by???,	
+			                		'{$repair_summary->id_number}',
+			                		'{$repair_summary->department_id}',
+			                		'{$approved_by}',	
 			                		'{$authority_number}',	
 			                		'{approval_number}',
 			                		'{$this->user->id_number}',
 			                		'{$this->user->id_number}',			                        			                        
-			                        date_approved???,
-			                        '{$repair_summmary->branch_id}'
+			                        '{date_approved}',
+			                        '{$repair_summary->branch_id}'
 			                	FROM 
 			                		rs_expense_summary
 			                	WHERE 
 			                		expense_series = '{$expense_series}'                 	
 			                    ORDER BY 
 			                    	expense_number DESC
-			                	)";
-
-										
+			                	)";										
 				}
+
+				$this->db_information_technology->query($sql);	
 
 			}
 		}	
