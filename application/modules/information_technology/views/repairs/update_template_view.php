@@ -82,7 +82,30 @@
 <div id="is_branch_expense_container_<?= $repair_detail->repair_detail_id ?>" style="margin-top:-30px;display:none;">
 	<input id="is_branch_expense_<?= $repair_detail->repair_detail_id ?>" name="is_branch_expense_<?= $repair_detail->repair_detail_id ?>" type="checkbox" value="is_branch_expense" name="is_branch_expense">
 	<strong>Is Branch Expense</strong>
-</div>	
+</div>
+
+<div id="approval_container_<?= $repair_detail->repair_detail_id ?>" style="display:none;">
+	<span>Approved By: </span>
+	<?php
+	$date_approved = date('Y-m-d');
+
+	$where = "is_active = 1";
+	$expense_signatory_details = $this->information_technology_model->get_expense_signatory($where, NULL, "complete_name");
+
+
+
+	$expense_signatory_options = array();
+	$expense_signatory_options = array('' => 'Select Signatory...');
+	foreach ($expense_signatory_details as $es) {
+	 	$expense_signatory_options[$es->expense_signatory_id] = $es->complete_name;
+	}
+
+	echo form_dropdown('approved_by',$expense_signatory_options, NULL,'id="approved_by" style="margin-top:1em;"');
+	?>
+	<span>Date Approved: </span>
+	<input type="text" class="input-medium" id="date_approved" name='date_received' readonly='readonly' style='margin-top:1em;cursor:pointer;' />
+</div>
+
 <div class="control-group error">
 	<p id="input_errors_<?= $repair_detail->repair_detail_id ?>" class="help-block">		
 	</p>
@@ -90,3 +113,20 @@
 <br/>
 
 </div>
+
+<script>
+
+	$("#date_approved").datepicker({
+        timeFormat: 'hh:mm tt',
+		'dateFormat' : "yy-mm-dd",			
+	});
+	
+	$("#date_approved_icon").click(function(e) {
+		$("#date_approved").datepicker("show");
+	});
+	
+	$("#date_approved").datepicker('setDate', '<?= $date_approved ?>');
+	$("#date_approved").datepicker("option", "changeMonth", true);
+	$("#date_approved").datepicker("option", "changeYear", true);
+
+</script>
