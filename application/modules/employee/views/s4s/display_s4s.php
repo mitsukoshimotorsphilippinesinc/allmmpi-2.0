@@ -7,9 +7,11 @@
 </div>
 
 <?php
+$department_details = $this->human_relations_model->get_department_by_id($course_details->department_id);
+
 foreach ($asset_details as $ad) {
 
-echo "<iframe id='viewer' src='/assets/js/libs/ViewerJS/index.html#../../../media/s4s/{$ad->asset_filename}' style='width:100%;height:800px;' allowfullscreen webkitallowfullscreen=''></iframe> <br/>";
+echo "<iframe id='viewer' src='/assets/js/libs/ViewerJS/index.html#../../../media/s4s/{$department_details->url}/{$ad->asset_filename}' style='width:100%;height:800px;' allowfullscreen webkitallowfullscreen=''></iframe> <br/>";
 //echo "<iframe id='viewer' src='/assets/js/libs/ViewerJS/index.html#http://portal.mmpi.local/assets/media/s4s/{$ad->asset_filename}' style='width:100%;height:800px;' allowfullscreen webkitallowfullscreen=''></iframe> <br/>";
 
 }

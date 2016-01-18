@@ -85,10 +85,16 @@
 
 		if (_addStatusVal == 7) {
 			var _poPrice = $("#add_po_price_" +_repairDetailId ).val();
+			var _approvedBy = $("#approved_by").val();
 
 			if ($.trim(_poPrice) == "") {				
 				_hasError = 1;			
 				input_errors += "The Approved Amount field is required. ";
+			}
+
+			if ($.trim(_approvedBy) == 0) {				
+				_hasError = 1;			
+				input_errors += "The Approved By field is required. ";
 			}
 		}
 
@@ -130,6 +136,8 @@
 				"authority_number" : $("#add_authority_number_" +_repairDetailId ).val(),
 				"proposed_price" : $("#add_proposed_price_" +_repairDetailId ).val(),
 				"is_branch_expense" : _isBranchEspense,
+				"approved_by" : $("#approved_by").val(),
+				"date_approved" : $("#date_approved").val(),
 
 
 			},
@@ -187,7 +195,9 @@
 			$("#add_authority_number_" + _detailId).hide();
 			$("#add_authority_number_" + _detailId).val("");
 			$("#add_proposed_price_" + _detailId).hide();
-			$("#add_proposed_price_" + _detailId).val("");						
+			$("#add_proposed_price_" + _detailId).val("");
+			$("#approval_container_" + _detailId).hide();
+			$("#approved_by").val(0);						
 			$('#add_remark_' + _detailId).addClass('span7').removeClass('span9');
 		} else if ($(this).val() == '10') {			
 			// FOR DELIVERY
@@ -200,7 +210,9 @@
 			$("#add_authority_number_" + _detailId).hide();
 			$("#add_authority_number_" + _detailId).val("");
 			$("#add_proposed_price_" + _detailId).hide();
-			$("#add_proposed_price_" + _detailId).val("");						
+			$("#add_proposed_price_" + _detailId).val("");
+			$("#approval_container_" + _detailId).hide();
+			$("#approved_by").val(0);						
 			$('#add_remark_' + _detailId).addClass('span7').removeClass('span9');
 		} else if ($(this).val() == '7') {
 			// FOR P.O.
@@ -212,6 +224,7 @@
 			$("#add_proposed_price_" + _detailId).hide();
 			$("#add_proposed_price_" + _detailId).val("");
 			$("#is_branch_expense_container_" + _detailId).show();			
+			$("#approval_container_" + _detailId).show();
 			$('#add_remark_' + _detailId).addClass('span5').removeClass('span7').removeClass('span9');
 		} else if ($(this).val() == '6') {
 			$("#add_tr_number_in_" + _detailId).hide();
@@ -224,6 +237,8 @@
 			$("#add_authority_number_" + _detailId).val("");
 			$("#add_proposed_price_" + _detailId).show();
 			$("#is_branch_expense_container_" + _detailId).hide();
+			$("#approval_container_" + _detailId).hide();
+			$("#approved_by").val(0);
 			$('#add_remark_' + _detailId).addClass('span7').removeClass('span9');	
 		} else {
 			$("#add_tr_number_in_" + _detailId).hide();
@@ -237,6 +252,8 @@
 			$("#add_proposed_price_" + _detailId).hide();
 			$("#add_proposed_price_" + _detailId).val("");
 			$("#is_branch_expense_container_" + _detailId).hide();
+			$("#approval_container_" + _detailId).hide();
+			$("#approved_by").val(0);
 			$('#add_remark_' + _detailId).addClass('span9').removeClass('span7');
 		}
 
