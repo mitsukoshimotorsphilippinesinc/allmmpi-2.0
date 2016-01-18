@@ -133,7 +133,21 @@
 					</ul>
 				</li>	
 				<li class='<?= isset($this->uri->uri_string) ? ($this->uri->uri_string == 'employee/announcement' ? 'active' : '') : '';  ?>'><a href="/employee/announcement" >Announcements</a></li>	
-				<li class='<?= isset($this->uri->uri_string) ? ($this->uri->segment(2) == 's4s' ? 'active' : '') : '';  ?>'><a href="/employee/s4s" >S4S</a></li>	
+				
+
+				<li class='<?= isset($this->uri->uri_string) ? ($this->uri->uri_string == 'employee/s4s' ? 'active' : '') : '';  ?> dropdown'>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">S4S <i class="icon-play-down" style="padding-right: 3px;"></i></a>
+					<ul class="dropdown-menu" role="menu">
+						<li role="menuitem"><a href="/employee/s4s/page/operations">Operations</a></li>
+						<li role="menuitem"><a href="/employee/s4s/page/human_relations">Human Resource</a></li>
+						<li role="menuitem"><a href="/employee/s4s/page/dpr">Treasury</a></li>
+						<li role="menuitem"><a href="/employee/s4s/page/accounting">Accounting</a></li>
+						<li role="menuitem"><a href="/employee/s4s/page/corporate_services">Corporate Services</a></li>
+						<li role="menuitem"><a href="/employee/s4s/page/spare_parts">Spare Parts</a></li>
+						<li role="menuitem"><a href="/employee/s4s/page/information_technology">Information Technology</a></li>						
+					</ul>
+				</li>	
+
 				<?php
 				$cod_access_setting = $this->setting_model->get_setting_by_slug("code_of_discipline_access_position_ids");
 

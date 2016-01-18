@@ -15,21 +15,27 @@ class S4s extends Site_Controller
 		$this->load->library('pager2');
 	}
 	
-	public function index()
-	{
-		$this->page();
+	public function index($segment)
+	{		
+		$this->page($segment);
 	}
 	
-	public function page()
+	public function page($segment, $course_id = 0)
 	{							
 		$this->template->current_page = 's4s';
-		$this->template->view('s4s/dashboard');
+		$this->template->segment = $segment;
+		if ($segment == "view") {
+			$this->view($course_id);
+		} else {
+			$this->template->view('s4s/dashboard');
+		}
 	}
 
 	
 	public function get_s4s_list()
 	{
 		$page = $this->input->post('page');
+		$segment = $this->input->post('segment');
 		$search_data = trim($this->input->post('search_data'));
 
 		if(empty($page)) $page = 1;
@@ -37,7 +43,10 @@ class S4s extends Site_Controller
 		// list of id number that can override s4s
 		$in_override_list = strpos($this->setting->s4s_override_id_numbers, $this->employee->id_number);
 
-		$where = "is_active_s4s = 1";
+		// get department_name
+		$department_details = $this->human_relations_model->get_department_by_url($segment);
+
+		$where = "is_active_s4s = 1 AND department_id = {$department_details->department_id}";
 
 		if ($in_override_list === FALSE) {
 		
@@ -46,7 +55,7 @@ class S4s extends Site_Controller
 
 			$add_where = "";
 			if (strlen($search_data) > 0) {
-				$add_where = " AND (pp_name like '%{$search_data}%' OR pp_description LIKE '%{$search_data}%')";
+				$add_where = " AND (pp_name like '%{$search_data}%' OR pp_description LIKE '%{$search_data}%' OR reference_number LIKE '%{$search_data}%')";
 				$where .= $add_where;
 			}
 
@@ -121,6 +130,7 @@ class S4s extends Site_Controller
 							<table class='table table-condensed table-striped table-bordered' style='font-size:12px;'>
 							<thead>
 								<tr>
+									<th>Reference Number</th>
 									<th>Policy / Procedure Name</th>
 									<th>Description</th>					
 									<th>Date Created</th>
@@ -144,7 +154,8 @@ class S4s extends Site_Controller
 							$acceptance_date = $acceptance_details[0]->insert_timestamp;
 						} 
 
-						$html .= "<tr> 
+						$html .= "<tr>
+									<td><a href='#' class='link-s4s' data='{$s->s4s_id}'>{$s->reference_number}</td>
 									<td><a href='#' class='link-s4s' data='{$s->s4s_id}'>{$s->pp_name}</a></td>
 									<td>{$s->pp_description}</td>						
 									<td>{$s->insert_timestamp}</td>
@@ -283,4 +294,5 @@ class S4s extends Site_Controller
 		return;
 
 	}
+
 }

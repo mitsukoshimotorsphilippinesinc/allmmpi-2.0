@@ -111,7 +111,7 @@ class Repairs extends Admin_Controller {
 		$config = array(
 				'pagination_url' => "/information_technology/repairs/listing/",				
 				'total_items' => $this->information_technology_model->get_repair_summary_count($where),
-				'per_page' => 10,
+				'per_page' => 30,
 				'uri_segment' => 4,
 		);
 
@@ -507,6 +507,104 @@ class Repairs extends Admin_Controller {
 		}
 
 		$repair_summary = $this->information_technology_model->get_repair_summary_by_id($repair_detail_details->repair_summary_id);
+
+		// EXPENSES SYSTEM - ON GOING DEV
+		// ==============================
+		if ($repair_status_id == 7) {
+
+			// check first if repair_summary_id exists
+			$expense_summary_details = $this->information_technology_model->get_expense_summary("repair_summary_id = " . $repair_details->repair_summary_id);
+
+			if (empty($expense_summary_details)) {
+
+				// create new entry
+				$dateyear = date("Y");
+				$expense_series = substr($dateyear, 2, 2);
+				
+				$current_datetime = date('Y-m-d H:i:s');						
+			
+				// check if branch or employee
+				if ($repair_summmary->branch_id > 0) {
+					// BRANCH
+					
+					$sql = "INSERT INTO 
+								es_expense_summary 
+								(
+									`expense_series`, 
+									`expense_number`, 
+									`branch_id`, 									
+									`approved_by`, 
+									`authority_number`, 
+									`approval_number`, 
+									`requested_by`,
+									`created_by`,
+									`date_approved`,
+									`repair_summary_id`,
+								)
+			                	(
+			                	SELECT 
+			                		'{$expense_series}', 
+			                		IFNULL(MAX(expense_number) + 1, 1) AS expense_number, 
+			                		'{$repair_summmary->branch_id}',
+			                		approved_by???,	
+			                		'{$authority_number}',	
+			                		'{approval_number}',
+			                		'{$this->user->id_number}',
+			                		'{$this->user->id_number}',			                        			                        
+			                        date_approved???,
+			                        '{$repair_summmary->branch_id}'
+			                	FROM 
+			                		rs_expense_summary
+			                	WHERE 
+			                		expense_series = '{$expense_series}'                 	
+			                    ORDER BY 
+			                    	expense_number DESC
+			                	)";
+
+				} else {
+					// EMPLOYEE
+					$sql = "INSERT INTO 
+								es_expense_summary 
+								(
+									`expense_series`, 
+									`expense_number`, 
+									`branch_id`, 									
+									`approved_by`, 
+									`authority_number`, 
+									`approval_number`, 
+									`requested_by`,
+									`created_by`,
+									`date_approved`,
+									`repair_summary_id`,
+								)
+			                	(
+			                	SELECT 
+			                		'{$expense_series}', 
+			                		IFNULL(MAX(expense_number) + 1, 1) AS expense_number, 
+			                		'{$repair_summmary->branch_id}',
+			                		approved_by???,	
+			                		'{$authority_number}',	
+			                		'{approval_number}',
+			                		'{$this->user->id_number}',
+			                		'{$this->user->id_number}',			                        			                        
+			                        date_approved???,
+			                        '{$repair_summmary->branch_id}'
+			                	FROM 
+			                		rs_expense_summary
+			                	WHERE 
+			                		expense_series = '{$expense_series}'                 	
+			                    ORDER BY 
+			                    	expense_number DESC
+			                	)";
+
+										
+				}
+
+			}
+		}	
+		// ==============================
+
+
 
 		$html = "<p>Remarks posted successfully!</p>";
 		$title = "Add Remarks :: Repairs";

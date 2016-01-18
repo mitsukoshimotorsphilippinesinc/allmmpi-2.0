@@ -3,7 +3,20 @@
 	$repair_hardware_details = $this->information_technology_model->get_repair_hardware_by_id($repair_detail->repair_hardware_id);
 ?>
 
-<div class="alert alert-success"><h4><?= $repair_hardware_details->repair_hardware_name; ?> x <?= $repair_detail->quantity ?></h4></div>
+<!--div class="alert alert-success"><h4><?= $repair_hardware_details->repair_hardware_name; ?> x <?= $repair_detail->quantity ?></h4></div-->
+
+<table class="table table-striped" style="color:#004FCC;">
+  <tbody>
+    <tr>
+      <td style="width:30em;"><h4><?= $repair_hardware_details->repair_hardware_name; ?> x <?= $repair_detail->quantity ?></h4></td>
+      <td style="width:35em;"><?= $repair_detail->description ?></td>
+      <td style="width:35em;"><?= $repair_detail->peripherals ?></td>
+    </tr>
+    
+  </tbody>
+</table>
+
+
 
 <table class="table table-bordered table-condensed" id="remarks_<?= $repair_detail->repair_detail_id ?>">
 	<thead id="">
@@ -75,5 +88,5 @@
 	</p>
 </div>							
 <br/>
-<hr/>
+
 </div>

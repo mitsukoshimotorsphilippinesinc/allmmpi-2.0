@@ -32,11 +32,12 @@ if (($is_allowed == 1) || ($cod_access_setting == "ALL")) {
 
 		echo "<iframe id='viewer' src='/assets/js/libs/ViewerJS/index.html#../../../media/cod/{$cod_details->asset_filename}' style='width:100%;height:800px;' allowfullscreen webkitallowfullscreen=''></iframe> <br/>";
 
-		echo "<br/>
-			  <div id='cod-comments'></div>
-			  <textarea placeholder='Put your comments here...' class='' style='width:67.5em;' id='new-cod-comment'></textarea>
-			  <button class='button-post btn btn-primary pull-right' style='margin-right:margin-bottom:10px;' data='{$cod_details->cod_id}' title='Post'>Post</button>	  
-			  ";
+		//echo "<br/>
+		//	  <div id='cod-comments'></div>
+		//	  <textarea placeholder='Put your comments here...' class='' style='width:67.5em;' id='new-cod-comment'></textarea>
+		//	  <button class='button-post btn btn-primary pull-right' style='margin-right:margin-bottom:10px;' data='{$cod_details->cod_id}' title='Post'>Post</button>	  
+		//	  ";
+
 	}
 } else {
 	echo "<center><h3><span style='color:red;'>Warning!</span> You are not allowed to directly access this page.<br/><small>Contact the IT Department if you need assistance. Thank you.</small></h3><center>";	
