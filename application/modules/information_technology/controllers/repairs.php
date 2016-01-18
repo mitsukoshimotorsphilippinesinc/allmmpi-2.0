@@ -419,6 +419,8 @@ class Repairs extends Admin_Controller {
 		$authority_number = $this->input->post("authority_number");
 		$proposed_price = $this->input->post("proposed_price");
 		$is_branch_expense = $this->input->post("is_branch_expense");
+		$approved_by = $this->input->post("approved_by");
+		$date_approved = $this->input->post("date_approved");
 
 		if ($repair_status_id == 2) {
 			// for delivery
