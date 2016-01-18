@@ -147,7 +147,7 @@
 
 								if (_is_accepted == 1) {
 									$(".acceptance-date-" + _s4sId).html(data.data.date_accepted);
-									window.open("s4s/view/" + _s4sId);
+									window.open("view/" + _s4sId);
 								}
 							}
 						}
