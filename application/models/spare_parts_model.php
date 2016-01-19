@@ -46,7 +46,9 @@ class Spare_parts_model extends Base_Model
 			'request_summary' => 'is_request_summary',
 			'request_detail' => 'is_request_detail',
 			'admin_log'=>'tr_admin_log',
-			'warehouse_transaction' => 'is_warehouse_transaction'
+			'warehouse_transaction' => 'is_warehouse_transaction',
+			'warehouse_personnel' => 'rf_warehouse_personnel',
+			'warehouse_personnel_view' => 'rf_warehouse_personnel_view',
 		);
 
 	}
@@ -1460,5 +1462,94 @@ class Spare_parts_model extends Base_Model
 		$query->free_result();
 		return $row->cnt;
 	}	
-	// ----------------------------------------------------
+	// ----------------------
+	//-----------------------
+	// rf_warehouse_personnel
+	function get_warehouse_personnel($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('warehouse_personnel', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+    }
+
+    function insert_warehouse_personnel($data) 
+	{
+		return $this->insert('warehouse_personnel', $data);
+	}
+
+	function update_warehouse_personnel($data, $where) 
+	{
+		return $this->update('warehouse_personnel', $data, $where);
+	}
+
+	function delete_warehouse_personnel($where) 
+	{
+		return $this->delete('warehouse_personnel', $where);
+	}
+
+	function get_warehouse_personnel_by_id_number($id_number) 
+	{
+		$result = $this->get_warehouse_personnel(array('id_number' => $id_number));
+		$row = NULL;
+		if (count($result) > 0) {
+			//$row = $result[0];
+			$row = $result;
+		}
+		return $row;
+	}
+	
+	function get_warehouse_personnel_count($where = null) {
+		// do a sql count instead of row count
+		$query = $this->fetch('warehouse_personnel', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+	//----------------------------
+	//----------------------------
+	// rf_warehouse_personnel_view
+	function get_warehouse_personnel_view($where = null, $limit = null, $orderby = null, $fields = null) 
+	{
+		$query = $this->fetch('warehouse_personnel_view', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+    }
+
+    function insert_warehouse_personnel_view($data) 
+	{
+		return $this->insert('warehouse_personnel_view', $data);
+	}
+
+	function update_warehouse_personnel_view($data, $where) 
+	{
+		return $this->update('warehouse_personnel_view', $data, $where);
+	}
+
+	function delete_warehouse_personnel_view($where) 
+	{
+		return $this->delete('warehouse_personnel_view', $where);
+	}
+
+	function get_warehouse_personnel_view_by_id_number($id_number) 
+	{
+		$result = $this->get_warehouse_personnel_view(array('id_number' => $id_number));
+		$row = NULL;
+		if (count($result) > 0) {
+			//$row = $result[0];
+			$row = $result;
+		}
+		return $row;
+	}
+	
+	function get_warehouse_personnel_view_count($where = null) {
+		// do a sql count instead of row count
+		$query = $this->fetch('warehouse_personnel_view', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+
+	//-------------------------------------------------------------------------
 }
