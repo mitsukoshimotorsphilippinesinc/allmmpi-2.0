@@ -440,11 +440,43 @@ class Repairs extends Admin_Controller {
 			$remarks = $remarks . " <strong>#TR_NUMBER_OUT: " . $tr_number_out . "</strong>";
 		} else if ($repair_status_id == 7) {
 			// for delivery
+			$proper_approved_by = $this->information_technology_model->get_expense_signatory_by_id($approved_by);
+			$proper_po_price = number_format($po_price, 2, '.', ',');
+
 			$remarks = $remarks . " <br/><strong>
-										#APPROVED_AMOUNT: " . $po_price . "<br/>
+										#APPROVED_BY: " . $proper_approved_by->complete_name . "<br/>
+										#DATE_APPROVED: " . $date_approved . "<br/>
+										#APPROVED_AMOUNT: " . $proper_po_price . "<br/>
 										#APPROVAL_NUMBER: " . $approval_number . "<br/>
 										#AUTHORITY_NUMBER: " . $authority_number . "
 									</strong>";
+			
+
+			/*var_dump($proper_approved_by);
+			$proper_po_price = number_format($po_price, 2, '.', ',');
+
+			$remarks = $remarks . "<table class='span4 table table-bordered table-condensed table-striped'>
+									<thead></thead>
+									<tbody>
+										<tr>
+											<td style=''>APPROVED BY</td><td>{$proper_approved_by}</td>
+										</tr>
+										<tr>
+											<td>APPROVED AMOUNT</td><td>{$proper_po_price}</td>
+										</tr>
+										<tr>
+											<td>APPROVAL NUMBER</td><td>{$approval_number}</td>
+										</tr>
+										<tr>
+											<td>AUTHORITY NUMBER</td><td>{$authority_number}</td>
+										</tr>
+										<tr>
+											<td>DATE APPROVED</td><td>{$date_approved}</td>
+										</tr>
+									</tbody>
+								 </table>";*/
+
+
 		} else if ($repair_status_id == 6) {
 			// for delivery
 			$remarks = $remarks . " <strong>#PROPOSED_AMOUNT: " . $proposed_price . "</strong>";
@@ -556,7 +588,7 @@ class Repairs extends Admin_Controller {
 									`requested_by`,
 									`created_by`,
 									`date_approved`,
-									`repair_summary_id`,
+									`repair_summary_id`
 								)
 			                	(
 			                	SELECT 
@@ -565,13 +597,13 @@ class Repairs extends Admin_Controller {
 			                		'{$repair_summary->branch_id}',
 			                		'{$approved_by}',	
 			                		'{$authority_number}',	
-			                		'{approval_number}',
+			                		'{$approval_number}',
 			                		'{$this->user->id_number}',
 			                		'{$this->user->id_number}',			                        			                        
-			                        '{date_approved}',
-			                        '{$repair_summary->branch_id}'
+			                        '{$date_approved}',
+			                        '{$repair_summary->repair_summary_id}'
 			                	FROM 
-			                		rs_expense_summary
+			                		es_expense_summary
 			                	WHERE 
 			                		expense_series = '{$expense_series}'                 	
 			                    ORDER BY 
@@ -593,7 +625,7 @@ class Repairs extends Admin_Controller {
 									`requested_by`,
 									`created_by`,
 									`date_approved`,
-									`repair_summary_id`,
+									`repair_summary_id`
 								)
 			                	(
 			                	SELECT 
@@ -603,13 +635,13 @@ class Repairs extends Admin_Controller {
 			                		'{$repair_summary->department_id}',
 			                		'{$approved_by}',	
 			                		'{$authority_number}',	
-			                		'{approval_number}',
+			                		'{$approval_number}',
 			                		'{$this->user->id_number}',
 			                		'{$this->user->id_number}',			                        			                        
-			                        '{date_approved}',
-			                        '{$repair_summary->branch_id}'
+			                        '{$date_approved}',
+			                        '{$repair_summary->repair_summary_id}'
 			                	FROM 
-			                		rs_expense_summary
+			                		es_expense_summary
 			                	WHERE 
 			                		expense_series = '{$expense_series}'                 	
 			                    ORDER BY 
@@ -619,11 +651,56 @@ class Repairs extends Admin_Controller {
 
 				$this->db_information_technology->query($sql);	
 
+				$sql = "SELECT 
+							LAST_INSERT_ID() AS last_id 
+						FROM 
+							es_expense_summary";
+
+				$query = $this->db_information_technology->query($sql);
+				$expense_summary = $query->first_row();
+
+				$active_expense_summary_id = $expense_summary->last_id;
+
+		        $sql = "SELECT 
+							CONCAT('{$expense_series}', '-', LPAD(expense_number, 5, 0)) AS gen_code
+						FROM
+							es_expense_summary                    
+		                WHERE
+		                	expense_summary_id = " . $active_expense_summary_id;        	
+
+		        $query = $this->db_information_technology->query($sql);
+				$expense_code_details = $query->first_row();  
+
+				$expense_code = $expense_code_details->gen_code; 		
+
+				// update repair_code
+				$data_update = array(
+						'expense_code' => $expense_code
+					);
+
+				$where_update = "expense_summary_id = " . $active_expense_summary_id;
+
+				$this->information_technology_model->update_expense_summary($data_update, $where_update);
+
+			} else {
+				// already exists
+				$active_expense_summary_details = $this->information_technology_model->get_expense_summary("repair_summary_id = " . $repair_summary->repair_summary_id);
+				$active_expense_summary_id = $active_expense_summary_details[0]->expense_summary_id;
 			}
+
+			// insert details to expense_details
+			$data_details_insert = array(
+					"expense_summary_id" => $active_expense_summary_id,
+					"repair_hardware_id" => $repair_details[0]->repair_hardware_id,
+					"quantity" => $repair_details[0]->quantity,
+					"amount" => $po_price,
+					"description" => $remarks,
+				);
+
+			$this->information_technology_model->insert_expense_detail($data_details_insert);
+			
 		}	
 		// ==============================
-
-
 
 		$html = "<p>Remarks posted successfully!</p>";
 		$title = "Add Remarks :: Repairs";

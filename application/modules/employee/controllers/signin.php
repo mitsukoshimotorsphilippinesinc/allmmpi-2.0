@@ -43,12 +43,18 @@ class SignIn extends Base_Controller
 		$active_member = 1;
 
 		// get member status
-		$employee_account_details = $this->user_model->get_user_by_username($username);
+		//$employee_account_details = $this->user_model->get_user_by_username($username);
+		$where = array(
+				"username" => $username,
+				"is_active" => 1
+			);
+		$employee_account_details = $this->user_model->get_user($where);
 		
 		if (empty($employee_account_details)) {
 			$active_member == 0;
 			$invalid_login = true;
 		} else {
+			$employee_account_details = $employee_account_details[0];
 			
 			$active_member = $employee_account_details->is_active;
 			
@@ -92,6 +98,7 @@ class SignIn extends Base_Controller
 		}	
 		
 		//$this->user_model->insert_log('user', $add_result_log_data);
+		//var_dump($employee_account_details);
 
 		// assign data to be sent to view
 		$this->template->invalid_login = $invalid_login;
