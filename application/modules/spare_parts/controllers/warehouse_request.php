@@ -223,9 +223,11 @@ class Warehouse_request extends Admin_Controller {
 				$html = "You have successfully approved the <b>" . $warehouse_request->status . "</b> Warehouse Request with Request Code: <strong>{$warehouse_request_code}</strong>.";
 				$title = "Request Approved :: " . $warehouse_request_code;
 			}
-			
-			$where = "warehouse_request_id = " . $warehouse_request_id;
-			$this->spare_parts_model->update_warehouse_request($data, $where);
+						
+			//$where = "warehouse_request_id = " . $warehouse_request_id;
+			//$this->spare_parts_model->update_warehouse_request($data, $where);
+			$where = "request_summary_id = " . $warehouse_request_id;
+			$this->spare_parts_model->update_request_summary($data, $where);
 
 			$this->return_json("1","Successful Approval/Disapproval of Warehouse Request.",array("html" => $html, "title" => $title));
 						
@@ -499,7 +501,8 @@ class Warehouse_request extends Admin_Controller {
 					'status' => "FORWARDED",
 					'approved_by' => $this->user->user_id,					
 					'approve_timestamp' => $current_datetime,
-					'mtr_number' =>	 $mtr_number
+					'cross_reference_number' =>	 $mtr_number
+					//'mtr_number' =>	 $mtr_number
 				);
 
 				$html = "You have successfully forwaded the request to warehouse with Request Code: <strong>{$warehouse_request_code}</strong>.";
@@ -521,7 +524,8 @@ class Warehouse_request extends Admin_Controller {
 					'status' => "CANCELLATION-FORWARDED",
 					'approved_by' => $this->user->user_id,					
 					'approve_timestamp' => $current_datetime,
-					'mtr_number' =>	 $mtr_number
+					'cross_reference_number' =>	 $mtr_number
+					//'mtr_number' =>	 $mtr_number
 				);
 
 				$html = "You have successfully forwaded the request to warehouse with Request Code: <strong>{$warehouse_request_code}</strong>.";
@@ -544,7 +548,8 @@ class Warehouse_request extends Admin_Controller {
 				// change status to FOR APPROVAL
 				$data = array(					
 					'update_timestamp' => $current_datetime,
-					'mtr_number' => $mtr_number
+					'cross_reference_number' =>	 $mtr_number
+					//'mtr_number' => $mtr_number
 				);
 
 				$html = "You have successfully assigned a MTR Number to the request with Request Code: <strong>{$warehouse_request_code}</strong>.";

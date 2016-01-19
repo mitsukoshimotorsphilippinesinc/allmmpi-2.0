@@ -33,6 +33,20 @@ class Warehouse extends Admin_Controller {
 		$search_status = trim($this->input->get("search_status"));
 		$search_by = trim($this->input->get("search_option"));
 		$search_text = trim($this->input->get("search_string"));
+		$warehouse_id = trim($this->input->get("warehouse_id"));
+
+		$warehouse_details = $this->spare_parts_model->get_warehouse_personnel_view_by_id_number($this->user->id_number);
+		
+		$warehouse_where = $warehouse_id;
+
+		//$warehouse_where = 0;
+
+		//if (empty($warehouse_details)) {			
+		//} else {
+		//	foreach ($warehouse_details as $wd) {
+		//		$warehouse_where .= ", " . $wd->warehouse_id;
+		//	}
+		//}
 
 		$search_url = "";
 		$count_is = 0;
@@ -68,7 +82,7 @@ class Warehouse extends Admin_Controller {
 			}
 		} 
 
-		$where = "status IN ('PENDING', 'PROCESSING')";
+		$where = "d.warehouse_id IN (" . $warehouse_where . ") AND a.status IN ('PENDING', 'PROCESSING')";
 
 		//// get module_id
 		//$module_id = get_department_module_id();
@@ -99,24 +113,80 @@ class Warehouse extends Admin_Controller {
 			}
 		}	*/
 
+		$sql = "SELECT a.*, 
+				d.item_id,
+				d.warehouse_id,
+				d.sku,
+				d.good_quantity,
+				d.bad_quantity,
+				d.rack_location 
+				FROM 
+					is_warehouse_reservation a
+				LEFT JOIN 
+					is_request_summary b ON a.transaction_number = b.request_code
+				LEFT JOIN  
+					is_request_detail c ON b.request_summary_id = c.request_summary_id
+				LEFT JOIN  
+					is_item d ON c.item_id = d.item_id 
+				WHERE 
+					{$where}
+				ORDER BY	
+					FIELD(a.status, 'PENDING', 'PROCESSING'), a.insert_timestamp ASC";
+
+		$query = $this->db_spare_parts->query($sql);
+		$transfers = $query->result();			
+		$query->free_result();
+
 		// set pagination data
 		$config = array(
 				'pagination_url' => "/spare_parts/warehouse/reservation/",				
-				'total_items' => $this->spare_parts_model->get_warehouse_reservation_count($where),
-				'per_page' => 10,
+				//'total_items' => $this->spare_parts_model->get_warehouse_reservation_count($where),
+				'total_items' => count($transfers),
+				'per_page' => 30,
 				'uri_segment' => 4,
 		);
 
 		$this->pager->set_config($config);
 		
-		$transfers = $this->spare_parts_model->get_warehouse_reservation($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");			
-		
+		$current_offset = $this->pager->per_page * $this->pager->offset;
+
+		//$transfers = $this->spare_parts_model->get_warehouse_reservation($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");			
+
+		$sql = "SELECT a.*, 
+				d.item_id,
+				d.warehouse_id,
+				d.sku,
+				d.good_quantity,
+				d.bad_quantity,
+				d.rack_location 
+				FROM 
+					is_warehouse_reservation a
+				LEFT JOIN 
+					is_request_summary b ON a.transaction_number = b.request_code
+				LEFT JOIN  
+					is_request_detail c ON b.request_summary_id = c.request_summary_id
+				LEFT JOIN  
+					is_item d ON c.item_id = d.item_id 
+				WHERE 
+					{$where}
+				ORDER BY	
+					FIELD(a.status, 'PENDING', 'PROCESSING'), a.insert_timestamp ASC	
+				LIMIT 
+					{$this->pager->per_page} 
+				OFFSET 
+					{$current_offset}";	
+
+		$query = $this->db_spare_parts->query($sql);
+		$transfers = $query->result();			
+		$query->free_result();			
+
 		// search vars
 		$this->template->search_status = $search_status;
 		$this->template->search_by = $search_by;
 		$this->template->search_text = $search_text;
 		$this->template->search_url = $search_url;
 		$this->template->transfers = $transfers;
+		$this->template->warehouse_details = $warehouse_details;
 		
 		$this->template->view('warehouse/reservation_listing');	
 	}
@@ -247,6 +317,72 @@ class Warehouse extends Admin_Controller {
 
 
 		$this->return_json("1", "OK.", array("html" => $html, "title" => $title));
+		return;
+	}
+
+	public function view_details()
+	{
+		$request_summary_id = $this->input->post("request_summary_id");
+		$request_code = $this->input->post("request_code");
+		$listing_action = $this->input->post("listing_action");
+		$warehouse_id = $this->input->post("warehouse_id");
+		
+		$request_summary = $this->spare_parts_model->get_request_summary_by_id($request_summary_id);		
+
+		if (empty($request_summary)) {		
+			$html = "<p>There is something wrong with this transaction [Request Code: {$request_code}].</p>";
+			$title = "Error: View Details";
+
+			$this->return_json("0","Request Code not found in DB", array("html" => $html, "title" => $title));	
+			
+		} else {
+			
+			// HERE NA ME!!!
+
+			$where = "request_summary_id = {$request_summary_id}";
+			$segment_request_details = $this->spare_parts_model->get_request_detail($where);
+
+			$sql = "SELECT c.*, 
+				d.item_id,
+				d.warehouse_id,
+				d.sku,
+				d.good_quantity,
+				d.bad_quantity,
+				d.rack_location 
+				FROM 					
+					is_request_detail c
+				LEFT JOIN  
+					is_item d ON c.item_id = d.item_id 
+				WHERE 
+					{$where}";	
+
+			$query = $this->db_spare_parts->query($sql);
+			$transfers = $query->result();			
+			$query->free_result();		
+			
+			$department_module_details = $this->spare_parts_model->get_department_module_by_segment_name($this->segment_name);	
+
+			// check if has items for return
+			$where = "department_module_id = ". $request_summary->department_module_id ." AND request_id = ". $request_summary_id ." AND status NOT IN ('CANCELLED')";		
+			$reprocessed_item_details = $this->spare_parts_model->get_reprocessed_item($where);
+
+			$data = array(				
+				'segment_request_summary' => $request_summary,
+				'segment_request_details' =>$segment_request_details,
+				'listing_action' => $listing_action,
+				'segment_request_summary_remarks' => $request_summary->remarks,
+				'segment_name' => $this->segment_name,
+				'reprocessed_item_details' => $reprocessed_item_details,
+				'department_module_details' => $department_module_details,
+			);
+
+			$html = $this->load->view("template_view_details",$data, true);
+			 
+			$title = "View Details :: " . $request_code;
+			$this->return_json("1","View Details Request Summary", array("html" => $html, "title" => $title, "request_status" => $request_summary->status));
+			
+		}
+			
 		return;
 	}
 }	

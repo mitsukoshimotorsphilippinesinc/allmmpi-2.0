@@ -9,9 +9,26 @@
 
 <div >
 	<form id='search_details' method='get' action =''>
+		<?php
+			$warehouse_options = array();
+			if (empty($warehouse_details)) {
+				$warehouse_options = array('0' => 'Select a Warehouse...');
 
+				$warehouse_details = $this->spare_parts_model->get_warehouse("is_active = 1");
+
+			} 
+			
+			foreach ($warehouse_details as $wd) {
+			 	$warehouse_options[$wd->warehouse_id] = $wd->warehouse_name;
+			}
+		?>
+
+		<strong>Warehouse:&nbsp;</strong>
+		<?= form_dropdown('warehouse_id',$warehouse_options, NULL,'id="warehouse_id"') ?>
+
+		</br>
 		<strong>Search By:&nbsp;</strong>
-		<select name="search_option" id="search_option" style="width:250px;" value="<?= $search_by ?>">
+		<select name="search_option" id="search_option" style="" value="<?= $search_by ?>">
 			<option value="request_code">Code</option>
 			<option value="name">Name</option>
 		</select>                 
@@ -50,7 +67,8 @@
 			<th style='width:80px;'>Request Code</th>
 			<th>Status</th>
 			<th style=''>Requested By</th>			
-			<th style='width:50px;'>Total Items</th>			
+			<th style='width:50px;'>Total Items</th>
+			<th style='width:80px;'>Warehouse Name</th>
 			<th style='width:70px;'>Date Created</th>
 			<th style='width:118px;'>Action</th>
 		</tr>
@@ -98,8 +116,11 @@
 			$total_items = number_format($total_items);
 
 			echo "<td  style='text-align:right;'>{$total_items}</td>";
+
+			$warehouse_det = $this->spare_parts_model->get_warehouse_by_id($t->warehouse_id);
 			?>			
 
+			<td><?= $warehouse_det->warehouse_name; ?></td>
 			<td><?= $t->insert_timestamp; ?></td>
 
 			<td data1="<?= $request_summary_details->request_summary_id ?>" data2="<?= $request_summary_details->request_code ?>">				
@@ -281,15 +302,15 @@
 	}
 	
 	$(".view-details").click(function(){
-		var salary_deduction_id = $(this).parent().attr("data1");
-		var salary_deduction_code = $(this).parent().attr("data2");
+		var request_summary_id = $(this).parent().attr("data1");
+		var request_code = $(this).parent().attr("data2");
 		var listing_action = $(this).attr("data");
 	
 		b.request({
-			url: "/spare_parts/salary_deduction/view_details",
+			url: "/spare_parts/warehouse/view_details",
 			data: {
-				"salary_deduction_id" : salary_deduction_id,
-				"salary_deduction_code" : salary_deduction_code,
+				"request_summary_id" : request_summary_id,
+				"request_code" : request_code,
 				"listing_action" : listing_action,				
 			},
 			on_success: function(data){
@@ -304,14 +325,14 @@
 							html: data.data.html,
 							buttons: {
 								'Cancel' : function() {
-									processButtonAction(salary_deduction_id, salary_deduction_code, 'cancel');
+									processButtonAction(request_summary_id, request_code, 'cancel');
 								},
 								'For Approval' : function() {
-									processButtonAction(salary_deduction_id, salary_deduction_code, 'for approval');
+									processButtonAction(request_summary_id, request_code, 'for approval');
 								},
 								'Edit' : function() {
-									//processButtonAction(salary_deduction_id, salary_deduction_code, 'edit');
-									redirect("/spare_parts/salary_deduction/edit/" + salary_deduction_id);
+									//processButtonAction(request_summary_id, request_code, 'edit');
+									redirect("/spare_parts/salary_deduction/edit/" + request_summary_id);
 								}									
 							}
 						});			
@@ -322,7 +343,7 @@
 							html: data.data.html,
 							buttons: {
 								'Forward To Warehouse' : function() {
-									processButtonAction(salary_deduction_id, salary_deduction_code, 'forward to warehouse');
+									processButtonAction(request_summary_id, request_code, 'forward to warehouse');
 								}									
 							}
 						});
@@ -333,7 +354,7 @@
 							html: data.data.html,
 							buttons: {
 								'Reprocess Items' : function() {
-									redirect("/spare_parts/salary_deduction/reprocess_items/" + salary_deduction_id);
+									redirect("/spare_parts/warehouse/reprocess_items/" + salary_deduction_id);
 								}									
 							}
 						});
