@@ -140,7 +140,7 @@
 					<ul class="dropdown-menu" role="menu">
 						<li role="menuitem"><a href="/employee/s4s/page/operations">Operations</a></li>
 						<li role="menuitem"><a href="/employee/s4s/page/human_relations">Human Resource</a></li>
-						<li role="menuitem"><a href="/employee/s4s/page/dpr">Treasury</a></li>
+						<li role="menuitem"><a href="/employee/s4s/page/treasury">Treasury</a></li>
 						<li role="menuitem"><a href="/employee/s4s/page/accounting">Accounting</a></li>
 						<li role="menuitem"><a href="/employee/s4s/page/corporate_services">Corporate Services</a></li>
 						<li role="menuitem"><a href="/employee/s4s/page/spare_parts">Spare Parts</a></li>
