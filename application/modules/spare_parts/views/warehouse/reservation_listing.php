@@ -24,7 +24,7 @@
 		?>
 
 		<strong>Warehouse:&nbsp;</strong>
-		<?= form_dropdown('warehouse_id',$warehouse_options, NULL,'id="warehouse_id"') ?>
+		<?= form_dropdown('warehouse_id',$warehouse_options, set_value('warehouse_id', $warehouse_id),'id="warehouse_id"') ?>
 
 		</br>
 		<strong>Search By:&nbsp;</strong>
@@ -123,16 +123,16 @@
 			<td><?= $warehouse_det->warehouse_name; ?></td>
 			<td><?= $t->insert_timestamp; ?></td>
 
-			<td data1="<?= $request_summary_details->request_summary_id ?>" data2="<?= $request_summary_details->request_code ?>">				
+			<td data1="<?= $request_summary_details->request_summary_id ?>" data2="<?= $request_summary_details->request_code ?>" data3="<?= $t->warehouse_id ?>" >	
 				<a class='btn btn-small btn-info view-details' data='info' title="View Details"><i class="icon-white icon-list"></i></a>	
 				<?php
 				if ($t->status == 'PENDING') {
-					echo "<a class='btn btn-small btn-warning process-btn' data='assign_runner' title='Process Reservation'><i class='icon-white icon-star-empty'></i></a>							
+					echo "<a class='btn btn-small btn-warning process-btn' data='assign_runner' title='Process Reservation'><i class='icon-white icon-shopping-cart'></i></a>							
 						";
 				}
 
 				if ($t->status == 'PROCESSING') {
-					echo "<a class='btn btn-small btn-success process-btn' data='set_completed' title='Process Completion'><i class='icon-white icon-star'></i></a>						
+					echo "<a class='btn btn-small btn-success process-btn' data='set_completed' title='Process Completion'><i class='icon-white icon-shopping-cart'></i></a>						
 					";
 				}
 
@@ -163,10 +163,10 @@
 
 	
 	$(".process-btn").click(function(){
-		processButtonAction($(this).parent().attr("data1"), $(this).parent().attr("data2"), $(this).attr("data"));	
+		processButtonAction($(this).parent().attr("data1"), $(this).parent().attr("data2"), $(this).attr("data"), $(this).parent().attr("data3"));	
 	});
 
-	var processButtonAction = function(request_summary_id, request_code, process_action) {
+	var processButtonAction = function(request_summary_id, request_code, process_action, warehouse_id) {
 
 		b.request({
 			url: "/spare_parts/warehouse/initial_process",
@@ -226,6 +226,7 @@
 										'process_action' : process_action,
 										'runner_id' : $("#runner_name").val(),
 										'tr_number' : _trNumber,
+										'warehouse_id' : warehouse_id,
 									},
 									on_success : function(data) {
 										
@@ -304,14 +305,16 @@
 	$(".view-details").click(function(){
 		var request_summary_id = $(this).parent().attr("data1");
 		var request_code = $(this).parent().attr("data2");
+		var warehouse_id = $(this).parent().attr("data3");
 		var listing_action = $(this).attr("data");
-	
+
 		b.request({
 			url: "/spare_parts/warehouse/view_details",
 			data: {
 				"request_summary_id" : request_summary_id,
 				"request_code" : request_code,
-				"listing_action" : listing_action,				
+				"listing_action" : listing_action,
+				"warehouse_id" : warehouse_id,
 			},
 			on_success: function(data){
 				if (data.status == "1")	{
@@ -320,15 +323,15 @@
 					if (data.data.request_status == "PENDING")	{	
 						viewDetailsModal = b.modal.new({
 							title: data.data.title,
-							width:800,
+							width:900,
 							//disableClose: true,
 							html: data.data.html,
 							buttons: {
 								'Cancel' : function() {
-									processButtonAction(request_summary_id, request_code, 'cancel');
+									processButtonAction(request_summary_id, request_code, 'cancel', warehouse_id);
 								},
 								'For Approval' : function() {
-									processButtonAction(request_summary_id, request_code, 'for approval');
+									processButtonAction(request_summary_id, request_code, 'for approval', warehouse_id);
 								},
 								'Edit' : function() {
 									//processButtonAction(request_summary_id, request_code, 'edit');
@@ -339,18 +342,18 @@
 					} else if (data.data.request_status == "APPROVED") {
 						viewDetailsModal = b.modal.new({
 							title: data.data.title,
-							width:800,							
+							width:900,							
 							html: data.data.html,
 							buttons: {
 								'Forward To Warehouse' : function() {
-									processButtonAction(request_summary_id, request_code, 'forward to warehouse');
+									processButtonAction(request_summary_id, request_code, 'forward to warehouse', warehouse_id);
 								}									
 							}
 						});
 					} else if (((data.data.request_status).substr(0, 9)) == "COMPLETED") {
 						viewDetailsModal = b.modal.new({
 							title: data.data.title,
-							width:800,							
+							width:900,							
 							html: data.data.html,
 							buttons: {
 								'Reprocess Items' : function() {
@@ -361,7 +364,7 @@
 					} else {
 						viewDetailsModal = b.modal.new({
 							title: data.data.title,
-							width:800,
+							width:900,
 							//disableClose: true,
 							html: data.data.html,  
 						});
