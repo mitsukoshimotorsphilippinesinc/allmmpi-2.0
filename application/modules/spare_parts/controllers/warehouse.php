@@ -33,21 +33,21 @@ class Warehouse extends Admin_Controller {
 		$search_status = trim($this->input->get("search_status"));
 		$search_by = trim($this->input->get("search_option"));
 		$search_text = trim($this->input->get("search_string"));
-		$warehouse_id = trim($this->input->get("warehouse_id"));
+		$warehouse_id = abs($this->input->get("warehouse_id"));
 
 		$warehouse_details = $this->spare_parts_model->get_warehouse_personnel_view_by_id_number($this->user->id_number);
 		
+		if ($warehouse_id == "") {
+			if (empty($warehouse_details)) {
+				// TODO - No ACCESS
+				$warehouse_id = 0;
+			} else {				
+					$warehouse_id = $warehouse_details[0]->warehouse_id;				
+			}
+		} 
+		
 		$warehouse_where = $warehouse_id;
-
-		//$warehouse_where = 0;
-
-		//if (empty($warehouse_details)) {			
-		//} else {
-		//	foreach ($warehouse_details as $wd) {
-		//		$warehouse_where .= ", " . $wd->warehouse_id;
-		//	}
-		//}
-
+		
 		$search_url = "";
 		$count_is = 0;
 		$transfers = "";
@@ -83,35 +83,6 @@ class Warehouse extends Admin_Controller {
 		} 
 
 		$where = "d.warehouse_id IN (" . $warehouse_where . ") AND a.status IN ('PENDING', 'PROCESSING')";
-
-		//// get module_id
-		//$module_id = get_department_module_id();
-
-
-		/*if (empty($search_status)) {
-			//$where = "status IN ('PENDING', 'FOR APPROVAL', 'FOR CANCELLATION', 'APPROVED', 'DENIED', 'DENIED (COMPLETED)', 'PROCESSING', 'ON PROCESS', 'COMPLETED', 'CANCELLED', 'CANCELLED (COMPLETED)', 'FORWARDED')";
-			$where = "department_module_id = {$module_id}";
-		} else {
-
-			if ($search_status == 'ALL') {
-				//$where = "status IN ('PENDING', 'FOR APPROVAL', 'FOR CANCELLATION', 'APPROVED', 'DENIED', 'DENIED (COMPLETED)', 'PROCESSING', 'ON PROCESS', 'COMPLETED', 'CANCELLED', 'CANCELLED (COMPLETED)', 'FORWARDED')";
-				$where = "department_module_id = {$module_id}";
-			} else {
-				$where = "department_module_id = {$module_id} AND status = '". $search_status ."'";
-			}
-				
-			if ($where != NULL) {
-				if ($search_by == 'name')
-					$where = $where . " AND ". $request_search_by ." IN (" . $where_id_numbers . ")";
-				else
-					$where = $where . " AND ". $search_by ." LIKE '%" . $search_text . "%'";
-			} else {
-				if ($search_by == 'name')
-					$where = "department_module_id = {$module_id} AND " . $request_search_by ." IN (" . $where_id_numbers . ")";
-				else
-					$where = "department_module_id = {$module_id} AND" . $search_by ." LIKE '%" . $search_text . "%'";
-			}
-		}	*/
 
 		$sql = "SELECT a.*, 
 				d.item_id,
@@ -187,7 +158,8 @@ class Warehouse extends Admin_Controller {
 		$this->template->search_url = $search_url;
 		$this->template->transfers = $transfers;
 		$this->template->warehouse_details = $warehouse_details;
-		
+		$this->template->warehouse_id = $warehouse_id;
+				
 		$this->template->view('warehouse/reservation_listing');	
 	}
 
@@ -239,6 +211,7 @@ class Warehouse extends Admin_Controller {
 		$process_action = $this->input->post("process_action");
 		$runner_id = $this->input->post("runner_id");
 		$tr_number = $this->input->post("tr_number");
+		$warehouse_id = $this->input->post("warehouse_id");
 
 		$current_datetime = date("Y-m-d H:i:s");
 
@@ -266,6 +239,39 @@ class Warehouse extends Admin_Controller {
 
 			$this->spare_parts_model->insert_warehouse_transaction($data);
 
+			// update is_request_summary
+			$data = array(
+					"status" => "PROCESSING",
+					"update_timestamp" => $current_datetime
+				);
+
+			$this->spare_parts_model->update_request_summary($data, array("request_summary_id" => $request_summary_id));
+
+			// update is_request_detail
+			$sql = "SELECT 
+						a.request_detail_id
+					FROM 
+						is_request_detail a
+					LEFT JOIN 
+						is_item b ON a.item_id = b.item_id
+					WHERE 
+						a.request_summary_id = {$request_summary_id}
+					AND 
+						b.warehouse_id = {$warehouse_id}";
+
+			$query = $this->db_spare_parts->query($sql);
+			$request_detail_list = $query->result();			
+			$query->free_result();
+
+			$data = array(
+					"status" => "PROCESSING",
+					"update_timestamp" => $current_datetime
+				);
+
+			foreach ($request_detail_list as $rdl) {
+				$this->spare_parts_model->update_request_detail($data,  array("request_detail_id" => $rdl->request_detail_id));
+			}
+
 			$runner_details = $this->spare_parts_model->get_runner_view_by_id($runner_id);
 			
 			$html = "<p>Request with code <strong>{$request_code}</strong> has been assigned successfully to runner <strong>{$runner_details->complete_name}</strong>.</p>";
@@ -273,23 +279,71 @@ class Warehouse extends Admin_Controller {
 			$title = "Assigned Successfully :: Process Request";
 
 		} else if ($process_action == "set_completed") {
+
+			// update is_request_detail
+			$sql = "SELECT 
+						a.request_detail_id
+					FROM 
+						is_request_detail a
+					LEFT JOIN 
+						is_item b ON a.item_id = b.item_id
+					WHERE 
+						a.request_summary_id = {$request_summary_id}
+					AND 
+						b.warehouse_id = {$warehouse_id}";
+
+			$query = $this->db_spare_parts->query($sql);
+			$request_detail_list = $query->result();			
+			$query->free_result();
+
+			$data = array(
+					"status" => "COMPLETED",
+					"update_timestamp" => $current_datetime
+				);
+
+			foreach ($request_detail_list as $rdl) {
+				$this->spare_parts_model->update_request_detail($data,  array("request_detail_id" => $rdl->request_detail_id));
+			}
+
+			// check if all items are COMPLETED
+			$request_item_details = $this->spare_parts_model->get_request_detail(array("request_summary_id" => $request_summary_id));
+
+			$not_all_completed = 0;
+
+			foreach ($request_item_details as $rid) {
+				if (!($rid->status == "COMPLETED")) {
+					$not_all_completed = 1;
+					break;
+				}
+			}
+
+			var_dump($not_all_completed);
+
+			if ($not_all_completed == 0) {
+				// update is_repair_summary = "PROCESSED"
+				$data = array(
+						"status" => "PROCESSED"
+					);
+
+				$this->spare_parts_model->update_request_summary($data, array("request_summary_id"=> $request_summary_id));
 			
-			$data = array(
-					"status" => 'COMPLETED',
-					"update_timestamp" => $current_datetime,
-					"tr_number" => $tr_number,
-				);
+				$data = array(
+						"status" => 'COMPLETED',
+						"update_timestamp" => $current_datetime,
+						"tr_number" => $tr_number,
+					);
 
-			$where = "transaction_number = '{$request_code}'";
-			$this->spare_parts_model->update_warehouse_reservation($data, $where);
+				$where = "transaction_number = '{$request_code}'";
+				$this->spare_parts_model->update_warehouse_reservation($data, $where);
+			}
 
-			$data = array(
-					"status" => 'COMPLETED',
-					"update_timestamp" => $current_datetime,
-				);
+			//$data = array(
+			//		"status" => 'COMPLETED',
+			//		"update_timestamp" => $current_datetime,
+			//	);
 
-			$where = "request_summary_id = '{$request_summary_id}'";
-			$this->spare_parts_model->update_request_summary($data, $where);
+			//$where = "request_summary_id = '{$request_summary_id}'";
+			//$this->spare_parts_model->update_request_summary($data, $where);
 
 			$data = array(
 					"reference_number" => $tr_number,
@@ -297,7 +351,7 @@ class Warehouse extends Admin_Controller {
 				);
 
 			$where_data = array(
-					"warehouse_id" => 1, // DEFAULT MUNA
+					"warehouse_id" => $warehouse_id, // DEFAULT MUNA
 					"warehouse_reservation_id" => $warehouse_reservation_details->warehouse_reservation_id,					
 				);
 
@@ -310,8 +364,21 @@ class Warehouse extends Admin_Controller {
 			$title = "Set As Completed :: Process Request";
 
 		} else {
+
+			// ????????????????????????
+
 			// considered as cancelled
-			// TODO: CANCELLED
+			// 20160119
+
+			// cancel item of specific warehouse (or request_detail_id)
+
+			// update status CANCELLED
+
+			// return inventory
+
+			// if other items are CANCELLED, set to CANCELLED
+
+			// ?????????????????????????
 
 		}
 
@@ -337,10 +404,8 @@ class Warehouse extends Admin_Controller {
 			
 		} else {
 			
-			// HERE NA ME!!!
-
-			$where = "request_summary_id = {$request_summary_id}";
-			$segment_request_details = $this->spare_parts_model->get_request_detail($where);
+			$where = "c.request_summary_id = {$request_summary_id} AND d.warehouse_id = {$warehouse_id}";
+			//$segment_request_details = $this->spare_parts_model->get_request_detail($where);
 
 			$sql = "SELECT c.*, 
 				d.item_id,
@@ -357,7 +422,7 @@ class Warehouse extends Admin_Controller {
 					{$where}";	
 
 			$query = $this->db_spare_parts->query($sql);
-			$transfers = $query->result();			
+			$segment_request_details = $query->result();			
 			$query->free_result();		
 			
 			$department_module_details = $this->spare_parts_model->get_department_module_by_segment_name($this->segment_name);	
