@@ -1526,10 +1526,10 @@ class Maintenance extends Admin_Controller {
 				
 				*/
 				
-				redirect('/spare_parts/maintenance/warehouse');
-				return;
-			}
-		}
+		//		redirect('/spare_parts/maintenance/warehouse');
+		//		return;
+		//	}
+		//}
 
 		$this->template->warehouse_details = $warehouse_details;
 		$this->template->view('spare_parts/maintenance/warehouse/delete');
