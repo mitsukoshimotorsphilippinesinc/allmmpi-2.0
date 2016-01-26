@@ -1312,4 +1312,98 @@ class Spare_parts extends Admin_Controller {
 		}
 	}
 
+	public function search_item_inventory()
+	{
+		$search_key = $this->input->get_post('search_key');
+		$search_key = trim($search_key);
+	
+		if (empty($search_key)) 
+		{
+			$this->return_json("error","Item Name is empty.");
+			return;
+		}
+
+		$keys = explode(" ", $search_key);
+		for ($i = 0; $i < count($keys); $i++)
+		{
+			$escaped_keys[] = mysql_real_escape_string($keys[$i]);
+		}
+
+		$key_count = count($escaped_keys);  
+
+		// get possible combinations
+		$combinations = array();
+
+		$this->load->library('Math_Combinatorics');
+		$combinatorics = new Math_Combinatorics;
+		foreach( range(1, count($escaped_keys)) as $subset_size ) {
+    		foreach($combinatorics->permutations($escaped_keys, $subset_size) as $p) {
+	  			$combinations[sizeof($p)-1][] = $p;
+    		}
+		}
+
+		$combinations = array_reverse($combinations);
+
+		// exact match search
+		$has_exact = false;
+		$tmp_items = array();
+
+		foreach($combinations as $comb_group)
+		{
+			foreach($comb_group as $comb)
+			{
+				$name = strtoupper(join('', $comb));
+				$sql = "
+					SELECT * FROM `is_item_view` WHERE
+					(REPLACE(`sku`,' ','') LIKE '%{$name}%') OR (REPLACE(`model_name`,' ','') LIKE '%{$name}%') OR (REPLACE(`description`,' ','') LIKE '%{$name}%') OR (REPLACE(`sku`,' ','') LIKE '%{$name}%') GROUP BY sku, description ORDER BY sku, description LIMIT 50;
+				";
+				$query = $this->db_spare_parts->query($sql);
+				if(count($query->result_array()) > 0)
+				{
+					$tmp_items = $query->result_object();
+					$has_exact = true;
+					break;
+				}
+			}
+			if($has_exact)
+			{
+				break;
+			}
+		}
+		
+		$return_items = array();
+
+		if (count($tmp_items) == 0)
+		{
+			// if these is reached then nothing are found.
+			$this->return_json("error","Not found.", array('items' => $return_items, 'keys' => $keys));
+			return;
+		}
+
+		$image_display = "";
+			if ((empty($itm->image_filename)) || ($itm->image_filename == NULL) || (trim($itm->image_filename) == "")) {
+				$image_display = "ni_spare_part.png";
+			} else {
+				$image_display = $r->image_filename;
+			}
+		
+		foreach ($tmp_items as $itm)
+		{
+			$return_items[$itm->item_id] = array(
+				"item_id" => $itm->item_id,
+				"image_filename" => $image_display,
+				"sku" => $itm->sku,
+				"brand_model" => $itm->brand_name . ' / ' . $itm->model_name,
+				"description" => strtoupper($itm->description),
+				"srp" => strtoupper($itm->srp),				
+				"upload_url" => $upload_url = $this->config->item("media_url") . "/spare_parts",
+
+			);
+		}
+		
+		$this->return_json("ok","Ok.", array('items' => $return_items, 'keys' => $keys));
+		return;
+
+	}
+
 }

@@ -1298,6 +1298,16 @@ class Spare_parts_model extends Base_Model
 		}
 		return $row;
 	}
+
+	function get_spare_part_by_id($id) 
+	{
+		$result = $this->get_spare_part(array('spare_part_id' => $id));
+		$row = NULL;
+		if (count($result) > 0) {
+			$row = $result[0];
+		}
+		return $row;
+	}
 	
 	function get_spare_part_count($where = null) {
 		// do a sql count instead of row count
