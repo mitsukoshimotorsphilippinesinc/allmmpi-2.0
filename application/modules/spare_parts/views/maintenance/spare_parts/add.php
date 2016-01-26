@@ -9,19 +9,24 @@
 ?>
 
 <?= $breadcrumb_container; ?>
-<h2>Edit Spare Part  <a href='/spare_parts/maintenance/spare_parts' class='btn btn-small' style="float:right">Back</a></h2>
+<h2>Add Spare Part  <a href='/spare_parts/maintenance/spare_parts' class='btn btn-small' style="float:right">Back</a></h2>
 <hr/>
-<?php if (empty($spare_part_details)): ?>
-<h3>Spare Part not found.</h3>
-<?php else: ?>
-<form action='/spare_parts/maintenance/edit_spare_part/<?= $spare_part_details->spare_part_id ?>' method='post' class='form-horizontal'>
+<form action='/spare_parts/maintenance/add_spare_part' method='post' class='form-horizontal'>
 	<fieldset >
 		
 		<div class="control-group <?= $this->form_validation->error_class('sku') ?>">
-			<label class="control-label" for="complete_name">SKU <em>*</em></label>
+			<label class="control-label" for="sku">SKU <em>*</em> </label>
 			<div class="controls">
-				<input type="text" class='span2' placeholder="SKU" name="sku" id="sku" value="<?= $this->form_validation->set_value('sku',$spare_part_details->sku) ?>">
+				<input type="text" class='span2' placeholder="SKU" name="sku" id="sku" value="<?= set_value('sku') ?>">
 				<p class="help-block"><?= $this->form_validation->error('sku'); ?></p>
+			</div>
+		</div>
+
+		<div class="control-group <?= $this->form_validation->error_class('description') ?>">
+			<label class="control-label" for="description">Description <em>*</em></label>
+			<div class="controls">
+				<input type="text" class='span6' placeholder="Description" name="description" id="description" value="<?= set_value('description') ?>">
+				<p class="help-block"><?= $this->form_validation->error('description'); ?></p>
 			</div>
 		</div>
 
@@ -38,7 +43,7 @@
 				{
 					$brand_name_options[$brand_name->motorcycle_brand_id] = $brand_name->motorcycle_brand_id . ' - ' . $brand_name->brand_name;
 				}
-				echo form_dropdown('motorcycle_brand_id', $brand_name_options, set_value('motorcycle_brand_id',$spare_part_details->motorcycle_brand_id),'id="motorcycle_brand_id" class="span5"');
+				echo form_dropdown('motorcycle_brand_id', $brand_name_options, NULL,'id="motorcycle_brand_id" class="span5"');
 				?>			
 				<p class="help-block"><?= $this->form_validation->error('motorcycle_brand_id'); ?></p>
 			</div>
@@ -58,33 +63,33 @@
 				{
 					$model_name_options[$mnd->motorcycle_brand_model_id] = $mnd->model_name;
 				}
-				echo form_dropdown('motorcycle_brand_model_id', $model_name_options, set_value('motorcycle_brand_model_id', $spare_part_details->motorcycle_model_id),'id="motorcycle_brand_model_id" class="span5"');
+				echo form_dropdown('motorcycle_brand_model_id', $model_name_options, NULL,'id="motorcycle_brand_model_id" class="span5"');
 				?>	
 				<p class="help-block"><?= $this->form_validation->error('motorcycle_brand_model_id'); ?></p>		
 			</div>
 			
-		</div>	
+		</div>			
 
 		<div class="control-group <?= $this->form_validation->error_class('part_number') ?>">
 			<label class="control-label" for="part_number">Part Number </label>
 			<div class="controls">
-				<input type="text" class='span4' placeholder="Part Number" name="part_number" id="part_number" value="<?= $this->form_validation->set_value('part_number',$spare_part_details->part_number) ?>">	
+				<input type="text" class='span4' placeholder="Part Number" name="part_number" id="part_number" value="<?= set_value('part_number') ?>">
 				<p class="help-block"><?= $this->form_validation->error('part_number'); ?></p>
 			</div>
 		</div>
 
-		<div class="control-group <?= $this->form_validation->error_class('stock_limit') ?>">
+		<div class="control-group <?= $this->form_validation->error_class('srp') ?>">
 			<label class="control-label" for="srp">Stock Limit <em>*</em></label>
 			<div class="controls">
-				<input type="text" class='span2 number' placeholder="Stock Limit" name="stock_limit" id="stock_limit" value="<?= $this->form_validation->set_value('stock_limit',$spare_part_details->stock_limit) ?>">
-				<p class="help-block"><?= $this->form_validation->error('stock_limit'); ?></p>
+				<input type="text" class='span2 number' placeholder="Stock Limit" name="stock limit" id="stock limit" value="<?= set_value('stock_limit') ?>">
+				<p class="help-block"><?= $this->form_validation->error('stock limit'); ?></p>
 			</div>
 		</div>
 
 		<div class="control-group <?= $this->form_validation->error_class('srp') ?>">
 			<label class="control-label" for="srp">SRP <em>*</em></label>
 			<div class="controls">
-				<input type="text" class='span2 number' placeholder="SRP" name="srp" id="srp" value="<?= $this->form_validation->set_value('srp',$spare_part_details->srp) ?>">
+				<input type="text" class='span2 number' placeholder="SRP" name="srp" id="srp" value="<?= set_value('srp') ?>">
 				<p class="help-block"><?= $this->form_validation->error('srp'); ?></p>
 			</div>
 		</div>
@@ -92,7 +97,7 @@
 		<div class="control-group <?= $this->form_validation->error_class('remarks') ?>">
 			<label class="control-label" for="remarks">Remarks </label>
 			<div class="controls">
-				<input type="text" class='span6' placeholder="Remarks" name="remarks" id="remarks" value="<?= $this->form_validation->set_value('remarks',$spare_part_details->remarks) ?>">
+				<input type="text" class='span6' placeholder="Remarks" name="remarks" id="remarks" value="<?= set_value('remarks') ?>">
 				<p class="help-block"><?= $this->form_validation->error('remarks'); ?></p>
 			</div>
 		</div>
@@ -104,7 +109,7 @@
 				
 				$options = array('' => 'Please Choose', '1' => 'Yes', '0' => 'No');
 				
-				echo form_dropdown("is_active", $options, set_value('is_active',$spare_part_details->is_active),"id='is_active' style='width:auto;'");
+				echo form_dropdown("is_active", $options, NULL,"id='is_active' style='width:auto;'");
 				
 				?>
 				<p class="help-block"><?= $this->form_validation->error('is_active'); ?></p>
@@ -113,36 +118,23 @@
 		
 		<div class="control-group">
 			<div class="controls">
-				<button type="submit" class="btn btn-primary">Update Spare Part</button>
+				<button type="submit" class="btn btn-primary">Add Spare Part</button>
 			</div>
 		</div>
 	</fieldset>
 </form>
-<script type="text/javascript">
 
-	var base_url = "<?=$this->config->item('base_url');?>";
-	
-	// uploader
-	$('#image_upload').Uploadrr({
-		singleUpload : true,
-		progressGIF : '<?= image_path('pr.gif') ?>',
-		allowedExtensions: ['.gif','.jpg', '.png'],		
-		target : base_url + '/admin/upload/process?filename=spare_part_<?= $spare_part_details->sku?>&location=<?=$_upload_url?>&width=960&ts=<?=time()?>',
-		onComplete: function() {
+<script>
 
-			$("#result_image").attr('src', '<?=$upload_url?>/spare_part_'+<?= $spare_part_details->sku?>+'.jpg?v=' + Math.floor(Math.random() * 999999));
-
-			b.request({
-		        url: '/spare_parts/maintenance/update_image',
-		        data: {
-					"filename": '<?= "spare_part_" . $spare_part_details->sku .".jpg"?>',
-					"sku":<?= $spare_part_details->sku?>
-				},
-		        on_success: function(data) {		
-		        }
-		    });		
-		}
+$('.number').keypress(function(event) {
+		if ((event.which != 0) && (event.which != 8) && (event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+        	event.preventDefault();
+    	}
+    
+    	/*var text = $(this).val();
+	    if ((text.indexOf('.') != -1) && (text.substring(text.indexOf('.')).length > 2)) {
+	        event.preventDefault();
+	    }*/
 	});
-	
+
 </script>
-<?php endif; ?>

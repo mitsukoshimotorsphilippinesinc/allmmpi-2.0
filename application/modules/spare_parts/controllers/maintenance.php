@@ -696,7 +696,7 @@ class Maintenance extends Admin_Controller {
 		$current_offset = $this->pager->per_page * $this->pager->offset;
 
 		$sql = "SELECT 
-					sku, model_name, brand_name, description, SUM(good_quantity) AS good_quantity, SUM(bad_quantity) AS bad_quantity, srp, stock_limit
+					item_id, sku, model_name, brand_name, description, SUM(good_quantity) AS good_quantity, SUM(bad_quantity) AS bad_quantity, srp, stock_limit
 				FROM 
 				 	is_item_view {$where}
 				GROUP BY
@@ -740,7 +740,7 @@ class Maintenance extends Admin_Controller {
 		}	
 
 		$sql = "SELECT 
-					sku, model_name, brand_name, description, SUM(good_quantity) AS good_quantity, SUM(bad_quantity) AS bad_quantity, srp, stock_limit
+					item_id, sku, model_name, brand_name, description, SUM(good_quantity) AS good_quantity, SUM(bad_quantity) AS bad_quantity, srp, stock_limit
 				FROM 
 				 	is_item_view {$where}
 				GROUP BY
@@ -772,7 +772,7 @@ class Maintenance extends Admin_Controller {
 		$current_offset = $this->pager->per_page * $this->pager->offset;
 
 		$sql = "SELECT 
-					sku, model_name, brand_name, description, SUM(good_quantity) AS good_quantity, SUM(bad_quantity) AS bad_quantity, srp, stock_limit
+					item_id, sku, model_name, brand_name, description, SUM(good_quantity) AS good_quantity, SUM(bad_quantity) AS bad_quantity, srp, stock_limit
 				FROM 
 				 	is_item_view {$where}
 				GROUP BY
@@ -797,24 +797,44 @@ class Maintenance extends Admin_Controller {
 	// ------------------------------------------
 	private $_spare_parts_validation_rule = array(
 		array(
-			'field' => 'complete_name',
-			'label' => 'Complete Name',
+			'field' => 'sku',
+			'label' => 'SKU',
 			'rules' => 'trim|required'
 		),
 		array(
-			'field' => 'complete_address',
-			'label' => 'Complete Address',
+			'field' => 'description',
+			'label' => 'Description',
 			'rules' => 'trim|required'
-		),
-		array(
-			'field' => 'contact_number',
-			'label' => 'Contact Number',
-			'rules' => 'trim|required'
-		),
+		),		
 		array(
 			'field' => 'is_active',
 			'label' => 'Is Active',
 			'rules' => 'trim|required'
+		),
+		array(
+			'field' => 'srp',
+			'label' => 'SRP',
+			'rules' => 'trim|required'
+		),
+		array(
+			'field' => 'stock_limit',
+			'label' => 'Stock Limit',
+			'rules' => 'trim|required'
+		),
+		array(
+			'field' => 'motorcycle_brand_id',
+			'label' => 'Motorcycle Brand',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'motorcycle_brand_model_id',
+			'label' => 'Motorcycle Model',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'part_number',
+			'label' => 'Part Number',
+			'rules' => 'trim'
 		)
 	);
 
@@ -848,7 +868,7 @@ class Maintenance extends Admin_Controller {
 		$this->template->search_url = $search_url;
 		
 		$this->pager->set_config($config);
-		$this->template->spare_parts = $this->spare_parts_model->get_spare_part(null, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), 'sku');
+		$this->template->spare_parts = $this->spare_parts_model->get_spare_part($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), 'length(sku)');
 		$this->template->view('maintenance/spare_parts/list');
 	}
 
@@ -858,44 +878,53 @@ class Maintenance extends Admin_Controller {
 		{
 			// post done here
 			$this->form_validation->set_rules($this->_spare_parts_validation_rule);
+
 			if ($this->form_validation->run())
 			{
-				$this->spare_parts_model->update_spare_part(array('is_active' => 0),array());
+				//$this->spare_parts_model->update_spare_part(array('is_active' => 0),array());
+				$spare_part_details = $this->spare_parts_model->get_spare_part_by_sku(strtoupper(set_value('sku')));
 
-				// insert the new results
-				$data = array(
-					'complete_name' => strtoupper(set_value('complete_name')),
-					'complete_address' => strtoupper(set_value('complete_address')),					
-					'contact_number' => strtoupper(set_value('contact_number'))
-				);
-				$this->spare_parts_model->insert_spare_part($data);
+				if (empty($spare_part_details)) {	
 				
-				$insert_id = $this->spare_parts_model->insert_id();
-				
-				/*//logging of action
-				$details_after = array('id' => $insert_id, 'details' => $data);
-				$details_after = json_encode($details_after);
-				$add_result_log_data = array(
-					'user_id' => $this->user->user_id,
-					'module_name' => 'RESULTS',
-					'table_name' => 'sm_results',
-					'action' => 'ADD',
-					'details_after' => $details_after,
-					'remarks' => "",
-				);
+					$brand_details = $this->warehouse_model->get_motorcycle_brand_by_id(set_value('motorcycle_brand_id'));
 
-				$this->tracking_model->insert_logs('admin', $add_result_log_data);
-				*/
-				redirect('/spare_parts/maintenance/spare_parts');
-				return;
+					$brand_model_details = $this->warehouse_model->get_motorcycle_brand_model_class_view_by_id(set_value('motorcycle_brand_model_id'));
+
+					// insert the new results
+					$data = array(
+						'sku' => strtoupper(set_value('sku')),
+						'description' => strtoupper(set_value('description')),
+						'part_number' => strtoupper(set_value('part_number')),					
+						'motorcycle_brand_id' => abs(set_value('motorcycle_brand_id')),
+						'brand_name' => strtoupper($brand_details->brand_name),
+						'motorcycle_model_id' => abs(set_value('motorcycle_brand_model_id')),
+						'model_name' => strtoupper($brand_model_details->model_name),
+						'stock_limit' => abs(set_value('stock_limit')),
+						'srp' => set_value('srp'),
+						'is_active' => set_value('is_active'),
+						'remarks' => set_value('remarks'),
+					);
+					$this->spare_parts_model->insert_spare_part($data);
+					
+					$insert_id = $this->spare_parts_model->insert_id();
+					
+					/*//logging of action				
+					// TODO...
+					*/
+
+					redirect('/spare_parts/maintenance/spare_parts');
+					return;
+				} else {
+					echo "ERROR";
+				}
 			}
 		}
 		$this->template->view('spare_parts/maintenance/spare_parts/add');
 	}
 
-	public function edit_spare_part($sku = 0)
+	public function edit_spare_part($spare_part_id = 0)
 	{
-		$spare_part_details = $this->spare_parts_model->get_spare_part_by_sku($sku);
+		$spare_part_details = $this->spare_parts_model->get_spare_part_by_id($spare_part_id);
 
 		if ($_POST and !empty($spare_part_details))
 		{
@@ -904,16 +933,26 @@ class Maintenance extends Admin_Controller {
 
 			if ($this->form_validation->run())
 			{
-				//$this->spare_parts_model->update_agent(array('is_active' => 0),array());
-				// insert the new results
-				$data = array(					
-					'complete_name' => strtoupper(set_value('complete_name')),
-					'complete_address' => strtoupper(set_value('complete_address')),
-					'contact_number' => strtoupper(set_value('contact_number')),
-					'is_active' => set_value('is_active'),
-				);
+				//$brand_details = $this->warehouse_model->get_motorcycle_brand_by_id(set_value('motorcycle_brand_id'));
 
-				$this->spare_parts_model->update_spare_part($data, array('sku' => $sku));
+				//$brand_model_details = $this->warehouse_model->get_motorcycle_brand_model_class_view_by_id(set_value('motorcycle_brand_model_id'));
+
+				//$this->spare_parts_model->update_agent(array('is_active' => 0),array());				
+				$data = array(
+						'sku' => strtoupper(set_value('sku')),
+						'description' => strtoupper(set_value('description')),
+						'part_number' => strtoupper(set_value('part_number')),					
+						'motorcycle_brand_id' => abs(set_value('motorcycle_brand_id')),
+						//'brand_name' => strtoupper($brand_details->brand_name),
+						'motorcycle_model_id' => abs(set_value('motorcycle_brand_model_id')),
+						//'model_name' => strtoupper($brand_model_details->model_name),
+						'stock_limit' => abs(set_value('stock_limit')),
+						'srp' => set_value('srp'),
+						'is_active' => set_value('is_active'),
+						'remarks' => set_value('remarks'),
+					);
+
+				$this->spare_parts_model->update_spare_part($data, array('spare_part_id' => $spare_part_id));
 				
 				/*//logging of action
 				$details_before = array('id' => $result_id, 'details' => array());
@@ -939,50 +978,37 @@ class Maintenance extends Admin_Controller {
 					'remarks' => "",
 				);
 
-				$this->tracking_model->insert_logs('admin', $update_result_log_data);*/
+				$this->tracking_model->insert_logs('admin', $update_result_log_data);
+				*/
 				
 				redirect('/spare_parts/maintenance/spare_parts');
 				return;
 			}
 		}
 
-		$brand_name_details = $this->warehouse_model->get_motorcycle_brand();
+		//$brand_name_details = $this->warehouse_model->get_motorcycle_brand();
 		
 		$this->template->spare_part_details = $spare_part_details;
-		$this->template->brand_name_details = $brand_name_details;
+		//$this->template->brand_name_details = $brand_name_details;
 		$this->template->view('spare_parts/maintenance/spare_parts/edit');
 
 	}
 
-	public function delete_spare_part($sku = 0)
+	public function delete_spare_part($spare_part_id = 0)
 	{
-		$spare_part_details = $this->spare_parts_model->get_spare_part_by_sku($sku);
+		$spare_part_details = $this->spare_parts_model->get_spare_part_by_id($spare_part_id);
 
 		if ($_POST and !empty($spare_part_details))
 		{
-			$_sku = $this->input->post('_sku');
-			if (!empty($_sku)) if ($_sku == $agent_id)
-			{
-				$this->spare_parts_model->delete_spare_part(array('sku' => $sku));
-				
-				/*//logging of action
-				$details_before = array('id' => $sku, 'details' => $spare_part_details);
-				$details_before = json_encode($details_before);
-				
-				$delete_announcement_log_data = array(
-					'user_id' => $this->user->user_id,
-					'module_name' => 'RESULTS',
-					'table_name' => 'sm_results',
-					'action' => 'DELETE',
-					'details_before' => $details_before,
-					'remarks' => "",
-				);
-
-				$this->tracking_model->insert_logs('admin', $delete_announcement_log_data);*/
-				
-				redirect('/spare_parts/maintenance/spare_parts');
-				return;
-			}
+			
+			$this->spare_parts_model->delete_spare_part(array('spare_part_id' => $spare_part_id));
+			
+			/*//logging of action
+			*/
+			
+			redirect('/spare_parts/maintenance/spare_parts');
+			return;
+		
 		}
 
 		$this->template->spare_part_details = $spare_part_details;
@@ -990,9 +1016,9 @@ class Maintenance extends Admin_Controller {
 
 	}
 
-	public function view_spare_part($sku = 0)
+	public function view_spare_part($spare_part_id = 0)
 	{
-		$spare_part_details = $this->spare_parts_model->get_spare_part_by_sku($sku);
+		$spare_part_details = $this->spare_parts_model->get_spare_part_by_id($spare_part_id);
 
 		$this->template->spare_part_details = $spare_part_details;
 		$this->template->view('spare_parts/maintenance/spare_parts/view');
@@ -1331,6 +1357,185 @@ class Maintenance extends Admin_Controller {
 		$this->template->view('spare_parts/maintenance/warehouse/view');
 
 	}
+
+	private $_inventory_validation_rule = array(
+		array(
+			'field' => 'item_details',
+			'label' => 'Item Details',
+			'rules' => 'trim|required'
+		),
+		array(
+			'field' => 'warehouse_id',
+			'label' => 'Warehouse Name',
+			'rules' => 'trim|required'
+		),
+		array(
+			'field' => 'sku',
+			'label' => 'SKU',
+			'rules' => 'trim'
+		),		
+		array(
+			'field' => 'good_quantity',
+			'label' => 'Good Quantity',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'bad_quantity',
+			'label' => 'Bad Quantity',
+			'rules' => 'required'
+		),		
+		array(
+			'field' => 'rack_location',
+			'label' => 'Rack Location',
+			'rules' => 'trim|required'
+		)
+	);
+
+
+	public function add_inventory($spare_part_id = 0)	
+	{
+
+		$spare_part_details = $this->spare_parts_model->get_spare_part_by_id($spare_part_id);
+
+
+		$sql = "SELECT 
+					rack_location
+				FROM
+					is_item
+				GROUP BY
+					rack_location DESC	
+				";
+
+		$query = $this->db_spare_parts->query($sql);
+		$rack_location_details = $query->result();			
+		$query->free_result();			
+
+		$where = "is_active = 1";
+		$warehouse_details = $this->spare_parts_model->get_warehouse($where);
+
+
+		if ($_POST)
+		{
+			// post done here
+			$this->form_validation->set_rules($this->_inventory_validation_rule);
+
+			if ($this->form_validation->run())
+			{				
+				$brand_details = $this->warehouse_model->get_motorcycle_brand_by_id(set_value('motorcycle_brand_id'));
+
+				$brand_model_details = $this->warehouse_model->get_motorcycle_brand_model_class_view_by_id(set_value('motorcycle_brand_model_id'));
+
+				// insert the new results
+				$data = array(
+					'warehouse_id' => abs(set_value('warehouse_id')),
+					'sku' => strtoupper(set_value('sku')),
+					'good_quantity' => set_value('good_quantity'),
+					'bad_quantity' => set_value('bad_quantity'),
+					'rack_location' => strtoupper(set_value('rack_location'))
+				);
+				$this->spare_parts_model->insert_item($data);
+				
+				$insert_id = $this->spare_parts_model->insert_id();
+				
+				/*//logging of action				
+				// TODO...
+				*/
+
+				redirect('/spare_parts/maintenance/inventory');
+				return;		
+			}
+		}
+		
+		$this->template->warehouse_details = $warehouse_details;
+		$this->template->rack_location_details = $rack_location_details;
+		$this->template->spare_part_details = $spare_part_details;
+		$this->template->view('spare_parts/maintenance/inventory/add');
+	}
+
+	public function edit_inventory($item_id = 0)
+	{
+		
+		$item_details = $this->spare_parts_model->get_item_by_id($item_id);
+
+		//$spare_part_details = $this->spare_parts_model->get_spare_part_by_id($spare_part_id);
+
+
+		$sql = "SELECT 
+					rack_location
+				FROM
+					is_item
+				GROUP BY
+					rack_location DESC	
+				";
+
+		$query = $this->db_spare_parts->query($sql);
+		$rack_location_details = $query->result();			
+		$query->free_result();			
+
+		$where = "is_active = 1";
+		$warehouse_details = $this->spare_parts_model->get_warehouse($where);
+
+
+
+		if ($_POST and !empty($item_details))
+		{
+			
+			// post done here
+			$this->form_validation->set_rules($this->_warehouse_validation_rule);
+
+			if ($this->form_validation->run())
+			{				
+				$data = array(
+					'warehouse_id' => abs(set_value('warehouse_id')),
+					'sku' => strtoupper(set_value('sku')),
+					'good_quantity' => set_value('good_quantity'),
+					'bad_quantity' => set_value('bad_quantity'),
+					'rack_location' => strtoupper(set_value('rack_location'))
+				);		
+
+				$this->spare_parts_model->update_item($data, array('item_id' => $item_id));				
+				
+				//logging of actionv here
+				
+				
+				redirect('/spare_parts/maintenance/inventory');
+				return;
+			}
+		}
+
+		$this->template->item_details = $item_details;
+		$this->template->warehouse_details = $warehouse_details;
+		$this->template->rack_location_details = $rack_location_details;
+		//$this->template->spare_part_details = $spare_part_details;
+		$this->template->view('spare_parts/maintenance/inventory/edit');
+	}
+
+	public function delete_inventory($item_id = 0)
+	{
+		/*$warehouse_details = $this->spare_parts_model->get_warehouse_by_id($warehouse_id);
+
+		if ($_POST and !empty($warehouse_details))
+		{
+			$_warehouse_id = $this->input->post('warehouse_id');
+			if (!empty($_warehouse_id)) if ($_warehouse_id == $warehouse_id)
+			{
+				
+				$this->spare_parts_model->delete_warehouse(array('warehouse_id' => $warehouse_id));
+		*/		
+				/*//logging of action
+				
+				*/
+				
+				redirect('/spare_parts/maintenance/warehouse');
+				return;
+			}
+		}
+
+		$this->template->warehouse_details = $warehouse_details;
+		$this->template->view('spare_parts/maintenance/warehouse/delete');
+
+	}
+
 
 
 }

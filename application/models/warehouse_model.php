@@ -118,7 +118,7 @@ class Warehouse_model extends Base_Model
 
 	function get_motorcycle_brand_by_id($motorcycle_brand_id) 
 	{
-		$result = $this->get_warehouse(array('motorcycle_brand_id' => $motorcycle_brand_id));
+		$result = $this->get_motorcycle_brand(array('motorcycle_brand_id' => $motorcycle_brand_id));
 		$row = NULL;
 		if (count($result) > 0) {
 			$row = $result[0];
