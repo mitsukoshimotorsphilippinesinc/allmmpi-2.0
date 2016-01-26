@@ -93,8 +93,8 @@
 
 			?>						
 			<td>				
-				<a href='/spare_parts/maintenance/edit_spare_part/<?= $r->sku ?>' class='btn btn-small btn-primary' title="Edit"><i class="icon-pencil icon-white"></i></a>
-				<a href='/spare_parts/maintenance/delete_spare_part/<?= $r->sku ?>' class='btn btn-small btn-danger' title="Delete"><i class="icon-remove icon-white"></i></a>
+				<a href='/spare_parts/maintenance/edit_spare_part/<?= $r->spare_part_id ?>' class='btn btn-small btn-primary' title="Edit"><i class="icon-pencil icon-white"></i></a>
+				<a href='/spare_parts/maintenance/delete_spare_part/<?= $r->spare_part_id ?>' class='btn btn-small btn-danger' title="Delete"><i class="icon-remove icon-white"></i></a>
 			</td>
 		</tr>
 	<?php endforeach; ?>

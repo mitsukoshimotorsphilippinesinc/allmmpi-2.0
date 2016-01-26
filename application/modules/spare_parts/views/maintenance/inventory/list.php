@@ -87,9 +87,9 @@
 			<td style="text-align:right;"><?= number_format($r->bad_quantity, 2) ?></td>
 			<td style="text-align:right;"><?= number_format($r->stock_limit, 2) ?></td>			
 			<td>
-				<a href='/spare_parts/maintenance/view_part/<?= $r->sku ?>' class='btn btn-small btn-info' title="View"><i class="icon-search icon-white"></i></a>				
-				<a href='/spare_parts/maintenance/edit_part/<?= $r->sku ?>' class='btn btn-small btn-primary' title="Edit"><i class="icon-pencil icon-white"></i></a>
-				<a href='/spare_parts/maintenance/delete_part/<?= $r->sku ?>' class='btn btn-small btn-danger' title="Delete"><i class="icon-remove icon-white"></i></a>
+				<a href='/spare_parts/maintenance/view_inventory/<?= $r->item_id ?>' class='btn btn-small btn-info' title="View"><i class="icon-search icon-white"></i></a>				
+				<a href='/spare_parts/maintenance/edit_inventory/<?= $r->item_id ?>' class='btn btn-small btn-primary' title="Edit"><i class="icon-pencil icon-white"></i></a>
+				<a href='/spare_parts/maintenance/delete_inventory/<?= $r->item_id ?>' class='btn btn-small btn-danger' title="Delete"><i class="icon-remove icon-white"></i></a>
 			</td>
 		</tr>
 	<?php endforeach; ?>
