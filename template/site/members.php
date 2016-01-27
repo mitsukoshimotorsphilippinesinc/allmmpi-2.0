@@ -125,17 +125,18 @@
 			
 			<ul id='user-nav-box' class="nav nav-pills">
 				
-				<li class='<?= isset($this->uri->uri_string) ? ($this->uri->uri_string == 'employee' ? 'active' : '') : '';  ?>'><a href="/employee" >Dashboard</a></li>
-				<li class='<?= isset($this->uri->uri_string) ? ($this->uri->uri_string == 'employee/profile' ? 'active' : '') : '';  ?> dropdown'>
+				<li class='<?= isset($this->uri->uri_string) ? ($this->uri->uri_string == 'employee' ? 'active' : '') : '';  ?>'><a href="/employee" >Dashboard</a></li>				
+				<li class='<?= isset($this->uri->uri_string) ? ($this->uri->segment(2) == 'profile' ? 'active' : '') : '';  ?> dropdown'>
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown">Profile <i class="icon-play-down" style="padding-right: 3px;"></i></a>
 					<ul class="dropdown-menu" role="menu">
-						<li role="menuitem"><a href="/employee/profile">My Profile</a></li>							
+						<li role="menuitem"><a href="/employee/profile">My Profile</a></li>	
+						<li role="menuitem"><a href="/employee/profile/job_description">My JD</a></li>	
 					</ul>
 				</li>	
 				<li class='<?= isset($this->uri->uri_string) ? ($this->uri->uri_string == 'employee/announcement' ? 'active' : '') : '';  ?>'><a href="/employee/announcement" >Announcements</a></li>	
 				
 
-				<li class='<?= isset($this->uri->uri_string) ? ($this->uri->uri_string == 'employee/s4s' ? 'active' : '') : '';  ?> dropdown'>
+				<li class='<?= isset($this->uri->uri_string) ? ($this->uri->segment(2) == 's4s' ? 'active' : '') : '';  ?> dropdown'>
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown">S4S <i class="icon-play-down" style="padding-right: 3px;"></i></a>
 					<ul class="dropdown-menu" role="menu">
 						<li role="menuitem"><a href="/employee/s4s/page/operations">Operations</a></li>

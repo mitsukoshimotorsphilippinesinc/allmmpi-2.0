@@ -171,7 +171,7 @@ class S4s extends Site_Controller
 				
 			}
 		} else {
-			$html .= "<center><h3>No Policy/Procedure Found.</h3><center>";
+			$html .= "<center><h3 class='alert'>No Policy/Procedure Found.</h3><center>";
 		}	
 
 		$this->return_json(1, 'Success', array('html' => $html, 'pagination' => $pagination, 'result_count' => $s4s_count . " RESULT/S"));
