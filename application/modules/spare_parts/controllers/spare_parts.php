@@ -342,7 +342,7 @@ class Spare_parts extends Admin_Controller {
 			$this->return_json("error","Item Name is empty.");
 			return;
 		}
-
+		
 		$keys = explode(" ", $search_key);
 		for ($i = 0; $i < count($keys); $i++)
 		{
