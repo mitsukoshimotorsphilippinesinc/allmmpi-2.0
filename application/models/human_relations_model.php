@@ -32,6 +32,7 @@ class Human_relations_model extends Base_Model
 			's4s_message' => 'el_s4s_message',
 			'cod' => 'el_cod',
 			'cod_message' => 'el_cod_message',
+			'job_description_asset' => 'pm_job_description_asset',
 		);
 
 	}
@@ -787,6 +788,52 @@ class Human_relations_model extends Base_Model
 	function get_cod_message_by_id($cod_message_id)
 	{
 		$result = $this->get_cod_message(array('cod_message_id' => $cod_message_id));
+		$row = NULL;
+		if (count($result) > 0)
+		{
+			$row = $result[0];
+		}
+		return $row;
+	}
+
+	// ==============================================================
+	// ==============================================================
+	// pm_job_description_asset
+	function get_job_description_asset($where = null, $limit = null, $orderby = null, $fields = null)
+	{
+		$query = $this->fetch('job_description_asset', $fields, $where, $orderby, $limit);
+		$row = $query->result();
+		$query->free_result();
+		return $row;
+	}
+
+	function insert_job_description_asset($data)
+	{
+		return $this->insert('job_description_asset', $data);
+	}
+
+	function update_job_description_asset($data, $where)
+	{
+		return $this->update('job_description_asset', $data, $where);
+	}
+
+	function delete_job_description_asset($where)
+	{
+		return $this->delete('job_description_asset', $where);
+	}
+
+	function get_job_description_asset_count($where = null)
+	{
+		// do a sql count instead of row count
+		$query = $this->fetch('job_description_asset', 'count(1) as cnt', $where);
+		$row = $query->first_row();
+		$query->free_result();
+		return $row->cnt;
+	}
+
+	function get_job_description_by_id($job_description_asset_id)
+	{
+		$result = $this->get_job_description_asset(array('job_description_asset_id' => $job_description_asset_id));
 		$row = NULL;
 		if (count($result) > 0)
 		{
