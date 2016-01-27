@@ -16,7 +16,7 @@ foreach ($position_id as $pi) {
 if (($is_allowed == 1) || ($cod_access_setting == "ALL")) {
 
 	if (empty($cod_details)) {
-		echo "<center><h3>No Document Found.</h3><center>";	
+		echo "<center class='alert'><h3>The COD document is not available.<br/>Please contact your supervisor or manager to address your concern. <br/>Thank you.</h3><center>";	
 	} else {
 	?>
 

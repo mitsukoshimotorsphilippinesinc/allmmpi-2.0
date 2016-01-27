@@ -49,7 +49,7 @@ class SignIn extends Base_Controller
 				"is_active" => 1
 			);
 		$employee_account_details = $this->user_model->get_user($where);
-		
+
 		if (empty($employee_account_details)) {
 			$active_member == 0;
 			$invalid_login = true;
