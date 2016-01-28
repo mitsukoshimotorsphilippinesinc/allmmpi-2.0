@@ -107,7 +107,7 @@
 						</div>
 						<div >
 							<button type="submit" class="btn btn-success">Log In</button>
-							<span style='float:right;padding-top:6px;padding-right:160px;' ><a href='/employee/signin/forgot_password' >Forgot Password</a></span>
+							<!--span style='float:right;padding-top:6px;padding-right:160px;' ><a href='/employee/signin/forgot_password' >Forgot Password</a></span-->
 						</div>		
 					</fieldset>
 				</form>

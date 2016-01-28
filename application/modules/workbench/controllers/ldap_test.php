@@ -66,7 +66,8 @@ class Ldap_test extends Base_Controller {
 	//------------------------------------------------------------------------------
 	//$ldap_base_dn = 'DC=xyz,DC=local';
 	$ldap_base_dn = 'DC=com';
-	$search_filter = "(&(objectCategory=person))";
+	//$search_filter = "(&(objectCategory=person))";
+	$search_filter = "";
 	$result = ldap_search($ldap_connection, $ldap_base_dn, $search_filter);
 	if (FALSE !== $result){
 	    $entries = ldap_get_entries($ldap_connection, $result);

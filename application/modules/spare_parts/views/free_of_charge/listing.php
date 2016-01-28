@@ -61,9 +61,8 @@
 			<th>Status</th>
 			<th style='width:100px;'>Requested By</th>
 			<th style='width:100px;'>Motor Brand/Model</th>
-			<th style='width:100px;'>Warehouse</th>
-			<th style='width:100px;'>Approved By (Warehouse)</th>			
-			<th style='width:120px;'>Remarks</th>
+			<th style='width:50px;'>Total Items</th>
+			<th style='width:100px;'>Total Amount</th>		
 			<th style='width:70px;'>Date Created</th>			
 			<th style='width:118px;'>Action</th>
 		</tr>
@@ -89,7 +88,7 @@
 			}			
 
 			// get requestor details
-			$requestor_details = $this->human_relations_model->get_employment_information_by_id($t->id_number);
+			$requestor_details = $this->human_relations_model->get_employment_information_view_by_id($t->id_number);
 
 			if (count($requestor_details) == 0) {
 				echo "<td>N/A</td>";
@@ -105,22 +104,38 @@
 				echo "<td>{$motor_brand_model_details->brand_name}" . " - " . "{$motor_brand_model_details->model_name}</td>"; 
 			}				
 
-			// get warehouse detail			
-			$warehouse_details = $this->spare_parts_model->get_warehouse_by_id($t->warehouse_id);
+			// get number of items
+			$where = "request_summary_id = " . $t->request_summary_id . " AND status NOT IN ('CANCELLED', 'DELETED')";
+			$free_of_charge_detail_info = $this->spare_parts_model->get_request_detail($where);
 
-			if (count($warehouse_details) == 0) {
-				echo "<td>N/A</td>";
-			} else { 
-				echo "<td>{$warehouse_details->warehouse_name}</td>"; 
+			$total_items = 0;
+			foreach ($free_of_charge_detail_info as $wrdi) {
+				$total_items = $total_items + ($wrdi->good_quantity + $wrdi->bad_quantity);
+			}
+			$total_items = number_format($total_items);
+
+			echo "<td  style='text-align:right;'>{$total_items}</td>";
+
+			// total amount
+			//$where = "status IN ('PENDING') AND salary_deduction_id = " . $t->salary_deduction_id;
+			//$salary_deduction_details = $this->spare_parts_model->get_salary_deduction_detail($where);
+			$where = "status IN ('PENDING') AND request_summary_id = " . $t->request_summary_id;
+			$free_of_charge_details = $this->spare_parts_model->get_request_detail($where);
+
+			$total_amount = 0;
+			if (count($free_of_charge_details) > 0) {
+				foreach ($free_of_charge_details as $sdd) {
+					$total_amount = $total_amount + $sdd->total_amount;
+				}
 			}
 			?>	
-			<td></td>
-			<td><?= $t->remarks; ?></td>
+			<td style='text-align:right'><?= number_format($total_amount, 2); ?></td>
+
 			<td><?= $t->insert_timestamp; ?></td>
 
 			
 
-			<td data1="<?= $t->free_of_charge_id ?>" data2="<?= $t->request_code ?>">				
+			<td data1="<?= $t->request_summary_id ?>" data2="<?= $t->request_code ?>">				
 				<a class='btn btn-small btn-info view-details' data='info' title="View Details"><i class="icon-white icon-list"></i></a>	
 				<?php
 				if ($t->status == 'PENDING') {
@@ -134,7 +149,7 @@
 				}
 
 				if ($t->status == 'COMPLETED') {
-					if (($t->mtr_number == 0) || ($t->mtr_number == NULL)) {
+					if (($t->cross_reference_number == 0) || ($t->cross_reference_number == NULL)) {
 						echo "<a class='btn btn-small btn-primary process-btn' data='assign mtr' title='Assign MTR Number'><i class='icon-white icon-pencil'></i></a>";
 					} else {
 						echo "<a href='/spare_parts/display_mtr/" . $t->request_code . "' target = '_blank' class='btn btn-small btn-success print-mtr' data='print mtr' title='Print MTR' data='<?= $t->request_code ?>'><i class='icon-white icon-print'></i></a>";
@@ -169,12 +184,12 @@
 	
 	});
 
-	var processButtonAction = function(free_of_charge_id, free_of_charge_code, listing_action) {
+	var processButtonAction = function(request_summary_id, free_of_charge_code, listing_action) {
 
 		b.request({
 			url: "/spare_parts/free_of_charge/for_listing_confirm",
 			data: {
-				'free_of_charge_id' : free_of_charge_id,
+				'request_summary_id' : request_summary_id,
 				'free_of_charge_code' : free_of_charge_code,
 				'listing_action' : listing_action,
 			},
@@ -216,11 +231,11 @@
 								b.request({
 									url : '/spare_parts/free_of_charge/for_listing_proceed',
 									data : {				
-										'free_of_charge_id' : free_of_charge_id,
+										'request_summary_id' : request_summary_id,
 										'free_of_charge_code' : free_of_charge_code,
 										'listing_action' : listing_action,
 										'remarks' : $("#txt-remarks").val(),
-										'mtr_number' : $("#txt-mtrnumber").val(),
+										'cross_reference_number' : $("#txt-mtrnumber").val(),
 									},
 									on_success : function(data) {
 										
@@ -285,14 +300,14 @@
 	}
 	
 	$(".view-details").click(function(){
-		var free_of_charge_id = $(this).parent().attr("data1");
+		var request_summary_id = $(this).parent().attr("data1");
 		var free_of_charge_code = $(this).parent().attr("data2");
 		var listing_action = $(this).attr("data");
 	
 		b.request({
 			url: "/spare_parts/free_of_charge/view_details",
 			data: {
-				"free_of_charge_id" : free_of_charge_id,
+				"request_summary_id" : request_summary_id,
 				"free_of_charge_code" : free_of_charge_code,
 				"listing_action" : listing_action,
 			},
@@ -308,14 +323,14 @@
 							html: data.data.html,
 							buttons: {
 								'Cancel' : function() {
-									processButtonAction(free_of_charge_id, free_of_charge_code, 'cancel');
+									processButtonAction(request_summary_id, free_of_charge_code, 'cancel');
 								},
 								'For Approval' : function() {
-									processButtonAction(free_of_charge_id, free_of_charge_code, 'for approval');
+									processButtonAction(request_summary_id, free_of_charge_code, 'for approval');
 								},
 								'Edit' : function() {
-									//processButtonAction(free_of_charge_id, free_of_charge_code, 'edit');
-									redirect("/spare_parts/free_of_charge/edit/" + free_of_charge_id);
+									//processButtonAction(request_summary_id, free_of_charge_code, 'edit');
+									redirect("/spare_parts/free_of_charge/edit/" + request_summary_id);
 								}									
 							}
 						});			
@@ -327,7 +342,7 @@
 							html: data.data.html,
 							buttons: {
 								'Forward To Warehouse' : function() {
-									processButtonAction(free_of_charge_id, free_of_charge_code, 'forward to warehouse');
+									processButtonAction(request_summary_id, free_of_charge_code, 'forward to warehouse');
 								}									
 							}
 						});
