@@ -479,7 +479,7 @@ else
 		with_overlay = typeof(with_overlay) == 'undefined' ? true : with_overlay;
 		b.request({
 			'with_overlay' : with_overlay,
-			url: '/spare_parts/free_of_charge/get_requester',
+			url: '/spare_parts/get_requester',
 			data: {'search_key' : search_key},
 			on_success: function(data, status) {
 				if (_.isFunction(cb)) cb.call(this, data);
@@ -508,7 +508,7 @@ else
 	var search_item = function() {
 		document.search_item_modal = b.modal.create({
 			title: "Search Item",
-			width: 700,
+			width: 900,
 			html: _.template($("#search-item-template").html(),{}),
 		});
 		
@@ -531,7 +531,7 @@ else
 			}
 			
 			b.request({
-				url: "/spare_parts/free_of_charge/search_item",
+				url: "/spare_parts/search_item",
 				data: {
 					"search_key": search_key,
 				},

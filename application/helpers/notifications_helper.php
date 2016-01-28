@@ -11,7 +11,7 @@ function send_email($params=array())
 	$ci->email->from($params["from"]);
 	$ci->email->to($params["to"]);
 
-	$ci->email->cc("dante.pangan@mitsukoshimotors.com");
+	//$ci->email->cc("dante.pangan@mitsukoshimotors.com");
 	//$ci->email->bcc($params["bcc"]);
 
 	$ci->email->subject($params["subject"]);

@@ -532,7 +532,7 @@ else
 	var search_item = function() {
 		document.search_item_modal = b.modal.create({
 			title: "Search Item",
-			width: 700,
+			width: 900,
 			html: _.template($("#search-item-template").html(),{}),
 		});
 		
