@@ -835,6 +835,11 @@ class Maintenance extends Admin_Controller {
 			'field' => 'part_number',
 			'label' => 'Part Number',
 			'rules' => 'trim'
+		),
+		array(
+			'field' => 'remarks',
+			'label' => 'Remarks',
+			'rules' => 'trim'
 		)
 	);
 
@@ -929,10 +934,18 @@ class Maintenance extends Admin_Controller {
 		if ($_POST and !empty($spare_part_details))
 		{
 			// post done here
+
+			//var_dump("here");
+
 			$this->form_validation->set_rules($this->_spare_parts_validation_rule);
+
+			//var_dump("here1");
 
 			if ($this->form_validation->run())
 			{
+
+				//var_dump("here3");
+
 				//$brand_details = $this->warehouse_model->get_motorcycle_brand_by_id(set_value('motorcycle_brand_id'));
 
 				//$brand_model_details = $this->warehouse_model->get_motorcycle_brand_model_class_view_by_id(set_value('motorcycle_brand_model_id'));

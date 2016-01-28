@@ -251,22 +251,22 @@ class SignIn extends Base_Controller
 		
 		if($id_number == 0){
 			$error_found = true;
-			$error_message = "Error Code 001: Invalid url.";
+			$error_message = "<br/>Code 001: User not found. For assistance, kindly contact the IT Department.<br/><br/>Thank you.";
 		}elseif(strlen($hash)==0){
 			$error_found = true;
-			$error_message = "Error Code 002: Invalid url.";
+			$error_message = "<br/>Code 002: There is something wrong with your request. Try to signin again. For assistance, kindly contact the IT Department.<br/><br/>Thank you.";
 		}else{
 			$this->load->model('user_model');
 			$user_verification = $this->user_model->get_user_verification_by_id_number($id_number);
 			
 			if(empty($user_verification)){
 				$error_found = true;
-				$error_message = "Error Code 003: Invalid url.";
+				$error_message = "<br/>Code 003: Missing verification code. Please try to signin again and change your password. If you need assistance, kindly contact the IT Department. <br/><br/>Thank you";
 			}else{
 				
 				if($hash != $user_verification->change_password_code){
 					$error_found = true;
-					$error_message = "Error Code 005: Invalid url.";
+					$error_message = "<br/>Code 005: This link has expired, It is possible that the system has created a new one for you. Please check your email. If you need assistance, kindly contact the IT Department. <br/><br/>Thank you";
 				}else{
 					// update password
 					
