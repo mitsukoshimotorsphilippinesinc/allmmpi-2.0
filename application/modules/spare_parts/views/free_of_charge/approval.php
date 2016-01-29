@@ -84,7 +84,7 @@
 			}			
 
 			// get requestor details
-			$requestor_details = $this->human_relations_model->get_employment_information_by_id($t->id_number);
+			$requestor_details = $this->human_relations_model->get_employment_information_view_by_id($t->id_number);
 
 			if (count($requestor_details) == 0) {
 				echo "<td>N/A</td>";
@@ -115,7 +115,7 @@
 
 			
 
-			<td data1="<?= $t->free_of_charge_id ?>" data2="<?= $t->request_code ?>">				
+			<td data1="<?= $t->request_summary_id ?>" data2="<?= $t->request_code ?>">				
 				<a class='btn btn-small btn-primary view-details' data='info' title="View Details"><i class="icon-white icon-list"></i></a>	
 				<?php
 				if ($t->status == 'FOR APPROVAL') {

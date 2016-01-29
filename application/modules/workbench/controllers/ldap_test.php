@@ -5,42 +5,57 @@ class Ldap_test extends Base_Controller {
 	function __construct()
 	{
 		parent::__construct();
-	
-		//$this->db = $this->load->database('default', TRUE);
 	}
 
 	public function index()
 	{
 		
-	/*	$ldaprdn  = 'cn=ryan.rosaldo,ou=h.o,dc=mitsukoshimotors,dc=com';     // ldap rdn or dn
+		//$ldaprdn  = 'cn=ryan.rosaldo,ou=h.o,dc=mitsukoshimotors,dc=com';     // ldap rdn or dn
+		//$ldappass = 'rootpass';  // associated password
+
+		$ldaprdn  = 'cn=matt,ou=groups,dc=mitsukoshimotors,dc=com';     // ldap rdn or dn
 		$ldappass = 'rootpass';  // associated password
 
 
-		$ldapconn = ldap_connect("195.100.100.77")
+		//$ldaprdn  = 'cn=mikko,ou=Groups,dc=mitsukoshimotors,dc=com';     // ldap rdn or dn
+		//$ldappass = 'rootpass';  // associated password
+
+		//$ldapconn = ldap_connect("195.100.100.77")
+		$ldapconn = ldap_connect("195.100.100.207")
     		or die("Could not connect to LDAP server.");
+
+    	echo $ldapconn . "<br/>";	
 
 		if ($ldapconn) {
 
+			ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
+
+				echo $ldaprdn . "<br/>" . $ldappass;
+
 			    // binding to ldap server
-			    $ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
+			    $ldapbind = ldap_bind($ldapconn);
+			    //$ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
 
 			    // verify binding
 			    if ($ldapbind) {
 			        echo "LDAP bind successful...";
 
-			        $read = ldap_search($ldapconn, $ldaprdn, "ou*")
-					     or exit(">>Unable to search ldap server<<");
+
+			        $sr=ldap_search($ldapbind, "dn=mitsukoshimotors,dn=com", "");
+
+			        //$read = ldap_search($ldapconn, $ldaprdn, "ou*")
+					//     or exit(">>Unable to search ldap server<<");
 					
-					$info = ldap_get_entries($connect, $read);
+					//$info = ldap_get_entries($connect, $read);
 
 			    } else {
 			        echo "LDAP bind failed...";
 			    }
 
 			}
-	}*/
+	}
 
-
+/*
 	$ldap_columns = NULL;
 	$ldap_connection = NULL;
 	$ldap_password = 'rootpass';
@@ -121,6 +136,6 @@ class Ldap_test extends Base_Controller {
 	
 
 	}
-
+*/
 }
 

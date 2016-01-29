@@ -1,5 +1,5 @@
 
-<div class='alert alert-danger'><h2>Request List<a href='/spare_parts/free_of_charge/add' class='btn btn-small btn-default'id="add-btn" style="float:right;margin-right:-30px;margin-top:5px;" title='Add New'><i class='icon-plus'></i>&nbsp;Add New</a>&nbsp;&nbsp;<a class='btn btn-small btn-default'id="download-btn" style="float:right;margin-top:5px;" title='Download'><i class='icon-download' disabled="disabled"></i>&nbsp;Download Result</a></h2></div>
+<div class='alert alert-danger'><h2>Request List<a href='/spare_parts/free_of_charge/add' class='btn btn-small btn-default'id="add-btn" style="float:right;margin-right:-30px;margin-top:5px;" title='Add New'><i class='icon-plus'></i>&nbsp;Add New</a>&nbsp;&nbsp;<a class='btn btn-small btn-default'id="download-btn" style="float:right;margin-top:5px;" title='Download'><i class='icon-download' disabled="disabled"></i>&nbsp;Download</a></h2></div>
 
 <br>
 
@@ -189,7 +189,7 @@
 		b.request({
 			url: "/spare_parts/free_of_charge/for_listing_confirm",
 			data: {
-				'request_summary_id' : request_summary_id,
+				'free_of_charge_id' : request_summary_id,
 				'free_of_charge_code' : free_of_charge_code,
 				'listing_action' : listing_action,
 			},
@@ -231,7 +231,7 @@
 								b.request({
 									url : '/spare_parts/free_of_charge/for_listing_proceed',
 									data : {				
-										'request_summary_id' : request_summary_id,
+										'free_of_charge_id' : request_summary_id,
 										'free_of_charge_code' : free_of_charge_code,
 										'listing_action' : listing_action,
 										'remarks' : $("#txt-remarks").val(),
@@ -307,7 +307,7 @@
 		b.request({
 			url: "/spare_parts/free_of_charge/view_details",
 			data: {
-				"request_summary_id" : request_summary_id,
+				"free_of_charge_id" : request_summary_id,
 				"free_of_charge_code" : free_of_charge_code,
 				"listing_action" : listing_action,
 			},

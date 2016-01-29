@@ -236,29 +236,40 @@ class Free_of_charge extends Admin_Controller {
 		$listing_action = $this->input->post("listing_action");
 			
 		$free_of_charge = $this->spare_parts_model->get_request_summary_by_id($free_of_charge_id);		
-
+		
 		if (empty($free_of_charge)) {		
+
 			$html = "<p>There is something wrong with this transaction [Request Code: {$free_of_charge_code}].</p>";
 			$title = "Error: View Details";
 
-			$this->return_json("0","Warehouse Request Code not found in DB", array("html" => $html, "title" => $title));	
-			
+			$this->return_json("0","Free of Charge Code not found in DB", array("html" => $html, "title" => $title));	
+	
 		} else {
-
-			$where = "free_of_charge_id = {$free_of_charge_id}";
-			$free_of_charge_details = $this->spare_parts_model->get_request_summary_detail($where);
 		
+			$where = "request_summary_id = {$free_of_charge_id}";
+			$free_of_charge_details = $this->spare_parts_model->get_request_detail($where);
+			
+			$department_module_details = $this->spare_parts_model->get_department_module_by_segment_name($this->segment_name);	
+
+			// check if has items for return
+			$where = "department_module_id = ". $department_module_details->department_module_id ." AND request_id = ". $free_of_charge_id ." AND status NOT IN ('CANCELLED')";		
+			$reprocessed_item_details = $this->spare_parts_model->get_reprocessed_item($where);
+
 			$data = array(
 				//'free_of_charge' => $free_of_charge,
 				'segment_request_summary' => $free_of_charge,
 				'segment_request_details' =>$free_of_charge_details,
-				'listing_action' => $listing_action
+				'listing_action' => $listing_action,
+				'segment_request_summary_remarks' => $free_of_charge->remarks,
+				'segment_name' => $this->segment_name,
+				'reprocessed_item_details' => $reprocessed_item_details,
+				'department_module_details' => $department_module_details,
 			);
-		
-			$html = $this->load->view("template_view_details",$data,true);
+
+			$html = $this->load->view("template_view_details",$data, true);
 			 
 			$title = "View Details :: " . $free_of_charge_code;
-			$this->return_json("1","View Details Warehouse Request", array("html" => $html, "title" => $title, "request_status" => $free_of_charge->status));
+			$this->return_json("1","View Details Free Of Charge", array("html" => $html, "title" => $title, "request_status" => $free_of_charge->status));
 			
 		}
 			
@@ -478,7 +489,7 @@ class Free_of_charge extends Admin_Controller {
 					'status' => "FORWARDED",
 					'approved_by' => $this->user->user_id,					
 					'approve_timestamp' => $current_datetime,
-					'mtr_number' => $mtr_number
+					'cross_reference_number' => $mtr_number
 				);
 
 				$html = "You have successfully forwaded the request to warehouse with Request Code: <strong>{$free_of_charge_code}</strong>.";
@@ -616,7 +627,7 @@ class Free_of_charge extends Admin_Controller {
 
 			$worksheet = $objPHPExcel->setActiveSheetIndex(0);
 
-			$where = "insert_timestamp BETWEEN '$start_date' AND '$end_date'";
+			$where = "insert_timestamp BETWEEN '$start_date' AND '$end_date' AND request_code LIKE 'FC%'";
 			$free_of_charge_count = $this->spare_parts_model->get_request_summary_count($where);
 
 			$filename = "free_of_charges_" . str_replace("-", "", $start_date) . "-" . str_replace("-", "", $end_date) . ".xls";
@@ -666,12 +677,13 @@ class Free_of_charge extends Admin_Controller {
 				{
 
 					$worksheet->setCellValue('A'. $row, $dr->request_code);
-					$worksheet->setCellValue('A'. $row, $dr->status);
-					$worksheet->setCellValue('C'. $row, $dr->dealer_id);
-					$worksheet->setCellValue('D'. $row, $dr->agent_id);
-					$worksheet->setCellValue('E'. $row, $dr->purchase_order_number);
-					$worksheet->setCellValue('F'. $row, $dr->remarks);
-					$worksheet->setCellValue('G'. $row, $dr->insert_timestamp);
+					$worksheet->setCellValue('B'. $row, $dr->status);
+					$worksheet->setCellValue('C'. $row, $dr->id_number);
+					$worksheet->setCellValue('D'. $row, $dr->motorcycle_brand_model_id);
+					$worksheet->setCellValue('E'. $row, $dr->cross_reference_number);
+					$worksheet->setCellValue('F'. $row, $dr->warehouse_id);
+					$worksheet->setCellValue('G'. $row, $dr->id_number);
+					$worksheet->setCellValue('H'. $row, $dr->insert_timestamp);
 					
 					// auto resize columns
 					$worksheet->getColumnDimension('A')->setAutoSize(false);
@@ -681,6 +693,7 @@ class Free_of_charge extends Admin_Controller {
 					$worksheet->getColumnDimension('E')->setAutoSize(true);
 					$worksheet->getColumnDimension('F')->setAutoSize(true);
 					$worksheet->getColumnDimension('G')->setAutoSize(true);
+					$worksheet->getColumnDimension('H')->setAutoSize(true);
 					$row++;
 				}
 			}
@@ -721,13 +734,13 @@ class Free_of_charge extends Admin_Controller {
 			$this->template->position_details = $position_details;
 
 			// get request items
-			$where = "status NOT IN ('CANCELLED', 'DELETED') AND free_of_charge_id = " . $free_of_charge_id;
-			$free_of_charge_detail_details = $this->spare_parts_model->get_request_summary_detail($where);
+			$where = "status NOT IN ('CANCELLED', 'DELETED') AND request_summary_id = " . $free_of_charge_id;
+			$free_of_charge_detail_details = $this->spare_parts_model->get_request_detail($where);
 
 			$json_items = array();
 			for($k = 0;$k<count($free_of_charge_detail_details);$k++)
 			{
-				$free_of_charge_detail_id = $free_of_charge_detail_details[$k]->free_of_charge_detail_id;
+				$free_of_charge_detail_id = $free_of_charge_detail_details[$k]->request_detail_id;
 				
 				//$total_amount = $total_amount + ($item_qty[$k]*$item_price[$k]);
 				$po_items = array(
@@ -954,7 +967,7 @@ class Free_of_charge extends Admin_Controller {
 		$engine = trim($this->input->post("engine"));
 		$chassis = trim($this->input->post("chassis"));
 		$warehouse_id = abs($this->input->post("warehouse_id"));
-		$brandmodel = trim($this->input->post("brandmodel"));
+		$brandmodel_id = trim($this->input->post("brandmodel_id"));
 		$requester_id = trim($this->input->post("requester_id"));
 
 		$has_error = 0;
@@ -1015,12 +1028,18 @@ class Free_of_charge extends Admin_Controller {
 				$manager_id_number = $warehouse_details->manager_id_number;
 			}
 
-			$motorcycle_brand_model_id = 0;
+			/*$motorcycle_brand_model_id = 0;
 			// get motorcycle details from warehouse db
 			$motorcycle_brandmodel_details = $this->warehouse_model->get_motorcycle_brand_model_class_view("CONCAT(brand_name, ' ', model_name) = '{$brandmodel}'");
 			if (count($motorcycle_brandmodel_details)  > 0) {
 				$motorcycle_brand_model_id = $motorcycle_brandmodel_details[0]->motorcycle_brand_model_id;
-			}
+			}*/
+
+			$current_datetime = date('Y-m-d H:i:s');						
+			
+			// get module_id
+			$module_id = get_department_module_id();
+
 
 			$sql = "INSERT INTO 
 						is_request_summary 
@@ -1104,7 +1123,7 @@ class Free_of_charge extends Admin_Controller {
 		} else {
 			
 			$active_free_of_charge_details = $this->spare_parts_model->get_request_summary_by_code($request_code);
-			$active_free_of_charge_id = $active_free_of_charge_details->free_of_charge_id;
+			$active_free_of_charge_id = $active_free_of_charge_details->request_summary_id;
 		}	
 
 		// total amount
@@ -1118,7 +1137,7 @@ class Free_of_charge extends Admin_Controller {
 
 		// add item to details table
 		$data_insert = array(
-				'free_of_charge_id' => $active_free_of_charge_id,
+				'request_summary_id' => $active_free_of_charge_id,
 				'item_id' => $item_id,
 				'srp' => $srp,
 				'discount' => $discount,
@@ -1129,7 +1148,7 @@ class Free_of_charge extends Admin_Controller {
 				'remarks' => $remarks
 			);
 
-		$this->spare_parts_model->insert_free_of_charge_detail($data_insert);
+		$this->spare_parts_model->insert_request_detail($data_insert);
 
 		$active_free_of_charge_detail_id = $this->spare_parts_model->insert_id();
 
@@ -1159,7 +1178,7 @@ class Free_of_charge extends Admin_Controller {
 		// get free_of_charge_id
 		$free_of_charge_details = $this->spare_parts_model->get_request_summary_by_code($request_code);
 
-		$free_of_charge_detail_info = $this->spare_parts_model->get_request_summary_detail_by_id($free_of_charge_detail_id);
+		$free_of_charge_detail_info = $this->spare_parts_model->get_request_detail_by_id($free_of_charge_detail_id);
 
 
 		$item_view_details = $this->spare_parts_model->get_item_view_by_id($free_of_charge_detail_info->item_id);
@@ -1177,7 +1196,7 @@ class Free_of_charge extends Admin_Controller {
 					<br/>
 					Do you want to continue?</p>";
 
-		$this->return_json("1","Confirm Remove Item", array("html" => $html, "title" => $title, 'free_of_charge_id' => $free_of_charge_details->free_of_charge_id));
+		$this->return_json("1","Confirm Remove Item", array("html" => $html, "title" => $title, 'free_of_charge_id' => $free_of_charge_details->request_summary_id));
 		return;
 	}
 
@@ -1190,7 +1209,7 @@ class Free_of_charge extends Admin_Controller {
 		//$where = "free_of_charge_id = '{$free_of_charge_id}' AND item_id = '{$item_id}'";
 		$where = "free_of_charge_detail_id = " . $free_of_charge_detail_id;
 		//$free_of_charge_detail = $this->spare_parts_model->get_request_summary_detail($where);
-		$free_of_charge_detail_info = $this->spare_parts_model->get_request_summary_detail_by_id($free_of_charge_detail_id);
+		$free_of_charge_detail_info = $this->spare_parts_model->get_request_detail_by_id($free_of_charge_detail_id);
 
 
 		$current_datetime = date('Y-m-d H:i:s');
@@ -1427,7 +1446,7 @@ class Free_of_charge extends Admin_Controller {
 				$objPHPExcel->getActiveSheet()->setCellValue('E' . $row, $wrd->chassis);
 				$objPHPExcel->getActiveSheet()->setCellValue('F' . $row, $wrd->status);
 				$objPHPExcel->getActiveSheet()->setCellValue('G' . $row, $wrd->warehouse_id);
-				$objPHPExcel->getActiveSheet()->setCellValue('H' . $row, $wrd->mtr_number);
+				$objPHPExcel->getActiveSheet()->setCellValue('H' . $row, $wrd->cross_reference_number);
 				$objPHPExcel->getActiveSheet()->setCellValue('I' . $row, $wrd->remarks);
 				$objPHPExcel->getActiveSheet()->setCellValue('J' . $row, $wrd->insert_timestamp);
         

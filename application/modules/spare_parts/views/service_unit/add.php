@@ -37,8 +37,8 @@ if (is_object($service_unit_details))
 {
 	$isAdd = false;
 	$titlePrefix = "Edit&nbsp;";
-	$submitURL = "/spare_parts/" . $department_module_details->segment_name . "/edit/" . $service_unit_details->service_unit_id;
-	$_id = $service_unit_details->service_unit_id;
+	$submitURL = "/spare_parts/" . $department_module_details->segment_name . "/edit/" . $service_unit_details->request_summary_id;
+	$_id = $service_unit_details->request_summary_id;
 	$show_approval = false;
 }
 else

@@ -19,6 +19,13 @@ class Ldap_createfile extends Base_Controller {
 	public function process() 
 	{
 
+		$department_id = abs($this->input->post("department_id"));
+
+		$where_add_department = "";
+
+		if ($department_id > 0) {
+			$where_add_department = " AND a.department_id = {$department_id} ";
+		}
 
 		/*$get_sql ="SELECT 
 						a.id_number, 
@@ -68,11 +75,14 @@ class Ldap_createfile extends Base_Controller {
 					and 
 						a.company_email_address is not null 
 					and 
-						a.company_id = 1
+						a.company_id = 1	
 					and 
 						a.department_id not in (45, 51)
+					{$where_add_department}	
 					order by 
 						b.department_name";
+
+		//var_dump($get_sql);				
 
 		$active_users = $this->db_human_relations->query($get_sql);
 		$active_users = $active_users->result();		
@@ -88,7 +98,7 @@ class Ldap_createfile extends Base_Controller {
 			fclose($myfile);
 
 		}
-
+		
 		echo "json_encode('status' => '1')";
 
 		return;

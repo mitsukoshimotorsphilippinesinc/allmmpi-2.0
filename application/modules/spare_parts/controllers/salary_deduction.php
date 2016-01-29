@@ -707,7 +707,7 @@ class Salary_deduction extends Admin_Controller {
 
 			if (empty($search_status)) {
 				//$where = "status IN ('PENDING','FOR APPROVAL', 'APPROVED', 'FORWARDED', FOR CANCELLATION', 'CANCELLED', 'CANCELLED (COMPLETED)', 'DENIED', 'DENIED (COMPLETED)', 'COMPLETED')";
-				$where = "";
+				$where = "request_code LIKE 'SD%'";
 			} else {
 
 				if ($search_status == 'ALL') {
