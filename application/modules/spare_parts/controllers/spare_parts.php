@@ -342,8 +342,9 @@ class Spare_parts extends Admin_Controller {
 			$this->return_json("error","Item Name is empty.");
 			return;
 		}
-		
+
 		$keys = explode(" ", $search_key);
+	
 		for ($i = 0; $i < count($keys); $i++)
 		{
 			$escaped_keys[] = mysql_real_escape_string($keys[$i]);
@@ -363,6 +364,7 @@ class Spare_parts extends Admin_Controller {
 		}
 
 		$combinations = array_reverse($combinations);
+	
 
 		// exact match search
 		$has_exact = false;
@@ -390,7 +392,8 @@ class Spare_parts extends Admin_Controller {
 				break;
 			}
 		}
-		
+
+	
 		$return_items = array();
 
 		if (count($tmp_items) == 0)
