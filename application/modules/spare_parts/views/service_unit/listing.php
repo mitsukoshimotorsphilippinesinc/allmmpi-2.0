@@ -3,7 +3,7 @@
 ?>
 
 <?= $breadcrumb_container; ?>
-<div class='alert alert-danger'><h2>Request List<a href='/spare_parts/service_unit/add' class='btn btn-small btn-default'id="add-btn" style="float:right;margin-right:-30px;margin-top:5px;" title='Add New'><i class='icon-plus'></i>&nbsp;Add New</a>&nbsp;&nbsp;<a class='btn btn-small btn-default'id="download-btn" style="float:right;margin-top:5px;display:none;" title='Download'><i class='icon-download' disabled="disabled"></i>&nbsp;Download Result</a></h2></div>
+<div class='alert alert-danger'><h2>Request List<a href='/spare_parts/service_unit/add' class='btn btn-small btn-default'id="add-btn" style="float:right;margin-right:-30px;margin-top:5px;" title='Add New'><i class='icon-plus'></i>&nbsp;Add New</a>&nbsp;&nbsp;<a class='btn btn-small btn-default'id="download-btn" style="float:right;margin-top:5px;" title='Download'><i class='icon-download' disabled="disabled"></i>&nbsp;Download</a></h2></div>
 
 <br>
 
@@ -103,7 +103,7 @@
 
 			// get requestor details
 			$id = str_pad($t->id_number, 7, '0', STR_PAD_LEFT);
-			$requestor_details = $this->human_relations_model->get_employment_information_by_id($id);
+			$requestor_details = $this->human_relations_model->get_employment_information_view_by_id($id);
 
 			if (count($requestor_details) == 0) {
 				echo "<td>N/A</td>";
@@ -120,8 +120,8 @@
 			}				
 
 			// get number of items
-			$where = "service_unit_id = " . $t->service_unit_id . " AND status NOT IN ('CANCELLED', 'DELETED')";
-			$service_unit_detail_info = $this->spare_parts_model->get_service_unit_detail($where);
+			$where = "request_summary_id = " . $t->request_summary_id . " AND status NOT IN ('CANCELLED', 'DELETED')";
+			$service_unit_detail_info = $this->spare_parts_model->get_request_detail($where);
 
 			$total_items = 0;
 			foreach ($service_unit_detail_info as $wrdi) {
@@ -151,7 +151,7 @@
 			?>				
 			<td><?= $t->insert_timestamp; ?></td>
 
-			<td data1="<?= $t->service_unit_id ?>" data2="<?= $t->request_code ?>">				
+			<td data1="<?= $t->request_summary_id ?>" data2="<?= $t->request_code ?>">				
 				<a class='btn btn-small btn-info view-details' data='info' title="View Details"><i class="icon-white icon-list"></i></a>	
 				<?php
 				if ($t->status == 'PENDING') {
@@ -444,7 +444,7 @@
 					if (data.data.request_status == "PENDING")	{	
 						viewDetailsModal = b.modal.new({
 							title: data.data.title,
-							width:800,
+							width:850,
 							//disableClose: true,
 							html: data.data.html,
 							buttons: {
@@ -463,7 +463,7 @@
 					} else if (data.data.request_status == "APPROVED") {
 						viewDetailsModal = b.modal.new({
 							title: data.data.title,
-							width:800,							
+							width:850,							
 							html: data.data.html,
 							buttons: {
 								'Forward To Warehouse' : function() {
@@ -474,7 +474,7 @@
 					} else if (((data.data.request_status).substr(0, 9)) == "COMPLETED") {
 						viewDetailsModal = b.modal.new({
 							title: data.data.title,
-							width:800,							
+							width:850,							
 							html: data.data.html,
 							buttons: {
 								'Reprocess Items' : function() {
@@ -485,7 +485,7 @@
 					} else {
 						viewDetailsModal = b.modal.new({
 							title: data.data.title,
-							width:800,
+							width:850,
 							//disableClose: true,
 							html: data.data.html,  
 						});

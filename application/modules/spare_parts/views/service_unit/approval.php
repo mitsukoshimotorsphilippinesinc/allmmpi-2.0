@@ -60,15 +60,15 @@
 <table class='table table-striped table-bordered'>
 	<thead>
 		<tr>						
-			<th style=''>Request Code</th>
+		<th style=''>Request Code</th>
 			<th>Status</th>
 			<th style='width:100px;'>Requested By</th>
 			<th style='width:100px;'>Motor Brand/Model</th>
-			<th style='width:100px;'>Total Items</th>
 			<th style='width:100px;'>Warehouse</th>
 			<th style='width:100px;'>Approved By (Warehouse)</th>			
-			<th style='width:70px;'>Date Created</th>
-			<th style='width:118px;'>Action</th>		
+			<th style='width:120px;'>Remarks</th>
+			<th style='width:70px;'>Date Created</th>			
+			<th style='width:150px;'>Action</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -88,7 +88,7 @@
 
 			// get requestor details
 			$id = str_pad($t->id_number, 7, '0', STR_PAD_LEFT);
-			$requestor_details = $this->human_relations_model->get_employment_information_by_id($id);			
+			$requestor_details = $this->human_relations_model->get_employment_information_view_by_id($id);			
 
 			if (count($requestor_details) == 0) {
 				echo "<td>N/A</td>";
@@ -105,8 +105,8 @@
 			}				
 
 			// number of items
-			$where = "service_unit_id = " . $t->service_unit_id . " AND status IN ('PENDING', 'COMPLETED')";
-			$service_unit_detail_info = $this->spare_parts_model->get_service_unit_detail($where);
+			$where = "request_summary_id = " . $t->request_summary_id . " AND status IN ('PENDING', 'COMPLETED')";
+			$service_unit_detail_info = $this->spare_parts_model->get_request_detail($where);
 
 			$total_items = 0;
 			foreach ($service_unit_detail_info as $wrdi) {
@@ -124,22 +124,13 @@
 			} else { 
 				echo "<td>{$warehouse_details->warehouse_name}</td>"; 
 			}
-
-			if (($t->warehouse_approved_by == 0) || ($t->warehouse_approved_by == '0')) {
-				echo "<td>N/A</td>";
-			} else {
-				$id = str_pad($t->warehouse_approved_by, 7, '0', STR_PAD_LEFT);
-				$warehouse_signatory_details = $this->human_relations_model->get_employment_information_view_by_id($id);
-				echo "<td>{$warehouse_signatory_details->complete_name}</td>";
-			}
-
 			?>	
-			
+			<td><?= $t->remarks; ?></td>
 			<td><?= $t->insert_timestamp; ?></td>
 
 			
 
-			<td data1="<?= $t->service_unit_id ?>" data2="<?= $t->request_code ?>">				
+			<td data1="<?= $t->request_summary_id ?>" data2="<?= $t->request_code ?>">				
 				<a class='btn btn-small btn-info view-details' data='info' title="View Details"><i class="icon-white icon-list"></i></a>	
 				<?php
 				if (($t->status == 'FOR APPROVAL') || ($t->status == 'CANCELLATION-FOR APPROVAL')) {
@@ -303,7 +294,7 @@
 					// show add form modal					
 					viewDetailsModal = b.modal.new({
 						title: data.data.title,
-						width:800,
+						width:850,
 						disableClose: true,
 						html: data.data.html,
 						buttons: {
