@@ -3,7 +3,7 @@
 ?>
 
 <?= $breadcrumb_container; ?>
-<div class='alert alert-danger'><h2>Request List<a href='/spare_parts/service_unit/add' class='btn btn-small btn-default'id="add-btn" style="float:right;margin-right:-30px;margin-top:5px;" title='Add New'><i class='icon-plus'></i>&nbsp;Add New</a>&nbsp;&nbsp;<a class='btn btn-small btn-default'id="download-btn" style="float:right;margin-top:5px;display:none;" title='Download'><i class='icon-download' disabled="disabled"></i>&nbsp;Download Result</a></h2></div>
+<div class='alert alert-danger'><h2>Request List<a href='/spare_parts/service_unit/add' class='btn btn-small btn-default'id="add-btn" style="float:right;margin-right:-30px;margin-top:5px;" title='Add New'><i class='icon-plus'></i>&nbsp;Add New</a>&nbsp;&nbsp;<a class='btn btn-small btn-default'id="download-btn" style="float:right;margin-top:5px;" title='Download'><i class='icon-download' disabled="disabled"></i>&nbsp;Download</a></h2></div>
 
 <br>
 
@@ -444,7 +444,7 @@
 					if (data.data.request_status == "PENDING")	{	
 						viewDetailsModal = b.modal.new({
 							title: data.data.title,
-							width:800,
+							width:850,
 							//disableClose: true,
 							html: data.data.html,
 							buttons: {
@@ -463,7 +463,7 @@
 					} else if (data.data.request_status == "APPROVED") {
 						viewDetailsModal = b.modal.new({
 							title: data.data.title,
-							width:800,							
+							width:850,							
 							html: data.data.html,
 							buttons: {
 								'Forward To Warehouse' : function() {
@@ -474,7 +474,7 @@
 					} else if (((data.data.request_status).substr(0, 9)) == "COMPLETED") {
 						viewDetailsModal = b.modal.new({
 							title: data.data.title,
-							width:800,							
+							width:850,							
 							html: data.data.html,
 							buttons: {
 								'Reprocess Items' : function() {
@@ -485,7 +485,7 @@
 					} else {
 						viewDetailsModal = b.modal.new({
 							title: data.data.title,
-							width:800,
+							width:850,
 							//disableClose: true,
 							html: data.data.html,  
 						});

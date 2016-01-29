@@ -31,8 +31,8 @@ if (is_object($free_of_charge_details))
 {
 	$isAdd = false;
 	$titlePrefix = "Edit&nbsp;";
-	$submitURL = "/spare_parts/" . $department_module_details->segment_name . "/edit/" . $free_of_charge_details->free_of_charge_id;
-	$_id = $free_of_charge_details->free_of_charge_id;
+	$submitURL = "/spare_parts/" . $department_module_details->segment_name . "/edit/" . $free_of_charge_details->request_summary_id;
+	$_id = $free_of_charge_details->request_summary_id;
 	$show_approval = false;
 }
 else

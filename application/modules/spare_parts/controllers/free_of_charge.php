@@ -627,7 +627,7 @@ class Free_of_charge extends Admin_Controller {
 
 			$worksheet = $objPHPExcel->setActiveSheetIndex(0);
 
-			$where = "insert_timestamp BETWEEN '$start_date' AND '$end_date'";
+			$where = "insert_timestamp BETWEEN '$start_date' AND '$end_date' AND request_code LIKE 'FC%'";
 			$free_of_charge_count = $this->spare_parts_model->get_request_summary_count($where);
 
 			$filename = "free_of_charges_" . str_replace("-", "", $start_date) . "-" . str_replace("-", "", $end_date) . ".xls";
@@ -677,12 +677,13 @@ class Free_of_charge extends Admin_Controller {
 				{
 
 					$worksheet->setCellValue('A'. $row, $dr->request_code);
-					$worksheet->setCellValue('A'. $row, $dr->status);
-					$worksheet->setCellValue('C'. $row, $dr->dealer_id);
-					$worksheet->setCellValue('D'. $row, $dr->agent_id);
-					$worksheet->setCellValue('E'. $row, $dr->purchase_order_number);
-					$worksheet->setCellValue('F'. $row, $dr->remarks);
-					$worksheet->setCellValue('G'. $row, $dr->insert_timestamp);
+					$worksheet->setCellValue('B'. $row, $dr->status);
+					$worksheet->setCellValue('C'. $row, $dr->id_number);
+					$worksheet->setCellValue('D'. $row, $dr->motorcycle_brand_model_id);
+					$worksheet->setCellValue('E'. $row, $dr->cross_reference_number);
+					$worksheet->setCellValue('F'. $row, $dr->warehouse_id);
+					$worksheet->setCellValue('G'. $row, $dr->id_number);
+					$worksheet->setCellValue('H'. $row, $dr->insert_timestamp);
 					
 					// auto resize columns
 					$worksheet->getColumnDimension('A')->setAutoSize(false);
@@ -692,6 +693,7 @@ class Free_of_charge extends Admin_Controller {
 					$worksheet->getColumnDimension('E')->setAutoSize(true);
 					$worksheet->getColumnDimension('F')->setAutoSize(true);
 					$worksheet->getColumnDimension('G')->setAutoSize(true);
+					$worksheet->getColumnDimension('H')->setAutoSize(true);
 					$row++;
 				}
 			}
@@ -732,13 +734,13 @@ class Free_of_charge extends Admin_Controller {
 			$this->template->position_details = $position_details;
 
 			// get request items
-			$where = "status NOT IN ('CANCELLED', 'DELETED') AND free_of_charge_id = " . $free_of_charge_id;
-			$free_of_charge_detail_details = $this->spare_parts_model->get_request_summary_detail($where);
+			$where = "status NOT IN ('CANCELLED', 'DELETED') AND request_summary_id = " . $free_of_charge_id;
+			$free_of_charge_detail_details = $this->spare_parts_model->get_request_detail($where);
 
 			$json_items = array();
 			for($k = 0;$k<count($free_of_charge_detail_details);$k++)
 			{
-				$free_of_charge_detail_id = $free_of_charge_detail_details[$k]->free_of_charge_detail_id;
+				$free_of_charge_detail_id = $free_of_charge_detail_details[$k]->request_detail_id;
 				
 				//$total_amount = $total_amount + ($item_qty[$k]*$item_price[$k]);
 				$po_items = array(
@@ -1121,7 +1123,7 @@ class Free_of_charge extends Admin_Controller {
 		} else {
 			
 			$active_free_of_charge_details = $this->spare_parts_model->get_request_summary_by_code($request_code);
-			$active_free_of_charge_id = $active_free_of_charge_details->free_of_charge_id;
+			$active_free_of_charge_id = $active_free_of_charge_details->request_summary_id;
 		}	
 
 		// total amount
@@ -1135,7 +1137,7 @@ class Free_of_charge extends Admin_Controller {
 
 		// add item to details table
 		$data_insert = array(
-				'get_request_summary_by_id' => $active_free_of_charge_id,
+				'request_summary_id' => $active_free_of_charge_id,
 				'item_id' => $item_id,
 				'srp' => $srp,
 				'discount' => $discount,
@@ -1194,7 +1196,7 @@ class Free_of_charge extends Admin_Controller {
 					<br/>
 					Do you want to continue?</p>";
 
-		$this->return_json("1","Confirm Remove Item", array("html" => $html, "title" => $title, 'free_of_charge_id' => $free_of_charge_details->request_summaryid));
+		$this->return_json("1","Confirm Remove Item", array("html" => $html, "title" => $title, 'free_of_charge_id' => $free_of_charge_details->request_summary_id));
 		return;
 	}
 
@@ -1444,7 +1446,7 @@ class Free_of_charge extends Admin_Controller {
 				$objPHPExcel->getActiveSheet()->setCellValue('E' . $row, $wrd->chassis);
 				$objPHPExcel->getActiveSheet()->setCellValue('F' . $row, $wrd->status);
 				$objPHPExcel->getActiveSheet()->setCellValue('G' . $row, $wrd->warehouse_id);
-				$objPHPExcel->getActiveSheet()->setCellValue('H' . $row, $wrd->mtr_number);
+				$objPHPExcel->getActiveSheet()->setCellValue('H' . $row, $wrd->cross_reference_number);
 				$objPHPExcel->getActiveSheet()->setCellValue('I' . $row, $wrd->remarks);
 				$objPHPExcel->getActiveSheet()->setCellValue('J' . $row, $wrd->insert_timestamp);
         

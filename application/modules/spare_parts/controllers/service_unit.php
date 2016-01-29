@@ -225,7 +225,7 @@ class Service_unit extends Admin_Controller {
 				$title = "Request Approved :: " . $service_unit_code;
 			}
 			
-			$where = "service_unit_id = " . $service_unit_id;
+			$where = "request_summary_id = " . $service_unit_id;
 			$this->spare_parts_model->update_request_summary($data, $where);
 
 			$this->return_json("1","Successful Approval/Disapproval of Service Unit.",array("html" => $html, "title" => $title));
@@ -251,7 +251,7 @@ class Service_unit extends Admin_Controller {
 			
 		} else {
 
-			$where = "service_unit_id = {$service_unit_id}";
+			$where = "request_summary_id = {$service_unit_id}";
 			$service_unit_details = $this->spare_parts_model->get_request_detail($where);
 			
 			$department_module_details = $this->spare_parts_model->get_department_module_by_segment_name($this->segment_name);	
@@ -500,7 +500,7 @@ class Service_unit extends Admin_Controller {
 					'status' => "FORWARDED",
 					'approved_by' => $this->user->user_id,					
 					'approve_timestamp' => $current_datetime,
-					'mtr_number' =>	 $mtr_number
+					'cross_reference_number' =>	 $mtr_number
 				);
 
 				$html = "You have successfully forwaded the request to warehouse with Request Code: <strong>{$service_unit_code}</strong>.";
@@ -522,7 +522,7 @@ class Service_unit extends Admin_Controller {
 					'status' => "CANCELLATION-FORWARDED",
 					'approved_by' => $this->user->user_id,					
 					'approve_timestamp' => $current_datetime,
-					'mtr_number' =>	 $mtr_number
+					'cross_reference_number' =>	 $mtr_number
 				);
 
 				$html = "You have successfully forwaded the request to warehouse with Request Code: <strong>{$service_unit_code}</strong>.";
@@ -545,7 +545,7 @@ class Service_unit extends Admin_Controller {
 				// change status to FOR APPROVAL
 				$data = array(					
 					'update_timestamp' => $current_datetime,
-					'mtr_number' => $mtr_number
+					'cross_reference_number' => $mtr_number
 				);
 
 				$html = "You have successfully assigned a MTR Number to the request with Request Code: <strong>{$service_unit_code}</strong>.";
@@ -564,7 +564,7 @@ class Service_unit extends Admin_Controller {
 				$title = "For Approval - Cancel Completed Request :: " . $service_unit_code;
 			}
 			
-			$where = "service_unit_id = " . $service_unit_id;
+			$where = "request_summary_id = " . $service_unit_id;
 			$this->spare_parts_model->update_request_summary($data, $where);
 	
 		}	
@@ -704,7 +704,7 @@ class Service_unit extends Admin_Controller {
 
 			if (empty($search_status)) {
 				//$where = "status IN ('PENDING','FOR APPROVAL', 'APPROVED', 'FORWARDED', FOR CANCELLATION', 'CANCELLED', 'CANCELLED (COMPLETED)', 'DENIED', 'DENIED (COMPLETED)', 'COMPLETED')";
-				$where = "";
+				$where = "request_code like 'SU%'";
 			} else {
 
 				if ($search_status == 'ALL') {
@@ -784,7 +784,7 @@ class Service_unit extends Admin_Controller {
 					$worksheet->setCellValue('B'. $row, $dr->status);
 					$worksheet->setCellValue('C'. $row, $dr->id_number);
 					$worksheet->setCellValue('D'. $row, $dr->motorcycle_brand_model_id);
-					$worksheet->setCellValue('E'. $row, $dr->mtr_number);
+					$worksheet->setCellValue('E'. $row, $dr->cross_reference_number);
 					$worksheet->setCellValue('F'. $row, $dr->warehouse_id);
 					$worksheet->setCellValue('G'. $row, $dr->id_number);
 					$worksheet->setCellValue('H'. $row, $dr->insert_timestamp);
@@ -841,13 +841,13 @@ class Service_unit extends Admin_Controller {
 			$this->template->request_item_amount_total = $request_item_amount_total;
 
 			// get request items
-			$where = "status NOT IN ('CANCELLED', 'DELETED') AND service_unit_id = " . $service_unit_id;
+			$where = "status NOT IN ('CANCELLED', 'DELETED') AND request_summary_id = " . $service_unit_id;
 			$service_unit_detail_details = $this->spare_parts_model->get_request_detail($where);
 
 			$json_items = array();
 			for($k = 0;$k<count($service_unit_detail_details);$k++)
 			{
-				$service_unit_detail_id = $service_unit_detail_details[$k]->service_unit_detail_id;
+				$service_unit_detail_id = $service_unit_detail_details[$k]->request_detail_id;
 				
 				//$total_amount = $total_amount + ($item_qty[$k]*$item_price[$k]);
 				$po_items = array(
@@ -1234,7 +1234,8 @@ class Service_unit extends Admin_Controller {
 		} else {
 			
 			$active_service_unit_details = $this->spare_parts_model->get_request_summary_by_code($request_code);
-			$active_service_unit_id = $active_service_unit_details->service_unit_id;
+
+			$active_service_unit_id = $active_service_unit_details->request_summary_id;
 		}	
 
 		// total amount
