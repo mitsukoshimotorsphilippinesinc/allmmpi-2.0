@@ -40,7 +40,7 @@
 				<td style="width: 280px;"><%= item.description %></td>
 				<td style="width: 280px;"><%= item.brand_model %></td>
 				<td style="width: 100px;"><%= item.srp %></td>				
-				<td style="width: 80px;"><button class='btn btn-small btn-info btn-select-item' data-id='<%= item.item_id %>'  data-description='<%= item.description %>' data-srp='<%= item.srp%>' data-sku='<%= item.sku%>'>Select</button></td>
+				<td style="width: 80px;"><button class='btn btn-small btn-info btn-select-item' data-id='<%= item.item_id %>'  data-description='<%= item.description %>' data-srp='<%= item.srp%>' data-sku='<%= item.sku%>' data-spid='<%= item.spare_part_id%>'>Select</button></td>
 			</tr>
 	<%	}); %>
 </script>
