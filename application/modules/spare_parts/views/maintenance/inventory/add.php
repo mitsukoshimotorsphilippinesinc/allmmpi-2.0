@@ -29,6 +29,7 @@
 		<div class="control-group <?= $this->form_validation->error_class('item_details') ?>">
 			<label class="control-label" for="item_details">Item Details <em>*</em></label>
 			<div class="controls">
+				<input type="text" readonly="readonly" style="display:none;" class='span2' name="spare_part_id" id="spare_part_id" value="<?= set_value('spare_part_id') ?>">
 				<input type="text" readonly="readonly" class='span2' name="sku" id="sku" value="<?= set_value('sku') ?>">
 				<input type="text" readonly="readonly" class='span6' placeholder="Click here to Select Item..." name="item_details" id="item_details" value="<?= set_value('item_details') ?>">	
 				<p class="help-block"><?= $this->form_validation->error('item_details'); ?></p>						
@@ -139,6 +140,7 @@
 						
 						$("#item_details").val($(this).data("description"));
 						$("#sku").val($(this).data("sku"));
+						$("#spare_part_id").val($(this).data("spid"));
 						
 						document.search_item_modal.hide();
 						document.search_item_modal = null;

@@ -1383,6 +1383,11 @@ class Maintenance extends Admin_Controller {
 			'rules' => 'trim|required'
 		),
 		array(
+			'field' => 'spare_part_id',
+			'label' => 'Spare Part ID',
+			'rules' => 'trim'
+		),
+		array(
 			'field' => 'sku',
 			'label' => 'SKU',
 			'rules' => 'trim'
@@ -1441,6 +1446,7 @@ class Maintenance extends Admin_Controller {
 				// insert the new results
 				$data = array(
 					'warehouse_id' => abs(set_value('warehouse_id')),
+					'spare_part_id' => abs(set_value('spare_part_id')),
 					'sku' => strtoupper(set_value('sku')),
 					'good_quantity' => set_value('good_quantity'),
 					'bad_quantity' => set_value('bad_quantity'),
