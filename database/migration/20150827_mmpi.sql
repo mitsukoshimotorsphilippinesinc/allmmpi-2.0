@@ -254,7 +254,7 @@ VALUES(1, 'reports', 'Reports', '/spare_parts/dealer_request/reports', '4', '33'
 DROP VIEW IF EXISTS `sa_user_privilege_view`;
 CREATE VIEW `sa_user_privilege_view` AS 
 SELECT 
-`a`.`id_number` AS `id_number`,
+`a`.`user_id` AS `user_id`,
 `a`.`privilege_id` AS `privilege_id`,
 `b`.`privilege_code` AS `privilege_code`,
 `b`.`privilege_description` AS `privilege_description`,

@@ -1395,6 +1395,7 @@ class Spare_parts extends Admin_Controller {
 			$return_items[$itm->item_id] = array(
 				"item_id" => $itm->item_id,
 				"image_filename" => $image_display,
+				"spare_part_id" => $itm->spare_part_id,
 				"sku" => $itm->sku,
 				"brand_model" => $itm->brand_name . ' / ' . $itm->model_name,
 				"description" => strtoupper($itm->description),
