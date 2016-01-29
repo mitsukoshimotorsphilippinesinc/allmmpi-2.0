@@ -189,7 +189,7 @@
 		b.request({
 			url: "/spare_parts/free_of_charge/for_listing_confirm",
 			data: {
-				'request_summary_id' : request_summary_id,
+				'free_of_charge_id' : request_summary_id,
 				'free_of_charge_code' : free_of_charge_code,
 				'listing_action' : listing_action,
 			},
@@ -231,7 +231,7 @@
 								b.request({
 									url : '/spare_parts/free_of_charge/for_listing_proceed',
 									data : {				
-										'request_summary_id' : request_summary_id,
+										'free_of_charge_id' : request_summary_id,
 										'free_of_charge_code' : free_of_charge_code,
 										'listing_action' : listing_action,
 										'remarks' : $("#txt-remarks").val(),
@@ -307,7 +307,7 @@
 		b.request({
 			url: "/spare_parts/free_of_charge/view_details",
 			data: {
-				"request_summary_id" : request_summary_id,
+				"free_of_charge_id" : request_summary_id,
 				"free_of_charge_code" : free_of_charge_code,
 				"listing_action" : listing_action,
 			},

@@ -103,7 +103,7 @@
 
 			// get requestor details
 			$id = str_pad($t->id_number, 7, '0', STR_PAD_LEFT);
-			$requestor_details = $this->human_relations_model->get_employment_information_by_id($id);
+			$requestor_details = $this->human_relations_model->get_employment_information_view_by_id($id);
 
 			if (count($requestor_details) == 0) {
 				echo "<td>N/A</td>";
@@ -120,8 +120,8 @@
 			}				
 
 			// get number of items
-			$where = "service_unit_id = " . $t->service_unit_id . " AND status NOT IN ('CANCELLED', 'DELETED')";
-			$service_unit_detail_info = $this->spare_parts_model->get_service_unit_detail($where);
+			$where = "request_summary_id = " . $t->request_summary_id . " AND status NOT IN ('CANCELLED', 'DELETED')";
+			$service_unit_detail_info = $this->spare_parts_model->get_request_detail($where);
 
 			$total_items = 0;
 			foreach ($service_unit_detail_info as $wrdi) {
@@ -151,7 +151,7 @@
 			?>				
 			<td><?= $t->insert_timestamp; ?></td>
 
-			<td data1="<?= $t->service_unit_id ?>" data2="<?= $t->request_code ?>">				
+			<td data1="<?= $t->request_summary_id ?>" data2="<?= $t->request_code ?>">				
 				<a class='btn btn-small btn-info view-details' data='info' title="View Details"><i class="icon-white icon-list"></i></a>	
 				<?php
 				if ($t->status == 'PENDING') {

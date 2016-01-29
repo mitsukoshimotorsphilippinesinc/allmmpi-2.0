@@ -13,7 +13,8 @@ class Service_unit extends Admin_Controller {
 		$this->load->model('warehouse_model');
 		$this->load->library('pager');		
 		$this->load->helper("spare_parts_helper");
-		$this->load->helper("breadcrumb_helper");
+		$this->load->helper("breadcrumb_helper");		
+		$this->load->helper("systems_helper");	
 
 		$this->db_spare_parts = $this->load->database('spare_parts', TRUE);
 
@@ -67,18 +68,21 @@ class Service_unit extends Admin_Controller {
 			}
 		}
 
+		// get module_id
+		$module_id = get_department_module_id();
+
 		if (empty($search_status)) {
-			$where = "status IN ('FOR APPROVAL', 'APPROVED', 'DENIED', 'CANCELLATION-FOR APPROVAL', 'CANCELLATION-APPROVED', 'CANCELLATION-DENIED')";
-			//$where = "";
+			//$where = "status IN ('PENDING', 'FOR APPROVAL', 'FOR CANCELLATION', 'APPROVED', 'DENIED', 'DENIED (COMPLETED)', 'PROCESSING', 'ON PROCESS', 'COMPLETED', 'CANCELLED', 'CANCELLED (COMPLETED)', 'FORWARDED')";
+			$where = "department_module_id = {$module_id}";
 		} else {
 
 			if ($search_status == 'ALL') {
-				$where = "status IN ('FOR APPROVAL', 'APPROVED', 'DENIED', 'CANCELLATION-FOR APPROVAL', 'CANCELLATION-APPROVED', 'CANCELLATION-DENIED')";
-				//$where = "";
+				//$where = "status IN ('PENDING', 'FOR APPROVAL', 'FOR CANCELLATION', 'APPROVED', 'DENIED', 'DENIED (COMPLETED)', 'PROCESSING', 'ON PROCESS', 'COMPLETED', 'CANCELLED', 'CANCELLED (COMPLETED)', 'FORWARDED')";
+				$where = "department_module_id = {$module_id}";
 			} else {
-				$where = "status = '". $search_status ."'";
-			}			
-		
+				$where = "department_module_id = {$module_id} AND status = '". $search_status ."'";
+			}
+				
 			if ($where != NULL) {
 				if ($search_by == 'name')
 					$where = $where . " AND ". $request_search_by ." IN (" . $where_id_numbers . ")";
@@ -86,23 +90,23 @@ class Service_unit extends Admin_Controller {
 					$where = $where . " AND ". $search_by ." LIKE '%" . $search_text . "%'";
 			} else {
 				if ($search_by == 'name')
-					$where = $request_search_by ." IN (" . $where_id_numbers . ")";
+					$where = "department_module_id = {$module_id} AND " . $request_search_by ." IN (" . $where_id_numbers . ")";
 				else
-					$where = $search_by ." LIKE '%" . $search_text . "%'";
-			} 	
-		}	
+					$where = "department_module_id = {$module_id} AND" . $search_by ." LIKE '%" . $search_text . "%'";
+			}
+		}
 
 		// set pagination data
 		$config = array(
 				'pagination_url' => "/spare_parts/service_unit/approval/",
-				'total_items' => $this->spare_parts_model->get_service_unit_count($where),
+				'total_items' => $this->spare_parts_model->get_request_summary_count($where),
 				'per_page' => 10,
 				'uri_segment' => 4,
 		);
 
 		$this->pager->set_config($config);
 
-		$transfers = $this->spare_parts_model->get_service_unit($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");			
+		$transfers = $this->spare_parts_model->get_request_summary($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");			
 		
 		// search vars
 		$this->template->search_status = $search_status;
@@ -121,7 +125,7 @@ class Service_unit extends Admin_Controller {
 		$service_unit_code = $this->input->post("service_unit_code");
 		$is_approved = $this->input->post("is_approved");
 
-		$service_unit = $this->spare_parts_model->get_service_unit_by_id($service_unit_id);
+		$service_unit = $this->spare_parts_model->get_request_summary_by_id($service_unit_id);
 
 		if (empty($service_unit)) {		
 			$html = "<p>There is something wrong with this transaction [Request Code: {$service_unit_code}].</p>";
@@ -166,7 +170,7 @@ class Service_unit extends Admin_Controller {
 		$is_approved = $this->input->post("is_approved");
 		$remarks =  $this->input->post("remarks");
 		
-		$service_unit = $this->spare_parts_model->get_service_unit_by_id($service_unit_id);		
+		$service_unit = $this->spare_parts_model->get_request_summary_by_id($service_unit_id);		
 
 		if (empty($service_unit)) {		
 			$html = "<p>There is something wrong with this transaction [Request Code: {$service_unit_code}].</p>";
@@ -222,7 +226,7 @@ class Service_unit extends Admin_Controller {
 			}
 			
 			$where = "service_unit_id = " . $service_unit_id;
-			$this->spare_parts_model->update_service_unit($data, $where);
+			$this->spare_parts_model->update_request_summary($data, $where);
 
 			$this->return_json("1","Successful Approval/Disapproval of Service Unit.",array("html" => $html, "title" => $title));
 						
@@ -237,7 +241,7 @@ class Service_unit extends Admin_Controller {
 		$service_unit_code = $this->input->post("service_unit_code");
 		$listing_action = $this->input->post("listing_action");
 		
-		$service_unit = $this->spare_parts_model->get_service_unit_by_id($service_unit_id);		
+		$service_unit = $this->spare_parts_model->get_request_summary_by_id($service_unit_id);		
 
 		if (empty($service_unit)) {		
 			$html = "<p>There is something wrong with this transaction [Request Code: {$service_unit_code}].</p>";
@@ -248,7 +252,7 @@ class Service_unit extends Admin_Controller {
 		} else {
 
 			$where = "service_unit_id = {$service_unit_id}";
-			$service_unit_details = $this->spare_parts_model->get_service_unit_detail($where);
+			$service_unit_details = $this->spare_parts_model->get_request_detail($where);
 			
 			$department_module_details = $this->spare_parts_model->get_department_module_by_segment_name($this->segment_name);	
 
@@ -319,16 +323,19 @@ class Service_unit extends Admin_Controller {
 			}
 		} 
 
+		// get module_id
+		$module_id = get_department_module_id();
+
 		if (empty($search_status)) {
 			//$where = "status IN ('PENDING', 'FOR APPROVAL', 'FOR CANCELLATION', 'APPROVED', 'DENIED', 'DENIED (COMPLETED)', 'PROCESSING', 'ON PROCESS', 'COMPLETED', 'CANCELLED', 'CANCELLED (COMPLETED)', 'FORWARDED')";
-			$where = "";
+			$where = "department_module_id = {$module_id}";
 		} else {
 
 			if ($search_status == 'ALL') {
 				//$where = "status IN ('PENDING', 'FOR APPROVAL', 'FOR CANCELLATION', 'APPROVED', 'DENIED', 'DENIED (COMPLETED)', 'PROCESSING', 'ON PROCESS', 'COMPLETED', 'CANCELLED', 'CANCELLED (COMPLETED)', 'FORWARDED')";
-				$where = "";
+				$where = "department_module_id = {$module_id}";
 			} else {
-				$where = "status = '". $search_status ."'";
+				$where = "department_module_id = {$module_id} AND status = '". $search_status ."'";
 			}
 				
 			if ($where != NULL) {
@@ -338,23 +345,23 @@ class Service_unit extends Admin_Controller {
 					$where = $where . " AND ". $search_by ." LIKE '%" . $search_text . "%'";
 			} else {
 				if ($search_by == 'name')
-					$where = $request_search_by ." IN (" . $where_id_numbers . ")";
+					$where = "department_module_id = {$module_id} AND " . $request_search_by ." IN (" . $where_id_numbers . ")";
 				else
-					$where = $search_by ." LIKE '%" . $search_text . "%'";
+					$where = "department_module_id = {$module_id} AND" . $search_by ." LIKE '%" . $search_text . "%'";
 			}
 		}	
 
 		// set pagination data
 		$config = array(
 				'pagination_url' => "/spare_parts/service_unit/listing/",
-				'total_items' => $this->spare_parts_model->get_service_unit_count($where),
+				'total_items' => $this->spare_parts_model->get_request_summary_count($where),
 				'per_page' => 10,
 				'uri_segment' => 4,
 		);
 
 		$this->pager->set_config($config);
 
-		$transfers = $this->spare_parts_model->get_service_unit($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");			
+		$transfers = $this->spare_parts_model->get_request_summary($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");			
 		
 		// search vars
 		$this->template->search_status = $search_status;
@@ -373,7 +380,7 @@ class Service_unit extends Admin_Controller {
 		$service_unit_code = $this->input->post("service_unit_code");
 		$listing_action = $this->input->post("listing_action");
 
-		$service_unit = $this->spare_parts_model->get_service_unit_by_id($service_unit_id);
+		$service_unit = $this->spare_parts_model->get_request_summary_by_id($service_unit_id);
 
 		if (empty($service_unit)) {		
 			$html = "<p>There is something wrong with this transaction [Request Code: {$service_unit_code}].</p>";
@@ -445,7 +452,7 @@ class Service_unit extends Admin_Controller {
 		$remarks =  $this->input->post("remarks");
 		$mtr_number =  abs($this->input->post("mtr_number"));
 		
-		$service_unit = $this->spare_parts_model->get_service_unit_by_id($service_unit_id);		
+		$service_unit = $this->spare_parts_model->get_request_summary_by_id($service_unit_id);		
 
 		if (empty($service_unit)) {		
 			$html = "<p>There is something wrong with this transaction [Request Code: {$service_unit_code}].</p>";
@@ -558,7 +565,7 @@ class Service_unit extends Admin_Controller {
 			}
 			
 			$where = "service_unit_id = " . $service_unit_id;
-			$this->spare_parts_model->update_service_unit($data, $where);
+			$this->spare_parts_model->update_request_summary($data, $where);
 	
 		}	
 
@@ -618,7 +625,7 @@ class Service_unit extends Admin_Controller {
 		// check if query will return records to execute
 		$where = "insert_timestamp BETWEEN '$start_date' AND '$end_date'";
 
-		$pending_count = $this->spare_parts_model->get_service_unit($where);
+		$pending_count = $this->spare_parts_model->get_request_summary($where);
 
 		if (empty($pending_count))
 		{
@@ -722,7 +729,7 @@ class Service_unit extends Admin_Controller {
 
 			$where .= " AND insert_timestamp BETWEEN '{$start_date}' AND '{$end_date}'";
 
-			$service_unit_count = $this->spare_parts_model->get_service_unit_count($where);
+			$service_unit_count = $this->spare_parts_model->get_request_summary_count($where);
 
 			$filename = "service_units_" . str_replace("-", "", $start_date) . "-" . str_replace("-", "", $end_date) . ".xls";
 
@@ -768,7 +775,7 @@ class Service_unit extends Admin_Controller {
 
 			for($prow = 0;$prow < ceil($service_unit_count/$allowed_rows)+1; $prow++)
 			{
-				$service_units = $this->spare_parts_model->get_service_unit($where, array('rows' => $allowed_rows, 'offset' => $prow*$allowed_rows), 'insert_timestamp ASC');
+				$service_units = $this->spare_parts_model->get_request_summary($where, array('rows' => $allowed_rows, 'offset' => $prow*$allowed_rows), 'insert_timestamp ASC');
 
 				foreach ($service_units as $dr)
 				{
@@ -818,7 +825,7 @@ class Service_unit extends Admin_Controller {
 
 		$department_module_details = $this->spare_parts_model->get_department_module_by_segment_name($this->segment_name);
 		
-		$service_unit_details = $this->spare_parts_model->get_service_unit_by_id($service_unit_id);
+		$service_unit_details = $this->spare_parts_model->get_request_summary_by_id($service_unit_id);
 
 		if (!empty($service_unit_details)) {
 			$requester_details = $this->human_relations_model->get_employment_information_view_by_id($service_unit_details->id_number);
@@ -835,7 +842,7 @@ class Service_unit extends Admin_Controller {
 
 			// get request items
 			$where = "status NOT IN ('CANCELLED', 'DELETED') AND service_unit_id = " . $service_unit_id;
-			$service_unit_detail_details = $this->spare_parts_model->get_service_unit_detail($where);
+			$service_unit_detail_details = $this->spare_parts_model->get_request_detail($where);
 
 			$json_items = array();
 			for($k = 0;$k<count($service_unit_detail_details);$k++)
@@ -1135,33 +1142,38 @@ class Service_unit extends Admin_Controller {
 			}
 
 			$current_datetime = date('Y-m-d H:i:s');						
+			
+			// get module_id
+			$module_id = get_department_module_id();
 
 			$sql = "INSERT INTO 
-						is_service_unit 
+						is_request_summary 
 						(
 							`request_series`, 
 							`request_number`, 
-							`id_number`, 
-							`warehouse_approved_by`, 
+							`id_number`, 							
 							`warehouse_id`, 
 							`motorcycle_brand_model_id`, 
 							`engine`, 
-							`chassis`
+							`chassis`,
+							`department_module_id`
 						)
                     	(
                     	SELECT 
                     		'{$request_series}', 
                     		IFNULL(MAX(request_number) + 1, 1) AS request_number, 
-                    		'{$requester_id}', 
-                    		'{$manager_id_number}',
+                    		'{$requester_id}',                     		
                             '{$warehouse_id}', 
                             '{$brandmodel_id}', 
                             '{$engine}', 
-                            '{$chassis}'                            
+                            '{$chassis}',
+                            '{$module_id}'
                     	FROM 
-                    		is_service_unit
+                    		is_request_summary
                     	WHERE 
                     		request_series = '{$request_series}' 
+                    	AND 
+                    		department_module_id = '{$module_id}'
 	                    ORDER BY 
 	                    	request_number DESC
                     	)";
@@ -1169,7 +1181,7 @@ class Service_unit extends Admin_Controller {
 			$this->db_spare_parts->query($sql);	
 
 			// get last insert id
-			$sql = "SELECT LAST_INSERT_ID() AS last_id FROM is_service_unit";
+			$sql = "SELECT LAST_INSERT_ID() AS last_id FROM is_request_summary";
 			$query = $this->db_spare_parts->query($sql);
 			$service_unit_id = $query->first_row();
 
@@ -1179,9 +1191,9 @@ class Service_unit extends Admin_Controller {
 			$sql = "SELECT 
 						CONCAT('{$module_code}', '{$request_series}', '-', LPAD(request_number, 5, 0)) AS gen_code
 					FROM
-						is_service_unit		
+						is_request_summary		
                     WHERE 
-                    	service_unit_id = " . $active_service_unit_id;
+                    	request_summary_id = " . $active_service_unit_id;
 
             $query = $this->db_spare_parts->query($sql);
 			$request_code_details = $query->first_row();  
@@ -1203,8 +1215,8 @@ class Service_unit extends Admin_Controller {
 				$data_update['remarks'] = $requester_remarks_encoded;
 			}
 
-			$where_update = "service_unit_id = " . $active_service_unit_id;
-			$this->spare_parts_model->update_service_unit($data_update, $where_update);
+			$where_update = "request_summary_id = " . $active_service_unit_id;
+			$this->spare_parts_model->update_request_summary($data_update, $where_update);
 
             //get department module id
             $department_module_details = $this->spare_parts_model->get_department_module_by_code($module_code);        
@@ -1221,7 +1233,7 @@ class Service_unit extends Admin_Controller {
 
 		} else {
 			
-			$active_service_unit_details = $this->spare_parts_model->get_service_unit_by_code($request_code);
+			$active_service_unit_details = $this->spare_parts_model->get_request_summary_by_code($request_code);
 			$active_service_unit_id = $active_service_unit_details->service_unit_id;
 		}	
 
@@ -1238,7 +1250,7 @@ class Service_unit extends Admin_Controller {
 
 		// add item to details table
 		$data_insert = array(
-				'service_unit_id' => $active_service_unit_id,
+				'request_summary_id' => $active_service_unit_id,
 				'item_id' => $item_id,
 				'srp' => $srp,
 				'discount' => $discount,
@@ -1259,7 +1271,7 @@ class Service_unit extends Admin_Controller {
 			$data_insert['remarks'] = $item_remarks_encoded;
 		}
 
-		$this->spare_parts_model->insert_service_unit_detail($data_insert);
+		$this->spare_parts_model->insert_request_detail($data_insert);
 
 		$active_service_unit_detail_id = $this->spare_parts_model->insert_id();
 
@@ -1322,7 +1334,7 @@ class Service_unit extends Admin_Controller {
 
 		$department_module_details = $this->spare_parts_model->get_department_module_by_segment_name($this->segment_name);
 
-		$service_unit_detail_details = $this->spare_parts_model->get_service_unit_detail_by_id($request_detail_id);
+		$service_unit_detail_details = $this->spare_parts_model->get_request_detail_by_id($request_detail_id);
 
 		// get remaining number of items available
 		$where = "request_detail_id = {$request_detail_id} AND department_module_id = {$department_module_details->department_module_id}
@@ -1442,7 +1454,7 @@ class Service_unit extends Admin_Controller {
 				"status" => $new_status,
 			);
 
-		$this->spare_parts_model->update_service_unit($data_update, "service_unit_id = " . $service_unit_detail_details->service_unit_id);
+		$this->spare_parts_model->update_request_summary($data_update, "service_unit_id = " . $service_unit_detail_details->service_unit_id);
 
 		// get item details 
 		$item_details = $this->spare_parts_model->get_item_view_by_id($service_unit_detail_details->item_id);
@@ -1462,9 +1474,9 @@ class Service_unit extends Admin_Controller {
 		$service_unit_detail_id = $this->input->post("service_unit_detail_id");
 
 		// get service_unit_id
-		$service_unit_details = $this->spare_parts_model->get_service_unit_by_code($request_code);
+		$service_unit_details = $this->spare_parts_model->get_request_summary_by_code($request_code);
 
-		$service_unit_detail_info = $this->spare_parts_model->get_service_unit_detail_by_id($service_unit_detail_id);
+		$service_unit_detail_info = $this->spare_parts_model->get_request_detail_by_id($service_unit_detail_id);
 
 		$item_view_details = $this->spare_parts_model->get_item_view_by_id($service_unit_detail_info->item_id);
 		
@@ -1481,7 +1493,7 @@ class Service_unit extends Admin_Controller {
 					<br/>
 					Do you want to continue?</p>";
 
-		$this->return_json("1","Confirm Remove Item", array("html" => $html, "title" => $title, 'service_unit_id' => $service_unit_details->service_unit_id));
+		$this->return_json("1","Confirm Remove Item", array("html" => $html, "title" => $title, 'service_unit_id' => $service_unit_details->request_summary_id));
 		return;
 	}
 
@@ -1492,12 +1504,12 @@ class Service_unit extends Admin_Controller {
 		$remarks = $this->input->post("remarks");		
 
 		//$where = "service_unit_id = '{$service_unit_id}' AND item_id = '{$item_id}'";
-		//$service_unit_detail = $this->spare_parts_model->get_service_unit_detail($where);
+		//$service_unit_detail = $this->spare_parts_model->get_request_detail($where);
 
-		$service_unit_details = $this->spare_parts_model->get_service_unit_by_id($service_unit_id);
+		$service_unit_details = $this->spare_parts_model->get_request_summary_by_id($service_unit_id);
 
 		$where = "service_unit_detail_id = " . $service_unit_detail_id;		
-		$service_unit_detail_info = $this->spare_parts_model->get_service_unit_detail_by_id($service_unit_detail_id);
+		$service_unit_detail_info = $this->spare_parts_model->get_request_detail_by_id($service_unit_detail_id);
 
 		$current_datetime = date('Y-m-d H:i:s');		
 
@@ -1579,7 +1591,7 @@ class Service_unit extends Admin_Controller {
 					"status" => $new_status,
 				);
 
-			$this->spare_parts_model->update_service_unit($data_update, "service_unit_id = " . $service_unit_id);
+			$this->spare_parts_model->update_request_summary($data_update, "service_unit_id = " . $service_unit_id);
 		}	
 
 		$html = "Item is now successfully removed from request.";
@@ -1597,7 +1609,7 @@ class Service_unit extends Admin_Controller {
 
 		$department_module_details = $this->spare_parts_model->get_department_module_by_segment_name($this->segment_name);
 		
-		$service_unit_details = $this->spare_parts_model->get_service_unit_by_id($service_unit_id);
+		$service_unit_details = $this->spare_parts_model->get_request_summary_by_id($service_unit_id);
 
 		if (!empty($service_unit_details)) {
 			$requester_details = $this->human_relations_model->get_employment_information_view_by_id($service_unit_details->id_number);
@@ -1614,7 +1626,7 @@ class Service_unit extends Admin_Controller {
 
 			// get request items
 			$where = "status NOT IN ('CANCELLED', 'DELETED') AND service_unit_id = " . $service_unit_id;
-			$service_unit_detail_details = $this->spare_parts_model->get_service_unit_detail($where);
+			$service_unit_detail_details = $this->spare_parts_model->get_request_detail($where);
 
 			$json_items = array();
 			for($k = 0;$k<count($service_unit_detail_details);$k++)
@@ -1648,7 +1660,7 @@ class Service_unit extends Admin_Controller {
 			for($l = 0;$l<count($reprocessed_item_details);$l++)
 			{				
 
-				$service_unit_detail_details = $this->spare_parts_model->get_service_unit_detail_by_id($reprocessed_item_details[$l]->request_detail_id);
+				$service_unit_detail_details = $this->spare_parts_model->get_request_detail_by_id($reprocessed_item_details[$l]->request_detail_id);
 
 				$ri_items = array(
 						'request_item_id' => $reprocessed_item_details[$l]->reprocessed_item_id,
@@ -1772,7 +1784,7 @@ class Service_unit extends Admin_Controller {
 	    $where = $data->where;
 	    $current_date = date('Y-m-d');
     
-		$total_records = $this->spare_parts_model->get_service_unit_count($where);
+		$total_records = $this->spare_parts_model->get_request_summary_count($where);
 
 		$config = array(
 			'pagination_url' => '/spare_parts/service_unit/generate_report',
@@ -1781,7 +1793,7 @@ class Service_unit extends Admin_Controller {
 			'uri_segment' => 4,
 		);
 		$this->pager->set_config($config);
-		$service_unit_details = $this->spare_parts_model->get_service_unit($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");
+		$service_unit_details = $this->spare_parts_model->get_request_summary($where, array('rows' => $this->pager->per_page, 'offset' => $this->pager->offset), "insert_timestamp DESC");
 
 		$html = "<table class='table table-bordered table-condensed'>
 			<thead>
@@ -1841,7 +1853,7 @@ class Service_unit extends Admin_Controller {
 	    $this->load->library('PHPExcel/IOFactory');
 	    $objPHPExcel = new PHPExcel();
 
-	    $service_unit_details = $this->spare_parts_model->get_service_unit($where, null, "insert_timestamp DESC");
+	    $service_unit_details = $this->spare_parts_model->get_request_summary($where, null, "insert_timestamp DESC");
 
 	    if (!empty($service_unit_details))
 	    {
