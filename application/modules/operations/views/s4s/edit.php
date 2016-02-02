@@ -151,8 +151,6 @@
 		target : base_url + '/admin/upload/process?filename=s4s_<?= $s4s_details->reference_number?>&location=<?=$_upload_url?>&width=960&ts=<?=time()?>',
 		onComplete: function() {
 
-			$("#result_image").attr('src', '<?=$upload_url?>/s4s_'+<?= $s4s_details->reference_number?>+'.pdf?v=' + Math.floor(Math.random() * 999999));
-
 			b.request({
 		        url: '/operations/s4s/update_asset',
 		        data: {

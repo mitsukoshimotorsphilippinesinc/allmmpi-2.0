@@ -2,6 +2,8 @@
 	<center><h2 style="color:#ffffff;border:1px solid;background:rgba(0, 0, 0, 0) linear-gradient(90deg, #0088CC 10%, #0B4B77 90%) repeat scroll 0 0">S4S <small style="color:#FFFFFF">(System for System)</small></h2></center>
 </div>
 
+<h3 id="department_name_title"></h3>
+
 <fieldset>		
 	<div>
 		<div class="control-group">					
@@ -37,6 +39,7 @@
 				if(data.status) {					
 					$("#result-count").html(data.data.result_count);					
 					$("#contents").html(data.data.html);
+					$("#department_name_title").html(data.data.department_name);
 					$("#pagination").html(data.data.pagination);
 
 					$('.goto_page').click(function(e){
