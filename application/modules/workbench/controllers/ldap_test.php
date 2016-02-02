@@ -2,6 +2,35 @@
 
 class Ldap_test extends Base_Controller {
 
+	private $_validation_rule = array(
+		array(
+			'field' => 'server_ip',
+			'label' => 'Server IP / Domaim',
+			'rules' => 'trim|required'
+		),
+		array(
+			'field' => 'common_name',
+			'label' => 'CN',
+			'rules' => 'trim|required'
+		),
+		array(
+			'field' => 'organizational_unit',
+			'label' => 'OU',
+			'rules' => 'trim|required'
+		),
+		array(
+			'field' => 'domain_component',
+			'label' => 'DC',
+			'rules' => 'trim|required'
+		),
+		array(
+			'field' => 'password',
+			'label' => 'Password',
+			'rules' => 'trim|required'
+		)
+
+	);
+
 	function __construct()
 	{
 		parent::__construct();
@@ -9,25 +38,81 @@ class Ldap_test extends Base_Controller {
 
 	public function index()
 	{
-		$this->template->view("ldap_test/dashboard");
+		//$this->template->view("ldap_test/dashboard");
+		$this->process();
 	}
 	
+
+	public function process() {
+		if ($_POST)
+		{
+			// post done here
+			$this->form_validation->set_rules($this->_validation_rule);
+			if ($this->form_validation->run())
+			{
+
+				$ldaprdn  = 'cn='. set_value('common_name') .',ou='. set_value('organizational_unit') .',dc=' . set_value('domain_component') . ',dc=com';     // ldap rdn or dn
+				
+				$ldappass = set_value('password');
+									
+				$ldapconn = ldap_connect(set_value('server_ip'))
+    				or die("Could not connect to LDAP server.");
+
+	    		echo "Connected to server via " . $ldapconn . "<br/>";	
+
+	    		if ($ldapconn) {
+
+					ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
+
+					echo $ldaprdn . "<br/>" . $ldappass;
+
+				    // binding to ldap server
+				    //$ldapbind = ldap_bind($ldapconn);
+				    $ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
+
+				    // verify binding
+				    if ($ldapbind) {
+				        echo "LDAP bind successful...";
+
+
+				      //  $sr=ldap_search($ldapbind, "dn=mitsukoshimotors,dn=com", "admin*");
+
+				        //$read = ldap_search($ldapconn, $ldaprdn, "ou*")
+						//     or exit(">>Unable to search ldap server<<");
+						
+						//$info = ldap_get_entries($connect, $read);
+
+				    } else {
+				        echo "LDAP bind failed...";
+				    }
+
+				}
+
+
+				return;
+			}
+		}
+				
+		$this->template->view("ldap_test/dashboard");
+	}
+
+
 
 	public function proceed() 
 	{
 		
-		//$ldaprdn  = 'cn=ryan.rosaldo,ou=h.o,dc=mitsukoshimotors,dc=com';     // ldap rdn or dn
-		//$ldappass = 'rootpass';  // associated password
-
-		$ldaprdn  = 'cn=admin,ou=groups,dc=mitsukoshimotors,dc=com';     // ldap rdn or dn
+		$ldaprdn  = 'cn=ryan.rosaldo,ou=h.o,dc=mitsukoshimotors,dc=com';     // ldap rdn or dn
 		$ldappass = 'rootpass';  // associated password
+
+		//$ldaprdn  = 'cn=admin,ou=groups,dc=mitsukoshimotors,dc=com';     // ldap rdn or dn
+		//$ldappass = 'rootpass';  // associated password
 
 
 		//$ldaprdn  = 'cn=mikko,ou=Groups,dc=mitsukoshimotors,dc=com';     // ldap rdn or dn
 		//$ldappass = 'rootpass';  // associated password
 
-		//$ldapconn = ldap_connect("195.100.100.77")
-		$ldapconn = ldap_connect("195.100.100.52")
+		$ldapconn = ldap_connect("195.100.100.77")
+		//$ldapconn = ldap_connect("195.100.100.52")
     		or die("Could not connect to LDAP server.");
 
     	echo $ldapconn . "<br/>";	
