@@ -16,7 +16,7 @@
 
 <h2>S4S Privileges <a href='/operations/s4s' class='btn btn-small' style="float:right">Back</a></h2>
 <hr/>
-<h3><?= $s4s->pp_name ?></h3>
+<h3>[<?= $s4s->reference_number ?>] <?= $s4s->pp_name ?></h3>
 <br/>
 <center>
 <table class='static' style='width:80%;text-align:center;'>

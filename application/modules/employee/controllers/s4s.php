@@ -108,7 +108,7 @@ class S4s extends Site_Controller
 				GROUP BY
 					pp_name				
 				ORDER BY 
-				 	priority_order
+				 	document_sequence
 				LIMIT 
 					{$this->pager2->per_page} 
 				OFFSET 

@@ -399,12 +399,12 @@ class Upload extends Base_Controller {
 			//chown($fullpath, 'dante');
 		} else {			
 
-			//var_dump($temp_file . "|" . $fullpath);
-			//$_ret = copy($temp_file, $fullpath);
+			var_dump($temp_file . "|" . $fullpath);
+			$_ret = copy($temp_file, $fullpath);
 
-			$_ret = move_uploaded_file($temp_file, "/var/www/allmmpi/webroot_admin/assets/media/s4s");
+			//$_ret = move_uploaded_file($temp_file, "/var/www/allmmpi/webroot_admin/assets/media/s4s");
 
-			//chmod($fullpath, 777);
+			chmod($fullpath, 777);
 			//chown($fullpath, 'dante');			
 			if ($_ret) unlink($temp_file);
 		}
