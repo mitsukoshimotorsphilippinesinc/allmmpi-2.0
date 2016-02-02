@@ -53,6 +53,7 @@ class Upload extends Base_Controller {
 				file_put_contents($target_path.$fileName,$content);
 
 				$filename = $this->input->get('filename');
+
 				if ($filename == "") $filename = str_replace(".".$ext,'',$fileName);
 
 				if ($ext == 'pdf') {
@@ -376,7 +377,7 @@ class Upload extends Base_Controller {
 	    if(stristr(strtolower($_uploading_filename),'.pdf')) $format = 'pdf';
 	    
 		$temp_file = $tmp_filename; //$_FILES['file']['tmp_name'];
-		
+
 		$_hash = substr(md5(date('Y-m-d H:i:s')),0,8);
 		
 		//$filename = $filename . "." . $format;
@@ -395,11 +396,16 @@ class Upload extends Base_Controller {
 		if ($using_file) {			
 			$_ret = move_uploaded_file($temp_file, $fullpath);
 			chmod($fullpath, 777);
-			chown($fullpath, 'dante');
+			//chown($fullpath, 'dante');
 		} else {			
-			$_ret = copy($temp_file, $fullpath);
-			chmod($fullpath, 777);
-			chown($fullpath, 'dante');
+
+			//var_dump($temp_file . "|" . $fullpath);
+			//$_ret = copy($temp_file, $fullpath);
+
+			$_ret = move_uploaded_file($temp_file, "/var/www/allmmpi/webroot_admin/assets/media/s4s");
+
+			//chmod($fullpath, 777);
+			//chown($fullpath, 'dante');			
 			if ($_ret) unlink($temp_file);
 		}
 		
