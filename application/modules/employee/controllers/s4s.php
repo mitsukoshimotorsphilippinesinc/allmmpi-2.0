@@ -174,7 +174,7 @@ class S4s extends Site_Controller
 			$html .= "<center><h3 class='alert'>No Policy/Procedure Found.</h3><center>";
 		}	
 
-		$this->return_json(1, 'Success', array('html' => $html, 'pagination' => $pagination, 'result_count' => $s4s_count . " RESULT/S"));
+		$this->return_json(1, 'Success', array('html' => $html, 'pagination' => $pagination, 'department_name' => $department_details->department_name, 'result_count' => $s4s_count . " RESULT/S"));
 		return;
 	}
 
