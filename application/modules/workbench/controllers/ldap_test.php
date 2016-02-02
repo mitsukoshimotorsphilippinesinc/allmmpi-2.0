@@ -9,11 +9,17 @@ class Ldap_test extends Base_Controller {
 
 	public function index()
 	{
+		$this->template->view("ldap_test/dashboard");
+	}
+	
+
+	public function proceed() 
+	{
 		
 		//$ldaprdn  = 'cn=ryan.rosaldo,ou=h.o,dc=mitsukoshimotors,dc=com';     // ldap rdn or dn
 		//$ldappass = 'rootpass';  // associated password
 
-		$ldaprdn  = 'cn=matt,ou=groups,dc=mitsukoshimotors,dc=com';     // ldap rdn or dn
+		$ldaprdn  = 'cn=admin,ou=groups,dc=mitsukoshimotors,dc=com';     // ldap rdn or dn
 		$ldappass = 'rootpass';  // associated password
 
 
@@ -21,7 +27,7 @@ class Ldap_test extends Base_Controller {
 		//$ldappass = 'rootpass';  // associated password
 
 		//$ldapconn = ldap_connect("195.100.100.77")
-		$ldapconn = ldap_connect("195.100.100.207")
+		$ldapconn = ldap_connect("195.100.100.52")
     		or die("Could not connect to LDAP server.");
 
     	echo $ldapconn . "<br/>";	
@@ -33,15 +39,15 @@ class Ldap_test extends Base_Controller {
 				echo $ldaprdn . "<br/>" . $ldappass;
 
 			    // binding to ldap server
-			    $ldapbind = ldap_bind($ldapconn);
-			    //$ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
+			    //$ldapbind = ldap_bind($ldapconn);
+			    $ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
 
 			    // verify binding
 			    if ($ldapbind) {
 			        echo "LDAP bind successful...";
 
 
-			        $sr=ldap_search($ldapbind, "dn=mitsukoshimotors,dn=com", "");
+			      //  $sr=ldap_search($ldapbind, "dn=mitsukoshimotors,dn=com", "admin*");
 
 			        //$read = ldap_search($ldapconn, $ldaprdn, "ou*")
 					//     or exit(">>Unable to search ldap server<<");

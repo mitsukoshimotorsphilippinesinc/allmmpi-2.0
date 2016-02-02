@@ -5,7 +5,26 @@
 
 <div id="search_container">
 	<form id='search_details' method='get' action ='/operations/s4s/page' class="form-inline">
-		<strong>Search By:&nbsp;</strong>
+
+		<div class="controls">
+			<strong>Department Name:&nbsp;</strong>
+			<?php
+			
+			$where = "url is NOT NULL AND is_active = 1";
+			$department_details = $this->human_relations_model->get_department($where, NULL, "department_name");
+
+			$department_options = array();
+			$department_options = array('0' => 'ALL');
+			foreach ($department_details as $wd) {
+			 	$department_options[$wd->department_id] = $wd->department_name;
+			}				
+			?>
+
+			<?= form_dropdown('department_id',$department_options, set_value(NULL, $department_id),'id="department_id"') ?>										
+		</div>
+		<br/>
+
+		<strong>Search By:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
 		<select name="search_option" id="search_option" style="width:auto;" value="<?= $search_by ?>">
 			<option value="pp_name">Name</option>
 			<option value="pp_description">Description</option>
@@ -36,8 +55,10 @@
 <table class='table table-striped table-bordered'>
 	<thead>
 		<tr>
+			<th>Reference Code</th>
 			<th>Title</th>
 			<th>Description</th>
+			<th>Sequence Number</th>
 			<th>Is Active</th>
 			<th style='width:160px;'>&nbsp;</th>
 		</tr>
@@ -48,8 +69,10 @@
 	<?php else: ?>
 	<?php foreach ($s4s_list as $a): ?>
 		<tr>
+			<td><?= $a->reference_number; ?></td>
 			<td><?= $a->pp_name; ?></td>
 			<td><?= $a->pp_description; ?></td>
+			<td style="text-align:right;"><?= $a->document_sequence; ?></td>
 			<?php
 			if ($a->is_active == 1) {
 				echo "<td style='text-align:center;'><span class='label label-success'>YES</span></td>";
@@ -58,9 +81,9 @@
 			}
 			?>
 			<td>
-				<a href='/operations/s4s/view/<?= $a->s4s_id ?>' class='btn btn-small btn-info' title="View"><i class="icon-search icon-white"></i></a>
+				<a href='/operations/s4s/view/<?= $a->s4s_id ?>' target='_blank' class='btn btn-small btn-info' title="View"><i class="icon-search icon-white"></i></a>
 				<a href='/operations/s4s/edit/<?= $a->s4s_id ?>' class='btn btn-small btn-primary' title="Edit"><i class="icon-pencil icon-white"></i></a>
-				<a href='#' class='btn btn-small btn-primary' id='button_privileges' data='<?= $a->s4s_id ?>' title='Privileges'><i class="icon-lock icon-white"></i></a>
+				<a href='/operations/s4s/privilege/<?= $a->s4s_id ?>' class='btn btn-small btn-primary' id='button_privileges' data='<?= $a->s4s_id ?>' title='Privileges'><i class="icon-lock icon-white"></i></a>
 				<a href='/operations/s4s/delete/<?= $a->s4s_id ?>' class='btn btn-small btn-danger' title="Delete"><i class="icon-remove icon-white"></i></a>
 			</td>
 		</tr>
