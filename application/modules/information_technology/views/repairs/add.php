@@ -355,7 +355,7 @@ else
 
 	});
 	
-	var assignRequester = function(is_branch = 0) {
+	var assignRequester = function(is_branch) {
 
 		if (is_branch == 0)	{
 
