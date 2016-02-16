@@ -55,27 +55,53 @@ class Ldap_test extends Base_Controller {
 				
 				$ldappass = set_value('password');
 									
-				$ldapconn = ldap_connect(set_value('server_ip'))
+				$ldapconn = ldap_connect(set_value('server_ip'), "390")
     				or die("Could not connect to LDAP server.");
 
-	    		echo "Connected to server via " . $ldapconn . "<br/>";	
+	    		echo "Connected to server via " . set_value('server_ip')  . " port: 390 " . $ldapconn . "<br/>";	
 
 	    		if ($ldapconn) {
 
 					ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
+					ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);
 
-					echo $ldaprdn . "<br/>" . $ldappass;
+					echo $ldaprdn . "<br/>password: " . $ldappass;
 
 				    // binding to ldap server
 				    //$ldapbind = ldap_bind($ldapconn);
-				    $ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
+
+				    //$ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
+					$ldapbind = ldap_bind($ldapconn);
 
 				    // verify binding
 				    if ($ldapbind) {
 				        echo "LDAP bind successful...";
 
 
+				    //    $sr=ldap_search($ldapbind, "dn=mitsukoshimotors,dn=com", "admin*");
+
 				      //  $sr=ldap_search($ldapbind, "dn=mitsukoshimotors,dn=com", "admin*");
+				         //$sr=ldap_search($ldapconn, "DC=mmpimotors,DC=com","(&(objectCategory=person)(samaccountname=*))");
+				        
+				        //$filter="CN=mikko.concepcion";
+
+				        if (!($search = ldap_search($ldapconn, "dc=mmpimotors,dc=com", "(filters))"))) {
+						     die("Unable to search ldap server");
+						} else {
+
+							$entries = ldap_get_entries($ldapconn, $search);
+
+					        // Display key data for each entry.
+					        for ($i=0; $i<$entries["count"]; $i++) {
+					            echo "<p>DN: " . $entries[$i]["dn"] . "<br />";
+					            echo "Uid: " . $entries[$i]["uid"][0] . "<br />";
+					            echo "Email: " . $entries[$i]["mail"][0] . "</p>";
+					        }
+
+					        ldap_close($ldapconn);
+
+
+						}
 
 				        //$read = ldap_search($ldapconn, $ldaprdn, "ou*")
 						//     or exit(">>Unable to search ldap server<<");
@@ -111,7 +137,7 @@ class Ldap_test extends Base_Controller {
 		//$ldaprdn  = 'cn=mikko,ou=Groups,dc=mitsukoshimotors,dc=com';     // ldap rdn or dn
 		//$ldappass = 'rootpass';  // associated password
 
-		$ldapconn = ldap_connect("195.100.100.77")
+		$ldapconn = ldap_connect("195.100.100.77", "390")
 		//$ldapconn = ldap_connect("195.100.100.52")
     		or die("Could not connect to LDAP server.");
 

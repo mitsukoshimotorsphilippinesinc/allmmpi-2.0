@@ -149,6 +149,10 @@
 					</ul>
 				</li>	
 
+				<li class='<?= isset($this->uri->uri_string) ? ($this->uri->segment(2) == 's4s' ? 'active' : '') : '';  ?> dropdown'>
+					<li class='<?= isset($this->uri->uri_string) ? ($this->uri->segment(2) == 'training_materials' ? 'active' : '') : '';  ?>'><a href="/employee/training_materials" >Training Materials</a></li>								
+				</li>	
+
 				<?php
 				$cod_access_setting = $this->setting_model->get_setting_by_slug("code_of_discipline_access_position_ids");
 
@@ -171,7 +175,7 @@
 					}				
 				}
 				?>
-				
+
 				
 			</ul>
 			<hr class='user-nav-divider'/>

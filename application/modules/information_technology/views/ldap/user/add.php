@@ -85,12 +85,12 @@
 
 				<div class='control-group'>	
 					<label class='control-label'>Password <span class='is required'>*&nbsp;</span></label>
-		            <input title='Password' id='password1' type='password' name='password1' maxlength='16'/>
+		            <input title='Password' id='password' type='password' name='password' maxlength='16'/>
 				</div>
 
 				<div class='control-group'>	
-		            <label class='control-label'>Re-type Password <span class='is required'>*&nbsp;</span></label>
-		            <input title='Retype Password' id='password2' type='password' name='password2' maxlength='16'/>
+		            <label class='control-label'>Department Name <span class='is required'>*&nbsp;</span></label>
+		            <input title='Department Name' id='department_name' type='text' name='department_name'/>
 				</div>
 			</fieldset>
 		</div>
@@ -240,8 +240,8 @@
 	        'mname': $.trim($("#mname").val()),
 	        'lname': $.trim($("#lname").val()),
 	        'email': $.trim($("#email").val()),
-	        'password1': $.trim($("#password1").val()),
-	        'password2': $.trim($("#password2").val()),
+	        'password': $.trim($("#password").val()),
+	        'department_name': $.trim($("#department_name").val()),
 	        'country_code': $.trim($("#country_code").val()),
 	        'area_code': $.trim($("#area_code").val()),
 	        'mobile_number': $.trim($("#mobile_number").val()),
@@ -269,7 +269,7 @@
 
 	                // display registration summary
 	                var reg_confirm_modal = b.modal.new({
-	                    title: 'Confirm Registration',
+	                    title: 'Confirm Create User',
 	                    width: '650px',
 	                    html: data.html,
 						disableClose: true,
@@ -280,7 +280,7 @@
 	                        'Confirm' : function() {
 	                            // ajax request
 	                            b.request({
-	                                url: '/main/registration/register',
+	                                url: '/information_technology/ldap/create',
 	                                data: user_data,
 
 	                                on_success: function(data, status) {
