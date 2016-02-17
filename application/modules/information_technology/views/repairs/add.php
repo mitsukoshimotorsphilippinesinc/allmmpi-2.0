@@ -774,7 +774,7 @@ else
 	});
 
 	$("#repair_status").live('click',function(){
-		if ($(this).val() == "2") {
+		if (($(this).val() == "2") || ($(this).val() == "15")) {
 			$("#received_from_branch_container").show();
 		} else {
 			$("#received_from_branch_container").hide();
