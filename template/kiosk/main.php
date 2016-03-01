@@ -28,7 +28,7 @@
 	<?php
 		
 		if (!isset($screen)) $screen = 'store';
-		if (!isset($screen_title)) $screen_title = 'Vital-C iStore';
+		if (!isset($screen_title)) $screen_title = 'MMPI';
 	
 	?>
 	<script type="text/javascript">

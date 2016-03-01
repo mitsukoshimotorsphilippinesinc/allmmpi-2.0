@@ -21,9 +21,8 @@ class Rss extends Base_Controller {
 	public function index()
 	{	
 		$data['encoding'] = 'utf-8';
-        $data['feed_name'] = 'Vital C Health Products, Inc';
+        $data['feed_name'] = 'Mitsukoshi Motors Philippines, Inc';
         $data['feed_url'] = $this->config->item('base_url');
-        $data['page_description'] = 'Official Website of Vital C Health Products, Inc.';
         $data['page_language'] = 'en';
         //$data['creator_email'] = 'Derek Allard is at derek at derekallard dot com';
 

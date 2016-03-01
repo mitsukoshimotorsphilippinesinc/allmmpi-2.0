@@ -58,7 +58,7 @@ body > .container > #content {
 	<div id="header" class='navbar navbar-fixed-top cleafix'>
 		<div class="navbar-inner">
 			<div class="container" style='width:95%;'>
-				<a class="brand" href="/admin">Vital-C<br/>Administration</a>
+				<a class="brand" href="/admin">MMPI<br/>Administration</a>
 				<div class='pull-left'>
 					<?= $this->load->view('switchers/systems', null, TRUE, 'admin'); ?>
 				</div>

@@ -57,7 +57,7 @@
 						{
 							//$image = $this->config->item('media_url') . '/members_login/' . $g->image_filename;
 							//$image = check_image_path($image. 0, 1, 1);
-							$image = 'http://vital-c.net/assets/media/members_login/' . $g->image_filename;
+							$image = 'http://cp/assets/media/members_login/' . $g->image_filename;
 							
 						} else {
 							$image = $this->config->item('media_url') . '/members_login/' . $g->image_filename;

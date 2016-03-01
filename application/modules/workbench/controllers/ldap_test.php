@@ -13,11 +13,11 @@ class Ldap_test extends Base_Controller {
 			'label' => 'CN',
 			'rules' => 'trim|required'
 		),
-		array(
-			'field' => 'organizational_unit',
-			'label' => 'OU',
-			'rules' => 'trim|required'
-		),
+		//array(
+		//	'field' => 'organizational_unit',
+		//	'label' => 'OU',
+		//	'rules' => 'trim|required'
+		//),
 		array(
 			'field' => 'domain_component',
 			'label' => 'DC',
@@ -51,8 +51,10 @@ class Ldap_test extends Base_Controller {
 			if ($this->form_validation->run())
 			{
 
-				$ldaprdn  = 'cn='. set_value('common_name') .',ou='. set_value('organizational_unit') .',dc=' . set_value('domain_component') . ',dc=com';     // ldap rdn or dn
+				//$ldaprdn  = 'cn='. set_value('common_name') .',ou='. set_value('organizational_unit') .',dc=' . set_value('domain_component') . ',dc=com';     // ldap rdn or dn
 				
+				$ldaprdn  = 'cn='. set_value('common_name') .',dc=' . set_value('domain_component') . ',dc=com';     // ldap rdn or dn
+
 				$ldappass = set_value('password');
 									
 				$ldapconn = ldap_connect(set_value('server_ip'), "390")
@@ -67,11 +69,12 @@ class Ldap_test extends Base_Controller {
 
 					echo $ldaprdn . "<br/>password: " . $ldappass;
 
-				    // binding to ldap server
-				    //$ldapbind = ldap_bind($ldapconn);
-
+				    // binding to ldap server				  
 				    //$ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
-					$ldapbind = ldap_bind($ldapconn);
+				    //$ldapbind = ldap_bind($ldapconn, "cn=zentyal,dc=mmpimotors,dc=com", "c67CF@tT6MmH29kv/XCU");
+				    //$ldapbind = ldap_bind($ldapconn, "cn=zentyal,dc=mmpimotors,dc=com", "c67CF@tT6MmH29kv/XCU");
+				    $ldapbind = ldap_bind($ldapconn, "cn=zentyal,dc=mmpimotors,dc=com", "FDeL1YAN1UHzvMDEMZ8m");
+					//$ldapbind = ldap_bind($ldapconn);
 
 				    // verify binding
 				    if ($ldapbind) {
@@ -85,17 +88,18 @@ class Ldap_test extends Base_Controller {
 				        
 				        //$filter="CN=mikko.concepcion";
 
-				        if (!($search = ldap_search($ldapconn, "dc=mmpimotors,dc=com", "(filters))"))) {
+				        if (!($search = ldap_search($ldapconn, "dc=mmpimotors,dc=com", "uid=matt.concepcion"))) {
 						     die("Unable to search ldap server");
 						} else {
 
 							$entries = ldap_get_entries($ldapconn, $search);
+							var_dump($entries);
 
 					        // Display key data for each entry.
 					        for ($i=0; $i<$entries["count"]; $i++) {
 					            echo "<p>DN: " . $entries[$i]["dn"] . "<br />";
-					            echo "Uid: " . $entries[$i]["uid"][0] . "<br />";
-					            echo "Email: " . $entries[$i]["mail"][0] . "</p>";
+					            //echo "Uid: " . $entries[$i]["uid"][0] . "<br />";
+					            //echo "Email: " . $entries[$i]["mail"][0] . "</p>";
 					        }
 
 					        ldap_close($ldapconn);

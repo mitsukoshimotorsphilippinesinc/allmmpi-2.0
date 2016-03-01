@@ -49,7 +49,6 @@
 		<div class="clearfix">
 			<h1 class="pull-left" style="margin-top:-10px;">
 				<a href="/">MMPI</a>
-				<!--a href="/">VitalC</a-->
 			</h1>
 			<ul class="nav pull-right">
 				<li><a href="/employee/signin">Login</a></li>

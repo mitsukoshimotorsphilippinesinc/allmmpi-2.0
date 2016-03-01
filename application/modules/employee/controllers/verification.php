@@ -26,14 +26,14 @@ class Verification extends Base_Controller {
         }
 
 		if (empty($validation_details)) {
-			$html = "Sorry, there's something wrong with your verification details. Kindly contact Vital-C Admin. Thank you.";
+			$html = "Sorry, there's something wrong with your verification details. Kindly contact MMPI Admin. Thank you.";
 		} else {
 			// get member_details 
 			$member_details = $this->members_model->get_member_by_id($validation_details->member_id);
 			
 			if (empty($member_details)) {
 				// check if is_email_verified
-				$html = "Sorry, there's something wrong with your membership details. Kindly contact Vital-C Admin. Thank you.";
+				$html = "Sorry, there's something wrong with your membership details. Kindly contact MMPI Admin. Thank you.";
 			} else {
 				$continue_validation = true;
 				// get date
@@ -44,7 +44,7 @@ class Verification extends Base_Controller {
                         $html = "Your E-mail has been already verified.";
 						$continue_validation = false;
                     } else {
-                        $html = "Thank you for verifying your E-mail. You have successfully completed E-mail verification process for Vital-C. Congratulations!";
+                        $html = "Thank you for verifying your E-mail. You have successfully completed E-mail verification process for MMPI. Congratulations!";
 
                         $data_member_verification_before = array(
 							"email_verification_timestamp"=>$validation_details->email_verification_timestamp
@@ -61,74 +61,7 @@ class Verification extends Base_Controller {
 
                     }
                 }
-				else if ($_type == 'rfid')
-				{
-                    if ($member_details->is_rf_id_verified == 1) {
-                        $html = "Your RFID has been already verified.";
-						$continue_validation = false;
-                    } else {
-                        $html = "Thank you for verifying your RFID. You have successfully completed RF ID verification process for Vital-C. Congratulations!";
-
-                        $data_member_verification_before = array(
-							"rf_id_verification_timestamp"=>$validation_details->rf_id_verification_timestamp
-						);
-						$data_member_verification = array(
-							"rf_id_verification_timestamp"=>$update_timestamp
-						);
-						$data_member_before = array(
-							"is_rf_id_verified"=>$member_details->is_rf_id_verified
-						);
-						$data_member = array(
-							"is_rf_id_verified"=>1
-						);
-
-                    }
-                }
-				else if ($_type == 'paycard')
-				{
-                    if ($member_details->is_paycard_verified == 1) {
-                        $html = "Your Metrobank Paycard Number has been already verified.";
-						$continue_validation = false;
-                    } else {
-                        $html = "Thank you for verifying your Metrobank Paycard Number. You have successfully completed Metrobank Paycard Number verification process for Vital-C. Congratulations!";
-
-                        $data_member_verification_before = array(
-							"paycard_verification_timestamp"=>$validation_details->paycard_verification_timestamp
-						);
-						$data_member_verification = array(
-							"paycard_verification_timestamp"=>$update_timestamp
-						);
-						$data_member_before = array(
-							"is_paycard_verified"=>$member_details->is_paycard_verified
-						);
-						$data_member = array(
-							"is_paycard_verified"=>1
-						);
-                    }
-                }
-				else if ($_type == 'mobile_number')
-				{
-                    if ($member_details->is_mobile_verified == 1) {
-                        $html = "Your Mobile Number has been already verified.";
-						$continue_validation = false;
-                    } else {
-                        $html = "Thank you for verifying your Mobile Number. You have successfully completed Mobile Number verification process for Vital-C. Congratulations!";
-
-                        $data_member_verification_before = array(
-							"mobile_verification_timestamp"=>$validation_details->mobile_verification_timestamp
-						);
-						$data_member_verification = array(
-							"mobile_verification_timestamp"=>$update_timestamp
-						);
-						$data_member_before = array(
-							"is_mobile_verified"=>$member_details->is_mobile_verified
-						);
-						$data_member = array(
-							"is_mobile_verified"=>1
-						);
-                    }
-                }
-
+				
 				if($continue_validation)
 				{
 					$finish_validation = true;
@@ -147,7 +80,7 @@ class Verification extends Base_Controller {
 						if(empty($rfid_paycard_tag))
 						{
 							$_type = ucwords($_type);
-							$html = "Sorry, the {$_type} you used does not exist in our database. Kindly contact Vital-C Admin. Thank you.";
+							$html = "Sorry, the {$_type} you used does not exist in our database. Kindly contact MMPI Admin. Thank you.";
 							$finish_validation = false;
 						}
 						else
@@ -157,7 +90,7 @@ class Verification extends Base_Controller {
 							if($rfid_paycard_tag->{$_type."_member_id"} != 0 && $rfid_paycard_tag->{$_type."_member_id"} != $member_details->member_id)
 							{
 								$code_type = ucwords($code_type);
-								$html = "Sorry, the {$_type} you used has already been used by another member. Kindly contact Vital-C Admin. Thank you.";
+								$html = "Sorry, the {$_type} you used has already been used by another member. Kindly contact MMPI Admin. Thank you.";
 								$finish_validation = false;
 							}
 							else

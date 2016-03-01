@@ -44,7 +44,7 @@ if (!defined('_JPGRAPH_PATH')) define("_JPGRAPH_PATH", _MPDF_PATH.'jpgraph/');
 if (!defined('_MPDF_TEMP_PATH')) define("_MPDF_TEMP_PATH", _MPDF_PATH.'tmp/');
 
 if (!defined('_MPDF_TTFONTPATH')) { define('_MPDF_TTFONTPATH',_MPDF_PATH.'ttfonts/'); }
-//if (!defined('_MPDF_TTFONTPATH')) { define('_MPDF_TTFONTPATH','C:\\xampp\\htdocs\\vitalc\\system\\libraries\\mpdf\\ttfonts\\'); }
+//if (!defined('_MPDF_TTFONTPATH')) { define('_MPDF_TTFONTPATH','C:\\xampp\\htdocs\\allmmpi\\system\\libraries\\mpdf\\ttfonts\\'); }
 if (!defined('_MPDF_TTFONTDATAPATH')) { define('_MPDF_TTFONTDATAPATH',_MPDF_PATH.'ttfontdata/'); }
 
 $errorlevel=error_reporting();

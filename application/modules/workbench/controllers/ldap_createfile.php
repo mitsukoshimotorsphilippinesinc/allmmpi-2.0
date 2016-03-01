@@ -13,7 +13,7 @@ class Ldap_createfile extends Base_Controller {
 	public function index()
 	{
 		
-		$this->template->view('ldap_createfile/ldapcreatefile');
+		$this->template->view('ldap_createfile/ldapcreatefile2');
 	}
 
 	public function process() 
@@ -96,6 +96,86 @@ class Ldap_createfile extends Base_Controller {
 			$txt = "dn: cn=" . $filename . ",ou=" . $au->department_name . ",dc=mitsukoshimotors,dc=com\ncn: " . $au->first_name . " \nsn: " . $au->last_name . "\nobjectClass: inetOrgPerson\nuserPassword: mmpi2015\nuid: " . $kumpletos_recados;	
 			fwrite($myfile, $txt);
 			fclose($myfile);
+
+		}
+		
+		echo "json_encode('status' => '1')";
+
+		return;
+	}
+
+	public function process2() 
+	{
+
+		$depcomp_details = trim($this->input->post("depcomp_details"));
+
+			if ($depcomp_details <> 0) {
+			$data = explode('|' ,$depcomp_details);
+
+			$type = $data[0];
+			$depcomp_name = $data[1];
+			$ou_value = $data[2];
+
+			$where_add_department = "";
+
+			if ($type == "department") {
+				$where_add_department = " WHERE a.department = '{$depcomp_name}'";
+			} else {
+				$where_add_department = " WHERE a.company = '{$depcomp_name}'";
+			}
+		} else {
+			$where_add_department = "";
+		}
+		
+		$get_sql ="SELECT 
+						a.id_number,
+						a.company,
+						a.department,
+						a.branch,
+						a.job_grade_level,
+						a.position,						
+						a.is_employed,
+						b.complete_name,
+						b.last_name,
+						b.first_name,
+						b.middle_name,
+						b.mobile_number,
+						b.personal_email_address,
+						b.mobile_number,
+						b.birthdate,
+						b.birthplace,
+						b.gender,
+						b.religion,
+						b.marital_status,
+						case when a.department is null then CONCAT(SUBSTRING_INDEX(SUBSTRING_INDEX(a.company, ' ', 1), ' ', -1), '_', SUBSTRING_INDEX(SUBSTRING_INDEX(a.company, ' ', 2), ' ', -1)) 
+					when a.department like 'Bayswater%' then CONCAT(SUBSTRING_INDEX(SUBSTRING_INDEX(a.department, ' ', 1), ' ', -1), '_', SUBSTRING_INDEX(SUBSTRING_INDEX(a.department, ' ', 2), ' ', -1)) 
+					else REPLACE(REPLACE(REPLACE(department,' ', '_'), ')',''), '(', '') end as ou_value
+					FROM 
+						ldap_employment_information a
+					LEFT JOIN 
+						ldap_personal_information b on a.id_number = b.id_number
+					{$where_add_department}	
+					order by 
+						a.id_number";
+		
+
+		$active_users = $this->db_human_relations->query($get_sql);
+		$active_users = $active_users->result();		
+
+		foreach ($active_users as $au) {
+
+			$uid = str_replace("ñ", "n", str_replace(" ", "", strtolower($au->first_name))) . "." . str_replace("ñ", "n", str_replace(" ", "", strtolower($au->last_name)));
+
+			$cn = trim($au->first_name) . " " . trim($au->last_name);
+
+			$mail = $au->personal_email_address . "@mitsukoshimotors.com";
+
+			$myfile = fopen("/tmp/ldap/" . $uid . ".ldif", "a+") or die("Unable to open file!");
+			$txt = "dn: uid=" . $uid . ",cn=mail,ou=Users,dc=mmpimotors,dc=com\ncn: " . $cn . "\nsn: " . $au->last_name . "\nobjectClass: inetOrgPerson\nuserPassword: mmpi2016\nuid: " . $uid . "\nmail: "  . $mail . "\ncompany: "  . $au->company . "\nposition: "  . $au->position . "\nbirthday: "  . $au->birthdate . "\ngender: "  . $au->gender . "\nreligion: "  . $au->religion . "\nmarital_status: "  . $au->marital_status;
+			fwrite($myfile, $txt);
+			fclose($myfile);
+
+			echo $myfile;
 
 		}
 		

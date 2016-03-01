@@ -32,18 +32,6 @@
 	<?php echo js('apps/core.js'); ?>
 	<?php echo js('apps/site.js'); ?>
 	<!--?php echo js('libs/pdf.js'); ?-->
-	<?php if($this->member->member_id>0) : ?>
-		<script type="text/javascript" >
-			vitalc.member.member_id = <?=$this->member->member_id;?>;
-			vitalc.member.first_name = "<?=$this->member->first_name;?>";
-			vitalc.member.last_name = "<?=$this->member->last_name;?>";
-			vitalc.member.funds = <?=$this->member->funds;?>;
-			vitalc.member.gift_cheques = <?=$this->member->gift_cheques;?>;
-			vitalc.member.gcep = <?=$this->member->gcep;?>;
-			vitalc.member.on_hold_funds = <?=$this->member->on_hold_funds;?>;
-			vitalc.member.is_paycard_corpo = <?=$this->member->is_paycard_corpo;?>;
-		</script>
-	<?php endif; ?>
 	
 </head>
 

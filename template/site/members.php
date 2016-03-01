@@ -30,30 +30,6 @@
 	<?php echo js('apps/core.js'); ?>
 	<?php echo js('apps/site.js'); ?>
 	<!--?php echo js('libs/pdf.js'); ?-->
-	<?php if($this->member->member_id>0) : ?>
-		<script type="text/javascript" >
-			vitalc.member.member_id = <?=$this->member->member_id;?>;
-			vitalc.member.first_name = "<?=$this->member->first_name;?>";
-			vitalc.member.last_name = "<?=$this->member->last_name;?>";
-			vitalc.member.funds = <?=$this->member->funds;?>;
-			vitalc.member.gift_cheques = <?=$this->member->gift_cheques;?>;
-			vitalc.member.gcep = <?=$this->member->gcep;?>;
-			vitalc.member.on_hold_funds = <?=$this->member->on_hold_funds;?>;
-			vitalc.member.is_paycard_corpo = <?=$this->member->is_paycard_corpo;?>;
-			<?php
-				if (!isset($this->session->userdata('selected_account')->account_id))
-				{
-					$accounts = $this->members_model->get_member_accounts("member_id = {$this->member->member_id}",array("rows"=>1,"offset"=>0),"insert_timestamp ASC");
-					$selected_account_id = $accounts[0]->account_id;
-				}
-				else
-				{
-					$selected_account_id = $this->session->userdata('selected_account')->account_id;		
-				}
-			?>
-			vitalc.member.selected_account_id = '<?=$selected_account_id?>';
-		</script>
-	<?php endif; ?>
 	
 </head>
 

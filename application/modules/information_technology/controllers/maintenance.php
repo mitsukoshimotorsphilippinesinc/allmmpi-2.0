@@ -6,7 +6,8 @@ class Maintenance extends Admin_Controller {
 		array(
 			'field' => 'hardware_name',
 			'label' => 'Hardware Name',
-			'rules' => 'trim|required|is_unique'
+			//'rules' => 'trim|required|is_unique'
+			'rules' => 'trim|required'
 		),
 		array(
 			'field' => 'description',

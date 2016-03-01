@@ -40,7 +40,7 @@
 	<div class="container">
 		<header class="row-fluid">
 			<div class="clearfix">
-				<h1><span>&nbsp;</span><span>VitalC</span></h1>
+				<h1><span>&nbsp;</span><span>MMPI</span></h1>
 			</div>
 		</header>
 		<div id='content' class="row">
