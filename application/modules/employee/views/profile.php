@@ -296,7 +296,15 @@
 							<div class="control-group">
 								<label class="control-label" for="fname">Employment Status</label>
 								<div class="controls">
-									<input class='input-xlarge' title='Employment Status' type='text' id='employment_status' name='employment_status' value='<?=$employment_information->employment_status_id?>' data-orig-value='<?=$employment_information->employment_status_id?>' readonly/>
+									<?php
+									$status_name = "";
+									$status_details = $this->human_relations_model->get_employment_status_by_id($employment_information->employment_status_id);
+									if (empty($status_details))
+										$status_name = "N/A";
+									else
+										$status_name = $status_details->status_name;									
+								?>
+									<input class='input-xlarge' title='Employment Status' type='text' id='employment_status' name='employment_status' value='<?=$status_name?>' data-orig-value='<?=$status_name?>' readonly/>
 									<span class="help-block"></span>
 								</div>
 							</div>
