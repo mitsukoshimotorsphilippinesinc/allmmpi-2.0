@@ -1,4 +1,6 @@
 <div class="grid12">
+	<?php
+	/*
 	<div class="row-fluid">
 		<p class="span5">@2015 Mitsukoshi Motors Philippines Inc. All Rights Reserved.</p>
 		<ul class="span7">
@@ -31,4 +33,6 @@
 		<br/>
 		<br/>
 	</p>
+	*/
+	?>
 </div>	

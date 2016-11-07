@@ -24,7 +24,7 @@ body{
 header{
 	height: 100px;
 	min-width: 1100px;
-	background: rgba(0, 0, 0, 0) url("../img/header-1800x100.jpg") repeat scroll 0 0;
+	/*background: rgba(0, 0, 0, 0) url("../img/header-1800x100.jpg") repeat scroll 0 0;*/
 }
 header > div{
 	width: 960px;
@@ -42,7 +42,7 @@ header > div h1 a{
 	text-indent: -9999px;
 }
 header > div h1 a:last-child{
-	background: url(../img/header-logo.png) no-repeat;	
+	/*background: url(../img/header-logo.png) no-repeat;	*/
 	width: 300px;
 	height: 80px;
 	margin-left: -120px;

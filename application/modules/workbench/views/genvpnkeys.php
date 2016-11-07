@@ -18,7 +18,7 @@
 
 		
 		b.request({
-			url: "/workbench/generate_vpn_keys/process",
+			url: "",
 			data: {
 			},
 			on_success: function(data){
